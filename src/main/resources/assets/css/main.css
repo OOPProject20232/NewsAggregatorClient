@@ -1,0 +1,16 @@
+/* News categories */
+.category .content{
+    -fx-background-color: #fff;
+    -fx-border-radius: 0px 0px 5px 5px;
+    -fx-background-radius: 0px 0px 5px 5px;
+    -fx-border-style: solid;
+}
+
+.category .title {
+    -fx-font-size: 1.5em;
+    -fx-font-weight: bold;
+    -fx-background-color: #fff;
+    -fx-border-style: solid;
+    -fx-border-color: #d3d3d3;
+    -fx-border-radius: 5px 5px 0px 0px;
+}
