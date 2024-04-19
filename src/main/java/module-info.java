@@ -12,7 +12,8 @@ module org.example.newsaggregatorclient {
     requires com.almasb.fxgl.all;
     requires annotations;
     requires org.json;
-    requires com.fasterxml.jackson.databind;
+    requires java.desktop;
+    requires javafx.swing;
 
     opens org.example.newsaggregatorclient to javafx.fxml;
     exports org.example.newsaggregatorclient;
