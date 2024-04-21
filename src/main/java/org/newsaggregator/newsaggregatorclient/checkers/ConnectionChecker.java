@@ -1,4 +1,4 @@
-package org.example.newsaggregatorclient.mediator_objects;
+package org.newsaggregator.newsaggregatorclient.checkers;
 
 import java.io.IOException;
 import java.net.*;

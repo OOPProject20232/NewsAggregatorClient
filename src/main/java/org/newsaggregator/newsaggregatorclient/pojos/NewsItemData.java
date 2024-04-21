@@ -1,4 +1,4 @@
-package org.example.newsaggregatorclient.mediator_objects;
+package org.newsaggregator.newsaggregatorclient.pojos;
 
 import java.util.List;
 
@@ -45,5 +45,19 @@ public class NewsItemData{
         System.out.println("URL to image: " + urlToImage);
         System.out.println("Published at: " + publishedAt);
         System.out.println("Content: " + content);
+    }
+
+    @Override
+    public String toString() {
+        return  "category=" + category +
+                ",\ntitle='" + title + '\'' +
+                ",\nauthor=" + author +
+                ",\ndescription='" + description + '\'' +
+                ",\narticleDetailedContent='" + articleDetailedContent + '\'' +
+                ",\nurl='" + url + '\'' +
+                ",\nurlToImage='" + urlToImage + '\'' +
+                ",\npublishedAt='" + publishedAt + '\'' +
+                ",\ncontent='" + content + '\'' +
+                ",\npublisher='" + publisher + '\'';
     }
 }

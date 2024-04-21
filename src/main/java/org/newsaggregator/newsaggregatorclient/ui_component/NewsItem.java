@@ -1,7 +1,6 @@
-package org.example.newsaggregatorclient.ui_component;
+package org.newsaggregator.newsaggregatorclient.ui_component;
 
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -9,12 +8,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import org.example.newsaggregatorclient.downloaders.FileDownloader;
-import org.example.newsaggregatorclient.mediator_objects.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.downloaders.FileDownloader;
+import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 //import org.sejda.imageio.*;

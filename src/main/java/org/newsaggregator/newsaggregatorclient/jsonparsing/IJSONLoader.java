@@ -1,4 +1,4 @@
-package org.example.newsaggregatorclient.mediator_objects;
+package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
 public interface IJSONLoader {
     /**
@@ -9,8 +9,4 @@ public interface IJSONLoader {
      * Hàm loadJSON dùng để load dữ liệu từ file JSON
      */
     public void loadJSON();
-    /**
-     * Hàm extractData dùng để trích xuất dữ liệu từ file JSON
-     */
-    public void extractData();
 }

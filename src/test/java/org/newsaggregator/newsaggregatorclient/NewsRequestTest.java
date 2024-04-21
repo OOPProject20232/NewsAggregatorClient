@@ -1,6 +1,6 @@
-package org.example.newsaggregatorclient;
+package org.newsaggregator.newsaggregatorclient;
 
-import org.example.newsaggregatorclient.downloaders.NewsRetriever;
+import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 
 public class NewsRequestTest {
     public static void main(String[] args) {

@@ -1,13 +1,7 @@
-package org.example.newsaggregatorclient.ui_component;
+package org.newsaggregator.newsaggregatorclient.ui_component;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebView;
-import org.example.newsaggregatorclient.mediator_objects.NewsItemData;
 
 public class NewsCategoryGroupTitledPane extends TitledPane {
     /**

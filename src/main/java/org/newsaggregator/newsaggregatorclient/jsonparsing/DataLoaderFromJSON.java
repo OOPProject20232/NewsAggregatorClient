@@ -1,10 +1,11 @@
-package org.example.newsaggregatorclient.mediator_objects;
+package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
 import java.io.File;
 import java.util.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
 
 public class DataLoaderFromJSON {
     /**

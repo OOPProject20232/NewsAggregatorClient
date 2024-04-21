@@ -1,4 +1,4 @@
-module org.example.newsaggregatorclient {
+module org.newsaggregator.newsaggregatorclient {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -15,6 +15,6 @@ module org.example.newsaggregatorclient {
     requires java.desktop;
     requires javafx.swing;
 
-    opens org.example.newsaggregatorclient to javafx.fxml;
-    exports org.example.newsaggregatorclient;
+    opens org.newsaggregator.newsaggregatorclient to javafx.fxml;
+    exports org.newsaggregator.newsaggregatorclient;
 }

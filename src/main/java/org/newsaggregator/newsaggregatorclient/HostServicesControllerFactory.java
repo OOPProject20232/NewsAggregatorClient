@@ -1,4 +1,4 @@
-package org.example.newsaggregatorclient;
+package org.newsaggregator.newsaggregatorclient;
 
 import javafx.util.Callback;
 
