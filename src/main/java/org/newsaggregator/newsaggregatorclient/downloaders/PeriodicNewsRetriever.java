@@ -1,4 +1,4 @@
-package org.example.newsaggregatorclient.downloaders;
+package org.newsaggregator.newsaggregatorclient.downloaders;
 
 public class PeriodicNewsRetriever extends NewsRetriever{
     /**

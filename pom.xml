@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>org.newsaggregator</groupId>
     <artifactId>NewsAggregatorClient</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>NewsAggregatorClient</name>
@@ -145,7 +145,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                org.example.newsaggregatorclient/org.example.newsaggregatorclient.NewsAggregatorClientApplication
+                                org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

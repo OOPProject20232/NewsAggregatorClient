@@ -1,26 +1,13 @@
-package org.example.newsaggregatorclient;
+package org.newsaggregator.newsaggregatorclient;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import org.example.newsaggregatorclient.mediator_objects.ConnectionChecker;
-import org.example.newsaggregatorclient.mediator_objects.DataLoaderFromJSON;
-import org.example.newsaggregatorclient.mediator_objects.NewsItemData;
-import org.example.newsaggregatorclient.ui_component.NewsCategoryGroupTitledPane;
-import org.example.newsaggregatorclient.ui_component.NewsItem;
+import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
 
-import javax.swing.*;
 import java.io.IOException;
-import java.util.List;
 
 public class NewsAggregatorClientApplication extends Application {
     private NewsAggregatorClientController controller;

@@ -1,4 +1,4 @@
-package org.example.newsaggregatorclient;
+package org.newsaggregator.newsaggregatorclient;
 
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
@@ -11,14 +11,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
-import javafx.stage.Window;
-import org.example.newsaggregatorclient.downloaders.PeriodicNewsRetriever;
-import org.example.newsaggregatorclient.mediator_objects.DataLoaderFromJSON;
-import org.example.newsaggregatorclient.mediator_objects.NewsItemData;
-import org.example.newsaggregatorclient.ui_component.NewsCategoryGroupTitledPane;
-import org.example.newsaggregatorclient.ui_component.NewsItem;
+import org.newsaggregator.newsaggregatorclient.downloaders.PeriodicNewsRetriever;
+import org.newsaggregator.newsaggregatorclient.ui_component.LoadNewsItems;
 
-import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NewsAggregatorClientController {
     /**
@@ -120,29 +117,9 @@ public class NewsAggregatorClientController {
         newsContainer.getChildren().clear();
         PeriodicNewsRetriever periodicNewsRetriever = new PeriodicNewsRetriever();
         periodicNewsRetriever.startRetrieving();
-        Thread thread = new Thread(() -> {
-            DataLoaderFromJSON dataLoader = new DataLoaderFromJSON();
-            List<NewsItemData> data = dataLoader.loadJSON();
-            NewsCategoryGroupTitledPane newsCategoryGroupTitledPane = new NewsCategoryGroupTitledPane("Latest news");
-            final int maxNewsCount = 20;
-            for (int countItem = 0; countItem < maxNewsCount; countItem++) {
-                System.out.println("Adding news item " + (countItem));
-                NewsItemData item = data.get(countItem);
-                System.out.println(item.title);
-                NewsItem newsItem = new NewsItem(item);
-                newsItem.getArticleHyperlinkObject().setOnAction(
-                        new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                hostServices.showDocument(item.url);
-                            }
-                        }
-                );
-                newsCategoryGroupTitledPane.addNewsItem(newsItem);
-            }
-            getNewsContainer().getChildren().add(newsCategoryGroupTitledPane);
-        });
-        thread.start();
+        LoadNewsItems loadNewsItems = new LoadNewsItems(30, newsContainer, hostServices);
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        executorService.execute(loadNewsItems);
     }
 
 }

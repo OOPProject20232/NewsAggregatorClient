@@ -1,6 +1,8 @@
-package org.example.newsaggregatorclient.downloaders;
+package org.newsaggregator.newsaggregatorclient.downloaders;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -51,7 +53,18 @@ public class NewsRetriever implements IServerRequest{
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
                 System.out.println("Server responded with 200 OK, downloading file");
-                Files.copy(connection.getInputStream(), cachePath);
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(cacheFile);
+                    InputStream iStream = url.openStream();
+                    byte buffer[] = new byte[1024];
+                    int length;
+                    while ((length = iStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, length);
+                    }
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
                 System.out.println("File downloaded successfully!");
             }
             else {
@@ -60,7 +73,6 @@ public class NewsRetriever implements IServerRequest{
         }
         catch (IOException e) {
             System.out.println("Error reading file attributes: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }
