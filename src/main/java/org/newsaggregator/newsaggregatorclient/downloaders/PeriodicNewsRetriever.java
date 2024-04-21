@@ -5,6 +5,7 @@ public class PeriodicNewsRetriever extends NewsRetriever{
      * Class này chứa các hàm để lấy tin tự động theo chu kỳ
      */
     private final int periodBySeconds = 3600;
+    private Thread thread;
 
     public PeriodicNewsRetriever() {
         super();
@@ -14,7 +15,7 @@ public class PeriodicNewsRetriever extends NewsRetriever{
         /**
          * Hàm này sẽ gửi request đến server sau mỗi period giây
          */
-        Thread thread = new Thread(() -> {
+        thread = new Thread(() -> {
             while (true) {
                 try {
                     sendRequest();
@@ -24,7 +25,14 @@ public class PeriodicNewsRetriever extends NewsRetriever{
                 }
             }
         });
+        thread.setDaemon(true);
         thread.start();
     }
 
+    public void stopRetrieving() {
+        /**
+         * Hàm này dùng để dừng việc gửi request định kỳ
+         */
+        thread.interrupt();
+    }
 }

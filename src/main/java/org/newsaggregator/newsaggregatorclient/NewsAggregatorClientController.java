@@ -115,11 +115,9 @@ public class NewsAggregatorClientController {
          * Dữ liệu tin tức sẽ được lấy từ database thông qua trung gian
          */
         newsContainer.getChildren().clear();
-        PeriodicNewsRetriever periodicNewsRetriever = new PeriodicNewsRetriever();
-        periodicNewsRetriever.startRetrieving();
         LoadNewsItems loadNewsItems = new LoadNewsItems(30, newsContainer, hostServices);
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        executorService.execute(loadNewsItems);
+        try (ExecutorService executorService = Executors.newFixedThreadPool(4)) {
+            executorService.execute(loadNewsItems);
+        }
     }
-
 }

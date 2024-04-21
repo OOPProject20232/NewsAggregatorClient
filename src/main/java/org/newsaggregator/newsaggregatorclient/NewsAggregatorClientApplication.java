@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
+import org.newsaggregator.newsaggregatorclient.downloaders.PeriodicNewsRetriever;
 
 import java.io.IOException;
 
@@ -18,7 +19,6 @@ public class NewsAggregatorClientApplication extends Application {
         controller = new NewsAggregatorClientController(this.getHostServices());
         fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
-//        scene.getStylesheets().add("src/main/resources/assets/css/main.css");
         ConnectionChecker connectionChecker = new ConnectionChecker();
         if (!connectionChecker.checkInternetConnection()) {
             Dialog dialog = new Dialog();
@@ -32,11 +32,12 @@ public class NewsAggregatorClientApplication extends Application {
             stage.setScene(scene);
             stage.show();
             controller.start();
+            PeriodicNewsRetriever periodicNewsRetriever = new PeriodicNewsRetriever();
+            periodicNewsRetriever.startRetrieving();
             controller.showAllNewsCategories();
         }
     }
     public static void main(String[] args) {
         launch();
     }
-
 }

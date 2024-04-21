@@ -15,7 +15,9 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 public class NewsRetriever implements IServerRequest{
-
+    /**
+     * Class này chứa các hàm để gửi request đến server
+     */
     private final String serverURLString = "https://newsaggregator-mern.onrender.com/v1/articles";
     private final String cacheFile = cacheFolder + "news.json";
     @Override
