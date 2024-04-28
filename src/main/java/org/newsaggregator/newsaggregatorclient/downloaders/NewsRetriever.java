@@ -17,17 +17,44 @@ import java.time.ZonedDateTime;
 import java.util.Scanner;
 
 public class NewsRetriever implements IServerRequest{
-    /**
-     * Class này chứa các hàm để gửi request đến server
-     */
-    private final String serverURLString = "https://newsaggregator-mern.onrender.com/v1/articles";
-    private final String cacheFile = cacheFolder + "news.json";
+    private int pageNumber;
+    private int limit;
+    private boolean forceDownload;
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
     @Override
-    public void sendRequest() throws MalformedURLException {
+    public int sendRequest(String endpoint, boolean isPaged, String cacheFilePath) throws MalformedURLException {
         try {
+            /**
+             * Class này chứa các hàm để gửi request đến server
+             */
+            String serverURLString = serverDomain + "v1/" + endpoint;
             URL url = URI.create(serverURLString).toURL();
+            if (isPaged) {
+                url = URI.create(serverURLString + "?page=%s&limit=%s".formatted(pageNumber, limit)).toURL();
+            }
+            String cacheFile = cacheFolder + cacheFilePath;
             Path cachePath = Paths.get(cacheFile);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            if (forceDownload) {
+                System.out.println("Force download enabled, deleting cache file");
+                Files.delete(cachePath);
+            }
             if (cachePath.toFile().exists() && cachePath.toFile().length() == 0) {
                 Files.delete(cachePath);
             }
@@ -42,7 +69,7 @@ public class NewsRetriever implements IServerRequest{
                     int responseCode = connection.getResponseCode();
                     if (responseCode == 304) {
                         System.out.println("Server responded with 304 Not Modified, no need to download again");
-                        return;
+                        return 304;
                     }
                 } catch (IOException e) {
                     System.out.println("Error sending request: " + e.getMessage());
@@ -79,13 +106,20 @@ public class NewsRetriever implements IServerRequest{
                     System.out.println(e.getMessage());
                 }
                 System.out.println("File downloaded successfully!");
+                return 200;
             }
             else {
                 System.out.println("Server responded with " + responseCode + " " + connection.getResponseMessage());
+                return responseCode;
             }
         }
         catch (IOException e) {
             System.out.println("Error reading file attributes: " + e.getMessage());
         }
+        return 0;
+    }
+
+    public void setForceDownload(boolean forceDownload) {
+        this.forceDownload = forceDownload;
     }
 }

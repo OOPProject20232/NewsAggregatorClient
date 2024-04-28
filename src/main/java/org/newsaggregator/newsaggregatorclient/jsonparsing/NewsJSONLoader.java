@@ -3,7 +3,7 @@ package org.newsaggregator.newsaggregatorclient.jsonparsing;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
-import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,7 +27,7 @@ public class NewsJSONLoader implements IJSONLoader {
         } catch (FileNotFoundException e) {
             NewsRetriever newsRetriever = new NewsRetriever();
             try {
-                newsRetriever.sendRequest();
+                newsRetriever.sendRequest("articles", true, "news.json");
                 scanner = new Scanner(dataFile);
             } catch (MalformedURLException | FileNotFoundException ex) {
                 throw new RuntimeException(ex);
@@ -60,6 +60,17 @@ public class NewsJSONLoader implements IJSONLoader {
         System.out.println("Getting news item data list from JSON file");
         JSONArray newsItems = jsonObject.getJSONArray("articles");
         List<NewsItemData> newsItemDataList = new ArrayList<>();
+        if (begin >= newsItems.length()) {
+            return newsItemDataList;
+        }
+        if (begin + limit > newsItems.length()) {
+            limit = newsItems.length() - begin;
+        }
+
+        System.out.println("Count: " + newsItems.length());
+        System.out.println("Begin: " + begin);
+        System.out.println("Limit: " + limit);
+
         for (int i = begin; i < limit + begin; i++) {
             JSONObject newsItemObject = (JSONObject) newsItems.get(i);
             List<Object> categoryListObj = newsItemObject.getJSONArray("categories").toList();
@@ -72,7 +83,9 @@ public class NewsJSONLoader implements IJSONLoader {
             String description = newsItemObject.getString("article_summary");
             String articleDetailedContent = newsItemObject.getString("article_detailed_content");
             String url = newsItemObject.getString("article_link");
-            String publisher = newsItemObject.getString("website_source");
+            JSONObject publisherJSONObject = newsItemObject.getJSONObject("publisher");
+            String publisher = publisherJSONObject.getString("name");
+            String publisherLogo = publisherJSONObject.getString("logo");
             String thumbnailImage;
             try {
                 thumbnailImage = newsItemObject.getString("thumbnail_image");
@@ -93,6 +106,7 @@ public class NewsJSONLoader implements IJSONLoader {
             newsItemData.publishedAt = publishedAt;
             newsItemData.content = articleSummary;
             newsItemData.publisher = publisher;
+            newsItemData.publisherLogoURL = publisherLogo;
             newsItemDataList.add(newsItemData);
         }
         return newsItemDataList;

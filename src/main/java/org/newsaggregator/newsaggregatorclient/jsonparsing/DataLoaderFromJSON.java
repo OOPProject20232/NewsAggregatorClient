@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 
 @Deprecated
 public class DataLoaderFromJSON {

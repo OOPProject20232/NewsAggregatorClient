@@ -2,7 +2,7 @@ package org.newsaggregator.newsaggregatorclient.ui_component.dialogs;
 
 import javafx.scene.control.Dialog;
 
-public class LoadingDialog extends Dialog<Void>{
+public class LoadingDialog extends GenericDialog{
     /**
      * Dialog hiển thị thông báo "Đang tải dữ liệu"
      * Được gọi khi ứng dụng đang tải dữ liệu từ server

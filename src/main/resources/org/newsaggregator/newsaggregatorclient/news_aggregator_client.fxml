@@ -33,29 +33,29 @@
               <tabs>
                 <Tab closable="false" styleClass="generic-container" text="News">
                      <content>
-                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="generic-container">
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="generic-container">
                            <children>
-                              <SplitPane fx:id="newsSplitPane" dividerPositions="0.5" prefHeight="549.0" prefWidth="790.0" styleClass="generic-container" HBox.hgrow="ALWAYS">
+                              <Button fx:id="reloadNews" alignment="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Reload">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@assets/images/refresh.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="OPEN_HAND" />
+                                 </cursor>
+                              </Button>
+                              <SplitPane fx:id="newsSplitPane" dividerPositions="0.5" prefHeight="549.0" prefWidth="790.0" styleClass="generic-container" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                                 <items>
                                     <ScrollPane cache="true" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" prefHeight="541.0" prefWidth="702.0" style="-fx-background-radius: 20px;" styleClass="generic-transparent-container" vbarPolicy="ALWAYS">
                                        <content>
                                           <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" style="-fx-background-radius: 20px 0;" styleClass="generic-transparent-container">
                                              <children>
-                                                <Button fx:id="reloadNews" alignment="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Reload">
-                                                   <graphic>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@assets/images/refresh.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </graphic>
-                                                   <font>
-                                                      <Font size="18.0" />
-                                                   </font>
-                                                   <cursor>
-                                                      <Cursor fx:constant="OPEN_HAND" />
-                                                   </cursor>
-                                                </Button>
                                                 <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" styleClass="page-title" text="CryptoAggregator" textAlignment="CENTER" wrapText="true">
                                                    <font>
                                                       <Font size="31.0" />
@@ -124,7 +124,7 @@
                                 </items>
                               </SplitPane>
                            </children>
-                        </HBox>
+                        </VBox>
                      </content>
                 </Tab>
                   <Tab closable="false" text="Search">

@@ -1,8 +1,8 @@
-package org.newsaggregator.newsaggregatorclient.pojos;
+package org.newsaggregator.newsaggregatorclient.datamodel;
 
 import java.util.List;
 
-public class NewsItemData{
+public class NewsItemData extends GenericData{
     /**
      * Dữ liệu chứa tin tức tổng quát của một bài báo cần hiển thị
      * Bao gồm tên bài, hình ảnh thumbnail, tác giả, ngày đăng, mô tả, nội dung, link đến bài viết...
@@ -19,6 +19,7 @@ public class NewsItemData{
     public String publishedAt;
     public String content;
     public String publisher;
+    public String publisherLogoURL;
 
     public NewsItemData() {
 

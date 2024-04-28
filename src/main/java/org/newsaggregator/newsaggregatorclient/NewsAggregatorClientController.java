@@ -13,10 +13,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
-import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
-import org.newsaggregator.newsaggregatorclient.ui_component.ArticleItemsLoader;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.ui_component.uiloader.ArticleItemsLoader;
 import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 public class NewsAggregatorClientController {
@@ -50,6 +51,9 @@ public class NewsAggregatorClientController {
     private Button reloadNews;
 
     private HostServices hostServices;
+
+    private int currentPage = 1;
+    private int limit = 50;
 
     public NewsAggregatorClientController(HostServices hostServices) {
         this.hostServices = hostServices;
@@ -125,32 +129,44 @@ public class NewsAggregatorClientController {
          */
         newsContainer.getChildren().clear();
         NewsJSONLoader dataLoader = new NewsJSONLoader();
-        dataLoader.loadJSON();
+//        dataLoader.loadJSON();
+        Thread jsonThread = new Thread(() -> {
+            try {
+                dataLoader.loadJSON();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        jsonThread.start();
         String newsString = dataLoader.getJSONString();
         if (newsString == null) {
             NewsRetriever newsRetriever = new NewsRetriever();
             try {
-                newsRetriever.sendRequest();
+                newsRetriever.sendRequest("articles", true, "news.json");
                 dataLoader.loadJSON();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
             dataLoader.loadJSON();
         }
-        int maxItemInARow = 2;
-        List<NewsItemData> data = getNewsItemData(dataLoader, 700, 0);
+        List<NewsItemData> data = getNewsItemData(dataLoader, 100, 0);
 
-        // This segment is for performance testing only, not for actual use
-        // for (int i = 0; i < 6; i++) {
-        //      NewsCategoryGroupTitledPane latestNews = new NewsCategoryGroupTitledPane("Latest news");
-//            ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(10,i * 10, newsContainer, hostServices, latestNews);
-//            latestNews = articleItemsLoader.articleItemsLoader(data);
-//            newsContainer.add(latestNews, i % maxItemInARow, i / maxItemInARow);
-//        }
         NewsCategoryGroupTitledPane latestNews = new NewsCategoryGroupTitledPane("Latest news");
-        ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(100,0, newsContainer, hostServices, latestNews);
-        latestNews = articleItemsLoader.loadArticleItems(data);
+        ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(20,0, newsContainer, hostServices, latestNews);
+        articleItemsLoader.loadItems(data);
         newsContainer.add(latestNews, 0, 0, 2, 1);
+        NewsCategoryGroupTitledPane bitcoinNews = new NewsCategoryGroupTitledPane("Bitcoin news");
+        NewsCategoryGroupTitledPane ethereumNews = new NewsCategoryGroupTitledPane("Ethereum news");
+        NewsCategoryGroupTitledPane redditNews = new NewsCategoryGroupTitledPane("Post from Reddit");
+        newsContainer.add(bitcoinNews, 0, 1, 1, 1);
+        newsContainer.add(ethereumNews, 1, 1, 1, 1);
+        newsContainer.add(redditNews, 2, 1, 1, 3);
+        NewsCategoryGroupTitledPane allNews = new NewsCategoryGroupTitledPane("All news");
+        newsContainer.add(allNews, 0, 2, 2, 1);
+        new Thread(() -> {
+            ArticleItemsLoader articleItemsLoader1 = new ArticleItemsLoader(50, 0, newsContainer, hostServices, allNews);
+            articleItemsLoader1.loadItems(data);
+        }).start();
     }
 
     private static List<NewsItemData> getNewsItemData(NewsJSONLoader loader, int limit, int begin) {
@@ -164,8 +180,27 @@ public class NewsAggregatorClientController {
          * @param event: Sự kiện click chuột vào nút "tải lại"
          */
         newsContainer.getChildren().clear();
+        NewsRetriever newsRetriever = new NewsRetriever();
+        newsRetriever.setForceDownload(true);
+        newsRetriever.setLimit(limit);
+        currentPage = 1;
+        newsRetriever.setPageNumber(currentPage);
+        try {
+            newsRetriever.sendRequest("articles", true, "news.json");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
         showAllNewsCategories();
     }
+
+    public void resetPage() {
+        currentPage = 1;
+    }
+
+    public void nextPage() {
+        currentPage++;
+    }
+
 
 //    public GridPane getNewsContainer() {
 //        return newsContainer;

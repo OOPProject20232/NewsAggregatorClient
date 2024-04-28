@@ -9,25 +9,24 @@ import javafx.scene.shape.Rectangle;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.newsaggregator.newsaggregatorclient.downloaders.FileDownloader;
-import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 
 import javax.imageio.ImageIO;
-//import javax.imageio.spi.
+//import com.twelvemonkeys.imageio.plugins.webp.*;
 
 
-public class NewsItem extends NewsItemFrame {
+public class NewsItem extends NewsItemFrame{
     /**
      * Nạp dữ liệu tin tức vào khung tin tức
      * thông qua việc truyền một cấu trúc dữ liệu tin tức NewsItemData vào khung tin tức
      * Phần text sẽ được tải trước lên UI, sau đó các hình ảnh thumbnail sẽ được tải lên
      * trên luồng riêng
      */
-    private NewsItemData newsItemData;;
+    private final NewsItemData newsItemData;
 
     public NewsItem(NewsItemData newsItemData) {
         this.newsItemData = newsItemData;
@@ -35,9 +34,7 @@ public class NewsItem extends NewsItemFrame {
     }
 
     public void loadText(){
-        imageView.setFitHeight(90);
-        imageView.setFitWidth(160);
-        hyperlinkTitleObject.setText(newsItemData.title);
+        articleHyperlinkTitleObject.setText(newsItemData.title);
         description.setText(newsItemData.description);
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -89,16 +86,24 @@ public class NewsItem extends NewsItemFrame {
             Rectangle clip = new Rectangle(thumbnailWidth, thumbnailHeight);
             clip.setArcHeight(10);
             clip.setArcWidth(10);
-            imageView.setImage(thumbnail);
-            imageView.setClip(clip);
+            thumbnailImageView.setImage(thumbnail);
+            thumbnailImageView.setClip(clip);
+        }
+
+        // Load publisher logo
+        try{
+            Image publisherImage = new Image(newsItemData.publisherLogoURL, true);
+            ImageView publisherLogo = new ImageView(publisherImage);
+            publisherLogo.setFitHeight(16);
+            publisherLogo.setFitWidth(16);
+            publisher.setGraphic(publisherLogo);
+        }
+        catch (Exception e) {
+            System.out.println("Error loading publisher logo: " + e.getMessage());
         }
     }
 
     public Hyperlink getArticleHyperlinkObject(){
-        return this.hyperlinkTitleObject;
-    }
-
-    public ImageView getImageView(){
-        return this.imageView;
+        return this.articleHyperlinkTitleObject;
     }
 }

@@ -7,7 +7,7 @@ import javafx.scene.control.Dialog;
 
 import java.nio.file.Paths;
 
-public class NoInternetDialog extends Dialog<Void> {
+public class NoInternetDialog extends GenericDialog{
     public NoInternetDialog(){
         getDialogPane().getStyleClass().addAll("dialog", "generic-container");
         System.out.println(Paths.get("").toAbsolutePath());

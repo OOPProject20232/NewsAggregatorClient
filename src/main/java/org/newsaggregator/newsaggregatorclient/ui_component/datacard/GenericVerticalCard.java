@@ -10,4 +10,12 @@ public class GenericVerticalCard extends HBox implements IGenericDataCard{
         this.getStyleClass().add("datacard");
         this.getStyleClass().add("vertical");
     }
+
+    @Override
+    public void setText() {
+    }
+
+    @Override
+    public void setImage() {
+    }
 }
