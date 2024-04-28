@@ -15,7 +15,7 @@
             <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
                <graphic>
                   <ImageView fitHeight="16" preserveRatio="true">
-                     <Image url="@../../../assets/images/icons8-reload-30.png" />
+                     <Image url="@assets/images/icons8-reload-30.png" />
                   </ImageView>
                </graphic>
             </Button>
@@ -23,6 +23,6 @@
             <Button mnemonicParsing="false" text="Button" />
          </children>
       </HBox>
-      <WebView fx:id="articleWebView" prefHeight="200.0" prefWidth="200.0" stylesheets="@../../../assets/css/main.css" VBox.vgrow="ALWAYS" />
+      <WebView fx:id="articleWebView" prefHeight="200.0" prefWidth="200.0" stylesheets="@assets/css/main.css" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>

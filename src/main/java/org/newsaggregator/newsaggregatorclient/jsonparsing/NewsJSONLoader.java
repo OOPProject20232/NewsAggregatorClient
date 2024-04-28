@@ -2,16 +2,19 @@ package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class NewsJSONLoader implements IJSONLoader {
     private JSONObject jsonObject;
+    private String jsonString;
 
     @Override
     public void loadJSON() {
@@ -22,15 +25,26 @@ public class NewsJSONLoader implements IJSONLoader {
         try {
             scanner = new Scanner(dataFile);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            NewsRetriever newsRetriever = new NewsRetriever();
+            try {
+                newsRetriever.sendRequest();
+                scanner = new Scanner(dataFile);
+            } catch (MalformedURLException | FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         StringBuilder rawData = new StringBuilder();
         while (scanner.hasNextLine()) {
             rawData.append(scanner.nextLine());
         }
-        String jsonString = rawData.toString();
+        jsonString = rawData.toString();
         System.out.println("JSON file loaded successfully!");
-        jsonObject = new JSONObject(jsonString);
+        try {
+            jsonObject = new JSONObject(jsonString);
+        }
+        catch (Exception e) {
+            return;
+        }
     }
 
     public int getCount() {
@@ -38,13 +52,17 @@ public class NewsJSONLoader implements IJSONLoader {
         return jsonObject.getInt("count");
     }
 
-    public List<NewsItemData> getNewsItemDataList(int limit) {
+    public String getJSONString() {
+        return jsonString;
+    }
+
+    public List<NewsItemData> getNewsItemDataList(int limit, int begin) {
         System.out.println("Getting news item data list from JSON file");
         JSONArray newsItems = jsonObject.getJSONArray("articles");
         List<NewsItemData> newsItemDataList = new ArrayList<>();
-        for (int i = 0; i < limit; i++) {
+        for (int i = begin; i < limit + begin; i++) {
             JSONObject newsItemObject = (JSONObject) newsItems.get(i);
-            List<Object> categoryListObj = newsItemObject.getJSONArray("category").toList();
+            List<Object> categoryListObj = newsItemObject.getJSONArray("categories").toList();
             List<String> categoryList = new ArrayList<>();
             for (Object category : categoryListObj) {
                 categoryList.add(category.toString());

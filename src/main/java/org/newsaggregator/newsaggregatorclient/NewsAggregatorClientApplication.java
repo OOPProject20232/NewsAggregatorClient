@@ -6,9 +6,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
+import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 import org.newsaggregator.newsaggregatorclient.downloaders.PeriodicNewsRetriever;
+import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.NoInternetDialog;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class NewsAggregatorClientApplication extends Application {
     private NewsAggregatorClientController controller;
@@ -21,13 +24,20 @@ public class NewsAggregatorClientApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
         ConnectionChecker connectionChecker = new ConnectionChecker();
         if (!connectionChecker.checkInternetConnection()) {
-            Dialog dialog = new Dialog();
-            ButtonType close = new ButtonType("Close (and check your Internet connection)", ButtonBar.ButtonData.CANCEL_CLOSE);
-            dialog.setHeaderText("No Internet connection");
-            dialog.setContentText("This app cannot work without Internet. Please check your Internet connection, then re-open the app");
-            dialog.getDialogPane().getButtonTypes().add(close);
+            NoInternetDialog dialog = new NoInternetDialog();
             dialog.showAndWait();
         } else {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    NewsRetriever newsRetriever = new NewsRetriever();
+                    try {
+                        newsRetriever.sendRequest();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
             stage.setTitle("Crypto News Aggregator Client");
             stage.setScene(scene);
             stage.show();

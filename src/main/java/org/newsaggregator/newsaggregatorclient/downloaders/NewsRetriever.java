@@ -1,5 +1,6 @@
 package org.newsaggregator.newsaggregatorclient.downloaders;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Scanner;
 
 public class NewsRetriever implements IServerRequest{
     /**
@@ -26,7 +28,10 @@ public class NewsRetriever implements IServerRequest{
             URL url = URI.create(serverURLString).toURL();
             Path cachePath = Paths.get(cacheFile);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            if (cachePath.toFile().exists()) {
+            if (cachePath.toFile().exists() && cachePath.toFile().length() == 0) {
+                Files.delete(cachePath);
+            }
+            if (cachePath.toFile().exists() && cachePath.toFile().length() > 0) {
                 System.out.println("Cache file exists, sending request with If-Modified-Since header");
                 BasicFileAttributes attr = Files.readAttributes(cachePath, BasicFileAttributes.class);
                 ZonedDateTime lastModified = attr.lastModifiedTime().toInstant().atZone(ZoneOffset.UTC);
@@ -55,8 +60,14 @@ public class NewsRetriever implements IServerRequest{
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
                 System.out.println("Server responded with 200 OK, downloading file");
+                FileOutputStream fileOutputStream;
                 try {
-                    FileOutputStream fileOutputStream = new FileOutputStream(cacheFile);
+                    if (cachePath.toFile().length() == 0) {
+                        fileOutputStream = new FileOutputStream(cacheFile, true);
+                    }
+                    else {
+                        fileOutputStream = new FileOutputStream(cacheFile, false);
+                    }
                     InputStream iStream = url.openStream();
                     byte buffer[] = new byte[1024];
                     int length;

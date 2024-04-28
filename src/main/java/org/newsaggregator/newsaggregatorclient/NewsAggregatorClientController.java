@@ -8,14 +8,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
-import org.newsaggregator.newsaggregatorclient.downloaders.PeriodicNewsRetriever;
-import org.newsaggregator.newsaggregatorclient.ui_component.LoadNewsItems;
+import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
+import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
+import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.ui_component.ArticleItemsLoader;
+import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.List;
 
 public class NewsAggregatorClientController {
     /**
@@ -26,7 +28,7 @@ public class NewsAggregatorClientController {
     @FXML
     private WebView articleWebView;
     @FXML
-    private FlowPane newsContainer;
+    private GridPane newsContainer;
     @FXML
     protected SplitPane newsSplitPane;
     @FXML
@@ -43,6 +45,9 @@ public class NewsAggregatorClientController {
 
     @FXML
     private AnchorPane mainAnchorPane;
+
+    @FXML
+    private Button reloadNews;
 
     private HostServices hostServices;
 
@@ -66,6 +71,14 @@ public class NewsAggregatorClientController {
                 public void handle(ActionEvent event) {
                     closeWebsite();
                 }
+            }
+        );
+        newsContainer.getChildren().clear();
+        reloadNews.setOnAction(new EventHandler<ActionEvent>() {
+               @Override
+               public void handle(ActionEvent event) {
+                   reloadNews();
+               }
             }
         );
     }
@@ -104,10 +117,6 @@ public class NewsAggregatorClientController {
         articleViewer.setVisible(false);
     }
 
-    public FlowPane getNewsContainer() {
-        return newsContainer;
-    }
-
     protected void showAllNewsCategories() {
         /**
          * Hàm này sẽ hiển thị tất cả các tin tức theo từng danh mục,
@@ -115,9 +124,51 @@ public class NewsAggregatorClientController {
          * Dữ liệu tin tức sẽ được lấy từ database thông qua trung gian
          */
         newsContainer.getChildren().clear();
-        LoadNewsItems loadNewsItems = new LoadNewsItems(30, newsContainer, hostServices);
-        try (ExecutorService executorService = Executors.newFixedThreadPool(4)) {
-            executorService.execute(loadNewsItems);
+        NewsJSONLoader dataLoader = new NewsJSONLoader();
+        dataLoader.loadJSON();
+        String newsString = dataLoader.getJSONString();
+        if (newsString == null) {
+            NewsRetriever newsRetriever = new NewsRetriever();
+            try {
+                newsRetriever.sendRequest();
+                dataLoader.loadJSON();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            dataLoader.loadJSON();
         }
+        int maxItemInARow = 2;
+        List<NewsItemData> data = getNewsItemData(dataLoader, 700, 0);
+
+        // This segment is for performance testing only, not for actual use
+        // for (int i = 0; i < 6; i++) {
+        //      NewsCategoryGroupTitledPane latestNews = new NewsCategoryGroupTitledPane("Latest news");
+//            ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(10,i * 10, newsContainer, hostServices, latestNews);
+//            latestNews = articleItemsLoader.articleItemsLoader(data);
+//            newsContainer.add(latestNews, i % maxItemInARow, i / maxItemInARow);
+//        }
+        NewsCategoryGroupTitledPane latestNews = new NewsCategoryGroupTitledPane("Latest news");
+        ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(100,0, newsContainer, hostServices, latestNews);
+        latestNews = articleItemsLoader.loadArticleItems(data);
+        newsContainer.add(latestNews, 0, 0, 2, 1);
     }
+
+    private static List<NewsItemData> getNewsItemData(NewsJSONLoader loader, int limit, int begin) {
+        return loader.getNewsItemDataList(limit, begin);
+    }
+
+    private void reloadNews() {
+        /**
+         * Hàm này sẽ load lại tất cả các tin tức hiển thị trên màn hình chính
+         * Được gọi khi người dùng click vào nút "tải lại" trên màn hình chính
+         * @param event: Sự kiện click chuột vào nút "tải lại"
+         */
+        newsContainer.getChildren().clear();
+        showAllNewsCategories();
+    }
+
+//    public GridPane getNewsContainer() {
+//        return newsContainer;
+//    }
+
 }

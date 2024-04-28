@@ -1,5 +1,9 @@
 package org.newsaggregator.newsaggregatorclient.downloaders;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class PeriodicNewsRetriever extends NewsRetriever{
     /**
      * Class này chứa các hàm để lấy tin tự động theo chu kỳ
@@ -15,18 +19,33 @@ public class PeriodicNewsRetriever extends NewsRetriever{
         /**
          * Hàm này sẽ gửi request đến server sau mỗi period giây
          */
-        thread = new Thread(() -> {
-            while (true) {
-                try {
-                    sendRequest();
-                    Thread.sleep(periodBySeconds * 1000);
-                } catch (Exception e) {
-                    System.out.println("Error sending request: " + e.getMessage());
+//        thread = new Thread(() -> {
+//            while (true) {
+//                try {
+//                    sendRequest();
+//                    Thread.sleep(periodBySeconds * 1000);
+//                } catch (Exception e) {
+//                    System.out.println("Error sending request: " + e.getMessage());
+//                }
+//            }
+//        });
+//        thread.setDaemon(true);
+//        thread.start();
+        try (ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor()) {
+            exec.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        sendRequest();
+                    } catch (Exception e) {
+                        System.out.println("Error sending request: " + e.getMessage());
+                    }
                 }
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
+            }, 0, 1, TimeUnit.SECONDS);
+        }
+        catch (Exception e) {
+            System.out.println("Error sending request: " + e.getMessage());
+        }
     }
 
     public void stopRetrieving() {

@@ -1,189 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="933.0" stylesheets="@../../../assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="933.0" stylesheets="@assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutX="134.0" layoutY="127.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="933.0" />
             <TabPane accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
-                <Tab closable="false" text="News">
+                <Tab closable="false" styleClass="generic-container" text="News">
                      <content>
-                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: transparent;">
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="generic-container">
                            <children>
-                              <SplitPane fx:id="newsSplitPane" dividerPositions="0.5735767991407089" prefHeight="549.0" prefWidth="790.0" styleClass="generic-container" HBox.hgrow="ALWAYS">
+                              <SplitPane fx:id="newsSplitPane" dividerPositions="0.5" prefHeight="549.0" prefWidth="790.0" styleClass="generic-container" HBox.hgrow="ALWAYS">
                                 <items>
-                                    <ScrollPane cache="true" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" prefHeight="588.0" prefWidth="586.0" styleClass="generic-container" vbarPolicy="ALWAYS">
+                                    <ScrollPane cache="true" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" prefHeight="541.0" prefWidth="702.0" style="-fx-background-radius: 20px;" styleClass="generic-transparent-container" vbarPolicy="ALWAYS">
                                        <content>
-                                          <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" styleClass="generic-container">
+                                          <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" style="-fx-background-radius: 20px 0;" styleClass="generic-transparent-container">
                                              <children>
-                                                <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="page-title" text="CryptoAggregator" textAlignment="CENTER" wrapText="true">
+                                                <Button fx:id="reloadNews" alignment="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Reload">
+                                                   <graphic>
+                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@assets/images/refresh.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                   <cursor>
+                                                      <Cursor fx:constant="OPEN_HAND" />
+                                                   </cursor>
+                                                </Button>
+                                                <Label alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" styleClass="page-title" text="CryptoAggregator" textAlignment="CENTER" wrapText="true">
                                                    <font>
                                                       <Font size="31.0" />
                                                    </font>
                                                 </Label>
-                                                <FlowPane fx:id="newsContainer" hgap="30.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="320.0" prefWidth="577.0" vgap="30.0" VBox.vgrow="ALWAYS">
-                                                   <children>
-                                                      <TitledPane animated="false" minWidth="95.0" prefHeight="206.0" prefWidth="237.0" styleClass="category" text="untitled">
-                                                        <content>
-                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="179.0">
-                                                               <children>
-                                                                  <VBox layoutX="20.0" layoutY="30.0" prefHeight="69.0" prefWidth="215.0" AnchorPane.bottomAnchor="91.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
-                                                                     <children>
-                                                                        <HBox prefHeight="110.0" prefWidth="195.0">
-                                                                           <children>
-                                                                              <ImageView fitHeight="68.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                                                                                 <viewport>
-                                                                                    <Rectangle2D height="200.0" width="200.0" />
-                                                                                 </viewport>
-                                                                                 <image>
-                                                                                    <Image url="@../../../../../../../../OneDrive%20-%20Hanoi%20University%20of%20Science%20and%20Technology/Pictures/Screenshots/Screenshot%202024-03-16%20164217.png" />
-                                                                                 </image>
-                                                                              </ImageView>
-                                                                              <Hyperlink prefHeight="27.0" prefWidth="408.0" text="Hyperlink" />
-                                                                              <VBox prefHeight="200.0" prefWidth="100.0" />
-                                                                           </children>
-                                                                        </HBox>
-                                                                     </children>
-                                                                  </VBox>
-                                                               </children>
-                                                            </AnchorPane>
-                                                        </content>
-                                                         <effect>
-                                                            <DropShadow offsetY="4.0">
-                                                               <color>
-                                                                  <Color red="0.4736842215061188" green="0.4736842215061188" blue="0.4736842215061188" opacity="0.15000000596046448" />
-                                                               </color>
-                                                            </DropShadow>
-                                                         </effect>
-                                                      </TitledPane>
-                                                      <TitledPane animated="false" minWidth="178.0" prefHeight="206.0" prefWidth="268.0" styleClass="category" text="untitled">
-                                                         <content>
-                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="254.0">
-                                                               <children>
-                                                                  <VBox layoutX="20.0" layoutY="20.0" prefHeight="160.0" prefWidth="439.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="10.0">
-                                                                     <children>
-                                                                        <HBox prefHeight="43.0" prefWidth="478.0">
-                                                                           <children>
-                                                                              <ImageView fitHeight="68.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                                                                                 <viewport>
-                                                                                    <Rectangle2D height="200.0" width="200.0" />
-                                                                                 </viewport>
-                                                                                 <image>
-                                                                                    <Image url="@../../../../../../../../OneDrive%20-%20Hanoi%20University%20of%20Science%20and%20Technology/Pictures/Screenshots/Screenshot%202024-03-16%20164217.png" />
-                                                                                 </image>
-                                                                              </ImageView>
-                                                                              <Hyperlink prefHeight="27.0" prefWidth="408.0" text="Hyperlink" />
-                                                                           </children>
-                                                                        </HBox>
-                                                                     </children>
-                                                                  </VBox>
-                                                               </children>
-                                                            </AnchorPane>
-                                                         </content>
-                                                         <effect>
-                                                            <DropShadow offsetY="4.0">
-                                                               <color>
-                                                                  <Color red="0.4736842215061188" green="0.4736842215061188" blue="0.4736842215061188" opacity="0.15000000596046448" />
-                                                               </color>
-                                                            </DropShadow>
-                                                         </effect>
-                                                      </TitledPane>
-                                                      <TitledPane animated="false" minWidth="178.0" prefHeight="206.0" prefWidth="292.0" styleClass="category" text="untitled">
-                                                         <content>
-                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="254.0">
-                                                               <children>
-                                                                  <VBox layoutX="20.0" layoutY="20.0" prefHeight="160.0" prefWidth="439.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="10.0">
-                                                                     <children>
-                                                                        <HBox prefHeight="43.0" prefWidth="478.0">
-                                                                           <children>
-                                                                              <ImageView fitHeight="68.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                                                                                 <viewport>
-                                                                                    <Rectangle2D height="200.0" width="200.0" />
-                                                                                 </viewport>
-                                                                                 <image>
-                                                                                    <Image url="@../../../../../../../../OneDrive%20-%20Hanoi%20University%20of%20Science%20and%20Technology/Pictures/Screenshots/Screenshot%202024-03-16%20164217.png" />
-                                                                                 </image>
-                                                                              </ImageView>
-                                                                              <Hyperlink prefHeight="27.0" prefWidth="408.0" text="Hyperlink" />
-                                                                           </children>
-                                                                        </HBox>
-                                                                     </children>
-                                                                  </VBox>
-                                                               </children>
-                                                            </AnchorPane>
-                                                         </content>
-                                                         <effect>
-                                                            <DropShadow offsetY="4.0">
-                                                               <color>
-                                                                  <Color red="0.4736842215061188" green="0.4736842215061188" blue="0.4736842215061188" opacity="0.15000000596046448" />
-                                                               </color>
-                                                            </DropShadow>
-                                                         </effect>
-                                                      </TitledPane>
-                                                      <TitledPane animated="false" minWidth="95.0" prefHeight="206.0" prefWidth="203.0" styleClass="category" text="untitled">
-                                                         <content>
-                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="179.0">
-                                                               <children>
-                                                                  <VBox layoutX="168.0" layoutY="-10.0" prefHeight="200.0" prefWidth="259.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
-                                                                     <children>
-                                                                        <HBox prefHeight="68.0" prefWidth="98.0">
-                                                                           <children>
-                                                                              <ImageView fitHeight="68.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                                                                                 <viewport>
-                                                                                    <Rectangle2D height="200.0" width="200.0" />
-                                                                                 </viewport>
-                                                                                 <image>
-                                                                                    <Image url="@../../../../../../../../OneDrive%20-%20Hanoi%20University%20of%20Science%20and%20Technology/Pictures/Screenshots/Screenshot%202024-03-16%20164217.png" />
-                                                                                 </image>
-                                                                              </ImageView>
-                                                                              <Hyperlink prefHeight="27.0" prefWidth="408.0" text="Hyperlink" />
-                                                                           </children>
-                                                                        </HBox>
-                                                                     </children>
-                                                                  </VBox>
-                                                               </children>
-                                                            </AnchorPane>
-                                                         </content>
-                                                         <effect>
-                                                            <DropShadow offsetY="4.0">
-                                                               <color>
-                                                                  <Color red="0.4736842215061188" green="0.4736842215061188" blue="0.4736842215061188" opacity="0.15000000596046448" />
-                                                               </color>
-                                                            </DropShadow>
-                                                         </effect>
-                                                      </TitledPane>
-                                                   </children>
+                                                <GridPane fx:id="newsContainer" alignment="CENTER" hgap="30.0" maxHeight="1.7976931348623157E308" prefHeight="320.0" prefWidth="577.0" styleClass="generic-transparent-container" vgap="30.0" VBox.vgrow="ALWAYS">
                                                    <padding>
                                                       <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
                                                    </padding>
-                                                </FlowPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints />
+                                                      <RowConstraints />
+                                                      <RowConstraints />
+                                                      <RowConstraints />
+                                                      <RowConstraints />
+                                                   </rowConstraints>
+                                                </GridPane>
                                              </children>
                                           </VBox>
                                        </content>
@@ -196,30 +90,33 @@
                                                    <graphic>
                                                       <ImageView accessibleText="Reload" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../../../assets/images/refresh.png" />
+                                                            <Image url="@assets/images/refresh.png" />
                                                          </image>
                                                          <cursor>
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                       </ImageView>
-                                                   </graphic></Button>
+                                                   </graphic>
+                                                </Button>
                                                 <Label fx:id="addressBar" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="41.0" prefWidth="299.0" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
                                                 <Button fx:id="closeButton" cancelButton="true" minWidth="0.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="50.0" style="-fx-background-color: none;" styleClass="web-view-button">
                                                    <graphic>
                                                       <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@../../../assets/images/close.png" />
+                                                            <Image url="@assets/images/close.png" />
                                                          </image>
                                                       </ImageView>
-                                                   </graphic></Button>
+                                                   </graphic>
+                                                </Button>
                                              </children>
                                           </HBox>
-                                          <StackPane prefHeight="541.0" prefWidth="398.0" style="-fx-background-radius: 50px;" VBox.vgrow="ALWAYS">
+                                          <StackPane prefHeight="541.0" prefWidth="398.0" style="-fx-background-radius: 20px;" VBox.vgrow="ALWAYS">
                                              <children>
-                                                <WebView fx:id="articleWebView" blendMode="DARKEN" prefHeight="713.0" prefWidth="398.0" styleClass="generic-container">
+                                                <WebView fx:id="articleWebView" blendMode="DARKEN" prefHeight="713.0" prefWidth="398.0" style="-fx-background-radius: 0;" styleClass="generic-container">
                                                    <StackPane.margin>
                                                       <Insets />
-                                                   </StackPane.margin></WebView>
+                                                   </StackPane.margin>
+                                                </WebView>
                                              </children>
                                           </StackPane>
                                        </children>
@@ -253,7 +150,7 @@
                                              <graphic>
                                                 <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../../../assets/images/search-primary-color.png" />
+                                                      <Image url="@assets/images/search-primary-color.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
@@ -274,7 +171,7 @@
                   </Tab>
                 <Tab closable="false" text="Market data">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="chart-container" stylesheets="@../../../assets/css/chart.css">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="chart-container" stylesheets="@assets/css/chart.css">
                            <children>
                               <LineChart prefHeight="400.0" prefWidth="827.0">
                                 <xAxis>
