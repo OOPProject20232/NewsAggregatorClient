@@ -3,11 +3,15 @@ package org.newsaggregator.newsaggregatorclient;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
+import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
+import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetrieverByCategory;
+import org.newsaggregator.newsaggregatorclient.downloaders.PeriodicNewsRetriever;
+import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.NoInternetDialog;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class NewsAggregatorClientApplication extends Application {
     private NewsAggregatorClientController controller;
@@ -18,25 +22,60 @@ public class NewsAggregatorClientApplication extends Application {
         controller = new NewsAggregatorClientController(this.getHostServices());
         fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
-//        scene.getStylesheets().add("src/main/resources/assets/css/main.css");
         ConnectionChecker connectionChecker = new ConnectionChecker();
         if (!connectionChecker.checkInternetConnection()) {
-            Dialog dialog = new Dialog();
-            ButtonType close = new ButtonType("Close (and check your Internet connection)", ButtonBar.ButtonData.CANCEL_CLOSE);
-            dialog.setHeaderText("No Internet connection");
-            dialog.setContentText("This app cannot work without Internet. Please check your Internet connection, then re-open the app");
-            dialog.getDialogPane().getButtonTypes().add(close);
+            NoInternetDialog dialog = new NoInternetDialog();
             dialog.showAndWait();
         } else {
             stage.setTitle("Crypto News Aggregator Client");
+            stage.getIcons().add(new javafx.scene.image.Image(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/icon.png")));
             stage.setScene(scene);
             stage.show();
             controller.start();
+            PeriodicNewsRetriever periodicNewsRetriever = new PeriodicNewsRetriever();
+            periodicNewsRetriever.startRetrieving();
             controller.showAllNewsCategories();
         }
     }
     public static void main(String[] args) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NewsRetriever newsRetriever = new NewsRetriever();
+                newsRetriever.setLimit(50);
+                newsRetriever.setPageNumber(1);
+                try {
+                    newsRetriever.sendRequest("articles", true, "news.json");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NewsRetriever newsRetriever = new NewsRetriever();
+                newsRetriever.setForceDownload(true);
+                try {
+                    newsRetriever.sendRequest("v1/categories/articles?search=bitcoin", false, "bitcoin.json");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NewsRetriever newsRetriever = new NewsRetriever();
+                newsRetriever.setForceDownload(true);
+                try {
+                    newsRetriever.sendRequest("v1/categories/articles?search=ethereum",false, "ethereum.json");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
         launch();
     }
-
 }

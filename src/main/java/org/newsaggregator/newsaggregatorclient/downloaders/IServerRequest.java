@@ -6,6 +6,7 @@ public interface IServerRequest {
     /**
      * Interface này chứa các hàm để gửi request đến server
      */
-    public final String cacheFolder = "src/main/resources/json/";
-    void sendRequest() throws MalformedURLException;
+    String serverDomain = "https://newsaggregator-mern.onrender.com/";
+    String cacheFolder = "src/main/resources/json/";
+    int sendRequest(String endpoint, boolean isPaged, String cacheFilePath) throws MalformedURLException;
 }

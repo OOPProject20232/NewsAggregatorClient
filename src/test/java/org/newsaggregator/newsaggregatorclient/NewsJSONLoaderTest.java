@@ -1,6 +1,6 @@
 package org.newsaggregator.newsaggregatorclient;
 
-import org.newsaggregator.newsaggregatorclient.pojos.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public class NewsJSONLoaderTest {
         NewsJSONLoader newsJSONLoader = new NewsJSONLoader();
         newsJSONLoader.loadJSON();
         System.out.println(newsJSONLoader.getCount());
-        List<NewsItemData> newsItemDataList = newsJSONLoader.getNewsItemDataList(30);
+        List<NewsItemData> newsItemDataList = newsJSONLoader.getNewsItemDataList(30, 0);
         for (NewsItemData newsItemData : newsItemDataList) {
             System.out.println(newsItemData);
         }

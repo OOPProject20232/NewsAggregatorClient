@@ -9,4 +9,6 @@ public interface IJSONLoader {
      * Hàm loadJSON dùng để load dữ liệu từ file JSON
      */
     public void loadJSON();
+
+    public void setCacheFileName(String cacheFileName);
 }

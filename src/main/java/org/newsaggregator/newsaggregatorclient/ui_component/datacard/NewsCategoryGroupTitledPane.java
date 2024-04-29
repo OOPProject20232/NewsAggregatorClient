@@ -1,5 +1,6 @@
-package org.newsaggregator.newsaggregatorclient.ui_component;
+package org.newsaggregator.newsaggregatorclient.ui_component.datacard;
 
+import com.almasb.fxgl.core.collection.Array;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 
@@ -30,5 +31,12 @@ public class NewsCategoryGroupTitledPane extends TitledPane {
     }
     public void addNewsItem(NewsItem newsItem) {
         this.newsGroupLayout.getChildren().add(newsItem);
+    }
+    public Array<NewsItem> getNewsItems() {
+        Array<NewsItem> newsItems = new Array<>();
+        for (int i = 0; i < this.newsGroupLayout.getChildren().size(); i++) {
+            newsItems.add((NewsItem) this.newsGroupLayout.getChildren().get(i));
+        }
+        return newsItems;
     }
 }

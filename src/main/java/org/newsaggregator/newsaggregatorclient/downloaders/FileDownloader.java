@@ -30,7 +30,7 @@ public class FileDownloader {
             byte[] imageBytes = out.toByteArray();
 
             // Write downloaded bytes to a file
-            FileOutputStream fos = new FileOutputStream(fileName + ".webp");
+            FileOutputStream fos = new FileOutputStream("src/main/resources/tmp/img" + url.getFile());
             fos.write(imageBytes);
             fos.close();
 

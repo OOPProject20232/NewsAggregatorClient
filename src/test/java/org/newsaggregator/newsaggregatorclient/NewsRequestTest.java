@@ -6,7 +6,7 @@ public class NewsRequestTest {
     public static void main(String[] args) {
         NewsRetriever newsRequest = new NewsRetriever();
         try {
-            newsRequest.sendRequest();
+            newsRequest.sendRequest("articles", true, "news.json");
         } catch (Exception e) {
             System.out.println("Error sending request: " + e.getMessage());
         }
