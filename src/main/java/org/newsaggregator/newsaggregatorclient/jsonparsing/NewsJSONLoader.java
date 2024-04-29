@@ -86,14 +86,14 @@ public class NewsJSONLoader implements IJSONLoader {
             for (Object category : categoryListObj) {
                 categoryList.add(category.toString());
             }
-            String title = newsItemObject.getString("article_title");
-            String author = newsItemObject.getString("author");
-            String description = newsItemObject.getString("article_summary");
-            String articleDetailedContent = newsItemObject.getString("article_detailed_content");
-            String url = newsItemObject.getString("article_link");
-            JSONObject publisherJSONObject = newsItemObject.getJSONObject("publisher");
-            String publisher = publisherJSONObject.getString("name");
-            String publisherLogo = publisherJSONObject.getString("logo");
+            String title = getSimpleField( newsItemObject,"article_title");
+            String author = getSimpleField(newsItemObject, "author");
+            String description = getSimpleField(newsItemObject, "article_summary");
+            String articleDetailedContent = getSimpleField(newsItemObject, "article_detailed_content");
+            String url = getSimpleField(newsItemObject, "article_link");
+            JSONObject publisherJSONObject = getComplexField(newsItemObject, "publisher");
+            String publisher = getSimpleField(publisherJSONObject,"name");
+            String publisherLogo = getSimpleField(publisherJSONObject, "logo");
             String thumbnailImage;
             try {
                 thumbnailImage = newsItemObject.getString("thumbnail_image");
@@ -118,5 +118,23 @@ public class NewsJSONLoader implements IJSONLoader {
             newsItemDataList.add(newsItemData);
         }
         return newsItemDataList;
+    }
+
+    private String getSimpleField(JSONObject jsonObject, String field) {
+        try {
+            return jsonObject.getString(field);
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    private JSONObject getComplexField(JSONObject jsonObject, String field) {
+        try {
+            return jsonObject.getJSONObject(field);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 }
