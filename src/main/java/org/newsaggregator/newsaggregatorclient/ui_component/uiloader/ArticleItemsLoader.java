@@ -81,21 +81,6 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
             });
         });
         textThread.start();
-//        for (int countItem = begin; countItem < limit + begin; countItem++) {
-//            NewsItemData itemData = data.get(countItem);
-//            NewsItem newsItem = new NewsItem(itemData);
-//            newsItem.loadText();
-//            newsItem.getArticleHyperlinkObject().setOnAction(
-//                    new EventHandler<ActionEvent>() {
-//                        @Override
-//                        public void handle(ActionEvent event) {
-//                            hostServices.showDocument(itemData.url);
-//                        }
-//                    }
-//            );
-//            updateProgress(countItem, limit + begin);
-//            newsCategoryGroupTitledPane.addNewsItem(newsItem);
-//        }
         Thread imageThread = new Thread(() -> {
             Platform.runLater(() -> {
                 for (NewsItem newsItem : newsCategoryGroupTitledPane.getNewsItems()) {

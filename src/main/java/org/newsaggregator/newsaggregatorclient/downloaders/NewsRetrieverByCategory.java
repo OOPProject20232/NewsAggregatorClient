@@ -1,6 +1,5 @@
 package org.newsaggregator.newsaggregatorclient.downloaders;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,40 +13,21 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Scanner;
 
-public class NewsRetriever implements IServerRequest{
+public class NewsRetrieverByCategory implements IServerRequest {
     private int pageNumber;
     private int limit;
     private boolean forceDownload;
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
-    }
-
+    private String endpoint;
+    private String cacheFilePath;
+    private boolean isPaged;
     @Override
-    public int sendRequest(String endpoint, boolean isPaged, String cacheFilePath) throws MalformedURLException {
-        try {
-            /**
-             * Class này chứa các hàm để gửi request đến server
-             */
+    public int sendRequest(String request, boolean cache, String cacheFileName) throws MalformedURLException {
+        try{
             String serverURLString = serverDomain + "v1/" + endpoint;
             URL url = URI.create(serverURLString).toURL();
             if (isPaged) {
-                if (pageNumber != 0 && limit != 0) url = URI.create(serverURLString + "?page=%s&limit=%s".formatted(pageNumber, limit)).toURL();
-                else throw new IllegalArgumentException("Page number and limit must be set when isPaged is true");
+                url = URI.create(serverURLString + "?page=%s&limit=%s".formatted(pageNumber, limit)).toURL();
             }
             String cacheFile = cacheFolder + cacheFilePath;
             Path cachePath = Paths.get(cacheFile);
@@ -66,7 +46,7 @@ public class NewsRetriever implements IServerRequest{
                 try {
                     connection.setRequestMethod("HEAD");
                     connection.setRequestProperty("If-Modified-Since", lastModified.toString());
-                    System.out.println("If-Modified-Since: " + lastModified.toString());
+                    System.out.println("If-Modified-Since: " + lastModified);
                     int responseCode = connection.getResponseCode();
                     if (responseCode == 304) {
                         System.out.println("Server responded with 304 Not Modified, no need to download again");
@@ -97,7 +77,7 @@ public class NewsRetriever implements IServerRequest{
                         fileOutputStream = new FileOutputStream(cacheFile, false);
                     }
                     InputStream iStream = url.openStream();
-                    byte buffer[] = new byte[1024];
+                    byte[] buffer = new byte[1024];
                     int length;
                     while ((length = iStream.read(buffer)) != -1) {
                         fileOutputStream.write(buffer, 0, length);
@@ -122,5 +102,10 @@ public class NewsRetriever implements IServerRequest{
 
     public void setForceDownload(boolean forceDownload) {
         this.forceDownload = forceDownload;
+    }
+
+    public void setCategory(String category) {
+        this.endpoint = "categories/articles/search?text=%s".formatted(category);
+        this.cacheFilePath = category + ".json";
     }
 }

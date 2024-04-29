@@ -29,9 +29,16 @@
       <VBox layoutX="134.0" layoutY="127.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="933.0" />
-            <TabPane accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <TabPane accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" side="LEFT" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
-                <Tab closable="false" styleClass="generic-container" text="News">
+                <Tab closable="false" styleClass="generic-container" text="">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/images/news.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                      <content>
                         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="generic-container">
                            <children>
@@ -127,7 +134,14 @@
                         </VBox>
                      </content>
                 </Tab>
-                  <Tab closable="false" text="Search">
+                  <Tab closable="false" text="">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/images/search.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="generic-container">
                            <children>
@@ -169,7 +183,14 @@
                         </AnchorPane>
                      </content>
                   </Tab>
-                <Tab closable="false" text="Market data">
+                <Tab closable="false" text="">
+                   <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                             <image>
+                                <Image url="@assets/images/market-data.png" />
+                             </image>
+                        </ImageView>
+                   </graphic>
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="chart-container" stylesheets="@assets/css/chart.css">
                            <children>

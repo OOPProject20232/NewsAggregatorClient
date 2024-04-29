@@ -11,7 +11,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import org.jetbrains.annotations.NotNull;
 import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
+import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetrieverByCategory;
+import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsCategoryJSONLoader;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_component.uiloader.ArticleItemsLoader;
@@ -50,10 +53,10 @@ public class NewsAggregatorClientController {
     @FXML
     private Button reloadNews;
 
-    private HostServices hostServices;
+    private final HostServices hostServices;
 
     private int currentPage = 1;
-    private int limit = 50;
+    private final int limit = 50;
 
     public NewsAggregatorClientController(HostServices hostServices) {
         this.hostServices = hostServices;
@@ -127,50 +130,102 @@ public class NewsAggregatorClientController {
          * được gọi khi ứng dụng được khởi chạy
          * Dữ liệu tin tức sẽ được lấy từ database thông qua trung gian
          */
-        newsContainer.getChildren().clear();
-        NewsJSONLoader dataLoader = new NewsJSONLoader();
-//        dataLoader.loadJSON();
-        Thread jsonThread = new Thread(() -> {
-            try {
-                dataLoader.loadJSON();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        jsonThread.start();
-        String newsString = dataLoader.getJSONString();
-        if (newsString == null) {
-            NewsRetriever newsRetriever = new NewsRetriever();
-            try {
-                newsRetriever.sendRequest("articles", true, "news.json");
-                dataLoader.loadJSON();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            dataLoader.loadJSON();
-        }
-        List<NewsItemData> data = getNewsItemData(dataLoader, 100, 0);
-
+//        newsContainer.getChildren().clear();
         NewsCategoryGroupTitledPane latestNews = new NewsCategoryGroupTitledPane("Latest news");
-        ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(20,0, newsContainer, hostServices, latestNews);
-        articleItemsLoader.loadItems(data);
-        newsContainer.add(latestNews, 0, 0, 2, 1);
         NewsCategoryGroupTitledPane bitcoinNews = new NewsCategoryGroupTitledPane("Bitcoin news");
         NewsCategoryGroupTitledPane ethereumNews = new NewsCategoryGroupTitledPane("Ethereum news");
         NewsCategoryGroupTitledPane redditNews = new NewsCategoryGroupTitledPane("Post from Reddit");
+        newsContainer.add(latestNews, 0, 0, 2, 1);
         newsContainer.add(bitcoinNews, 0, 1, 1, 1);
         newsContainer.add(ethereumNews, 1, 1, 1, 1);
         newsContainer.add(redditNews, 2, 1, 1, 3);
         NewsCategoryGroupTitledPane allNews = new NewsCategoryGroupTitledPane("All news");
         newsContainer.add(allNews, 0, 2, 2, 1);
-        new Thread(() -> {
-            ArticleItemsLoader articleItemsLoader1 = new ArticleItemsLoader(50, 0, newsContainer, hostServices, allNews);
-            articleItemsLoader1.loadItems(data);
-        }).start();
+        NewsJSONLoader articleDataLoader = getNewsJSONLoader();
+        if (articleDataLoader.getJSONString().isEmpty()) {
+            System.out.println("Data is empty");
+        }
+        else {
+            List<NewsItemData> data = articleDataLoader.getNewsItemDataList(limit, 0);
+            new Thread(() -> {
+                ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, latestNews);
+                articleItemsLoader.loadItems(data);
+            }).start();
+            new Thread(() -> {
+                ArticleItemsLoader allArticleItemsLoader = new ArticleItemsLoader(50, 0, newsContainer, hostServices, allNews);
+                allArticleItemsLoader.loadItems(data);
+            }).start();
+        }
+        NewsCategoryJSONLoader bitcoinJSONLoader = getNewsCategoryJSONLoader("bitcoin");
+        try{
+            List<NewsItemData> bitcoinData = bitcoinJSONLoader.getNewsItemDataList(limit, 0);
+            new Thread(() -> {
+                ArticleItemsLoader bitcoinArticleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, bitcoinNews);
+                bitcoinArticleItemsLoader.loadItems(bitcoinData);
+            }).start();
+        } catch (Exception e) {
+            System.out.println("Bitcoin JSON loader is null");
+        }
+        NewsCategoryJSONLoader ethereumJSONLoader = getNewsCategoryJSONLoader("ethereum");
+        try{
+            List<NewsItemData> ethereumData = ethereumJSONLoader.getNewsItemDataList(limit, 0);
+            new Thread(() -> {
+                ArticleItemsLoader bitcoinArticleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, bitcoinNews);
+                bitcoinArticleItemsLoader.loadItems(ethereumData);
+            }).start();
+        } catch (Exception e) {
+            System.out.println("Bitcoin JSON loader is null");
+        }
     }
 
-    private static List<NewsItemData> getNewsItemData(NewsJSONLoader loader, int limit, int begin) {
-        return loader.getNewsItemDataList(limit, begin);
+    private static @NotNull NewsJSONLoader getNewsJSONLoader() {
+        NewsJSONLoader articleDataLoader = new NewsJSONLoader();
+        articleDataLoader.setCacheFileName("news.json");
+        Thread jsonThread = new Thread(() -> {
+            try {
+                articleDataLoader.loadJSON();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        jsonThread.start();
+        String newsString = articleDataLoader.getJSONString();
+        if (newsString == null) {
+            NewsRetriever newsRetriever = new NewsRetriever();
+            newsRetriever.setLimit(50);
+            newsRetriever.setPageNumber(1);
+            try {
+                newsRetriever.sendRequest("articles", true, "news.json");
+                articleDataLoader.loadJSON();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            articleDataLoader.loadJSON();
+        }
+        return articleDataLoader;
+    }
+
+    private static @NotNull NewsCategoryJSONLoader getNewsCategoryJSONLoader(String category){
+        NewsCategoryJSONLoader categoryDataLoader = new NewsCategoryJSONLoader();
+        categoryDataLoader.setCacheFileName(category + ".json");
+        categoryDataLoader.setCategory(category);
+        Thread jsonThread = new Thread(() -> {
+            try {
+                NewsRetriever newsRetriever = new NewsRetriever();
+                newsRetriever.setForceDownload(true);
+                try {
+                    newsRetriever.sendRequest("v1/categories/articles/search?text=%s".formatted(category), false, category + ".json");
+                    categoryDataLoader.loadJSON();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                categoryDataLoader.loadJSON();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        jsonThread.start();
+        return categoryDataLoader;
     }
 
     private void reloadNews() {
@@ -179,18 +234,16 @@ public class NewsAggregatorClientController {
          * Được gọi khi người dùng click vào nút "tải lại" trên màn hình chính
          * @param event: Sự kiện click chuột vào nút "tải lại"
          */
-        newsContainer.getChildren().clear();
-        NewsRetriever newsRetriever = new NewsRetriever();
-        newsRetriever.setForceDownload(true);
-        newsRetriever.setLimit(limit);
-        currentPage = 1;
-        newsRetriever.setPageNumber(currentPage);
-        try {
-            newsRetriever.sendRequest("articles", true, "news.json");
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-        showAllNewsCategories();
+        new Thread (() -> {
+            NewsRetriever articleRetriver = new NewsRetriever();
+            articleRetriver.setLimit(50);
+            articleRetriver.setPageNumber(1);
+            try {
+                articleRetriver.sendRequest("articles", true, "news.json");
+            } catch (MalformedURLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }).start();
     }
 
     public void resetPage() {
@@ -200,10 +253,4 @@ public class NewsAggregatorClientController {
     public void nextPage() {
         currentPage++;
     }
-
-
-//    public GridPane getNewsContainer() {
-//        return newsContainer;
-//    }
-
 }

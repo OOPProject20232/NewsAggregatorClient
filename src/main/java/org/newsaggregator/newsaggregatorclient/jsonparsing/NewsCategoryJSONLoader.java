@@ -2,8 +2,8 @@ package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,30 +12,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class NewsJSONLoader implements IJSONLoader {
+public class NewsCategoryJSONLoader implements IJSONLoader{
     private JSONObject jsonObject;
     private String jsonString;
     private String cacheFileName;
+    private String category;
 
-    @Override
     public void setCacheFileName(String cacheFileName) {
         this.cacheFileName = cacheFileName;
     }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public void loadJSON() {
-        String JSON_FILE_PATH = JSON_FOLDER_PATH + cacheFileName;
-        System.out.println("Loading JSON file from " + JSON_FILE_PATH);
-        File dataFile = new File(JSON_FILE_PATH);
+        String jsonFilePath = JSON_FOLDER_PATH + cacheFileName;
+        System.out.println("Loading JSON file from " + jsonFilePath);
+        File dataFile = new File(jsonFilePath);
         Scanner scanner;
         try {
             scanner = new Scanner(dataFile);
         } catch (FileNotFoundException e) {
             NewsRetriever newsRetriever = new NewsRetriever();
             try {
-                newsRetriever.sendRequest("articles", true, "news.json");
-                newsRetriever.setLimit(50);
-                newsRetriever.setPageNumber(1);
+                newsRetriever.sendRequest("v1/categories/articles/search?text=%s".formatted(category), false, jsonFilePath);
                 scanner = new Scanner(dataFile);
             } catch (MalformedURLException | FileNotFoundException ex) {
                 throw new RuntimeException(ex);
@@ -55,10 +57,6 @@ public class NewsJSONLoader implements IJSONLoader {
         }
     }
 
-    public int getCount() {
-        System.out.println("Getting count from JSON file");
-        return jsonObject.getInt("count");
-    }
 
     public String getJSONString() {
         return jsonString;

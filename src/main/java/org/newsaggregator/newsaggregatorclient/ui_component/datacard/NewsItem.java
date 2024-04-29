@@ -52,7 +52,7 @@ public class NewsItem extends NewsItemFrame{
     }
 
     public void loadImage(){
-        String noImageAvailablePath = "file:///src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
+        String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
         Image thumbnail = new Image(noImageAvailablePath, true);
         try {
             System.out.println("Processing image: " + newsItemData.urlToImage);
