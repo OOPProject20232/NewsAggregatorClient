@@ -74,16 +74,17 @@
 }
 
 .tab-header-background{
-    -fx-background-color: -fx-surface-container-low;
+    -fx-background-color: -fx-surface-container;
 }
 
 .tab{
     -fx-background-color: transparent;
-    -fx-padding: .75em 1.5em;
+    -fx-padding: .75em .75em;
     -fx-font-size: 1.5em;
     -fx-cursor: hand;
-    -fx-background-radius: 30px;
+    -fx-background-radius: .75em;
     -fx-content-display: center;
+    -fx-margin: .5em;
 }
 
 .tab-header-area > tab > .tab-label{
@@ -253,6 +254,11 @@
     -fx-border-width: 0;
     -fx-border-color: #000;
     -fx-border-radius: 30;
+    -fx-max-width: 600px;
+}
+
+.search-bar-wrapper{
+    -fx-max-width: 600px;
 }
 
 /*-------------*/
