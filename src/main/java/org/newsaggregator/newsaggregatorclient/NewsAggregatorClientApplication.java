@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
 import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetrieverByCategory;
@@ -12,6 +13,7 @@ import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.NoInternetDi
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Objects;
 
 public class NewsAggregatorClientApplication extends Application {
     private NewsAggregatorClientController controller;
@@ -28,7 +30,7 @@ public class NewsAggregatorClientApplication extends Application {
             dialog.showAndWait();
         } else {
             stage.setTitle("Crypto News Aggregator Client");
-            stage.getIcons().add(new javafx.scene.image.Image(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/icon.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/icon.png"))));
             stage.setScene(scene);
             stage.show();
             controller.start();
@@ -38,41 +40,32 @@ public class NewsAggregatorClientApplication extends Application {
         }
     }
     public static void main(String[] args) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NewsRetriever newsRetriever = new NewsRetriever();
-                newsRetriever.setLimit(50);
-                newsRetriever.setPageNumber(1);
-                try {
-                    newsRetriever.sendRequest("articles", true, "news.json");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            NewsRetriever newsRetriever = new NewsRetriever();
+            newsRetriever.setLimit(50);
+            newsRetriever.setPageNumber(1);
+            try {
+                newsRetriever.sendRequest("articles", true, "news.json");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
         }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NewsRetriever newsRetriever = new NewsRetriever();
-                newsRetriever.setForceDownload(true);
-                try {
-                    newsRetriever.sendRequest("v1/categories/articles?search=bitcoin", false, "bitcoin.json");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            NewsRetriever newsRetriever = new NewsRetriever();
+            newsRetriever.setForceDownload(true);
+            try {
+                newsRetriever.sendRequest("v1/categories/articles?search=bitcoin", false, "bitcoin.json");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
         }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NewsRetriever newsRetriever = new NewsRetriever();
-                newsRetriever.setForceDownload(true);
-                try {
-                    newsRetriever.sendRequest("v1/categories/articles?search=ethereum",false, "ethereum.json");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            NewsRetriever newsRetriever = new NewsRetriever();
+            newsRetriever.setForceDownload(true);
+            try {
+                newsRetriever.sendRequest("v1/categories/articles?search=ethereum",false, "ethereum.json");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
         }).start();
 

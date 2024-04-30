@@ -17,6 +17,9 @@
 }
 
 /* Main container */
+.background-container{
+    -fx-background-color: -fx-surface-container;
+}
 .generic-container {
     -fx-background-color: -fx-generic-background-color;
     /*-fx-background-color: blue;*/
@@ -26,6 +29,7 @@
 
 .generic-transparent-container{
     -fx-background-color: -fx-generic-background-color;
+    -fx-background-radius: 20px;
     /*-fx-background-color: blue;*/
 }
 
@@ -254,11 +258,12 @@
     -fx-border-width: 0;
     -fx-border-color: #000;
     -fx-border-radius: 30;
-    -fx-max-width: 600px;
+    -fx-width: 80%;
+    /*-fx-max-width: 600px;*/
 }
 
 .search-bar-wrapper{
-    -fx-max-width: 600px;
+    /*-fx-max-width: 600px;*/
 }
 
 /*-------------*/
