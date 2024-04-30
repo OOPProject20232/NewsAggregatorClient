@@ -3,8 +3,6 @@ package org.newsaggregator.newsaggregatorclient.ui_component.uiloader;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.layout.Pane;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
@@ -13,7 +11,7 @@ import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsItem;
 import java.util.List;
 
 public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsItemData>{
-    private int begin;
+    int begin;
     /**
      * Class này chứa các hàm để load các tin tức từ các nguồn khác nhau
      * lên trên GUI
@@ -32,7 +30,7 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
 //        this.newsCategoryGroupTitledPane.setMaxWidth(800);
     }
     @Override
-    protected Void call() throws Exception {
+    protected Void call() {
         updateMessage("Loading news items");
         return null;
     }
@@ -61,33 +59,24 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
             limit = data.size() - begin;
         }
 
-        Thread textThread = new Thread(() -> {
-            Platform.runLater(() -> {
-                for (int countItem = begin; countItem < limit + begin; countItem++) {
-                    NewsItemData itemData = data.get(countItem);
-                    NewsItem newsItem = new NewsItem(itemData);
-                    newsItem.loadText();
-                    newsItem.getArticleHyperlinkObject().setOnAction(
-                            new EventHandler<ActionEvent>() {
-                                @Override
-                                public void handle(ActionEvent event) {
-                                    hostServices.showDocument(itemData.url);
-                                }
-                            }
-                    );
-                    updateProgress(countItem, limit + begin);
-                    newsCategoryGroupTitledPane.addNewsItem(newsItem);
-                }
-            });
-        });
+        Thread textThread = new Thread(() -> Platform.runLater(() -> {
+            for (int countItem = begin; countItem < limit + begin; countItem++) {
+                NewsItemData itemData = data.get(countItem);
+                NewsItem newsItem = new NewsItem(itemData);
+                newsItem.loadText();
+                newsItem.getArticleHyperlinkObject().setOnAction(
+                        event -> hostServices.showDocument(itemData.url)
+                );
+                updateProgress(countItem, limit + begin);
+                newsCategoryGroupTitledPane.addNewsItem(newsItem);
+            }
+        }));
         textThread.start();
-        Thread imageThread = new Thread(() -> {
-            Platform.runLater(() -> {
-                for (NewsItem newsItem : newsCategoryGroupTitledPane.getNewsItems()) {
-                    newsItem.loadImage();
-                }
-            });
-        });
+        Thread imageThread = new Thread(() -> Platform.runLater(() -> {
+            for (NewsItem newsItem : newsCategoryGroupTitledPane.getNewsItems()) {
+                newsItem.loadImage();
+            }
+        }));
         imageThread.start();
         return newsCategoryGroupTitledPane;
     }
