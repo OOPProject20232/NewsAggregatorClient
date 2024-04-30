@@ -24,12 +24,12 @@
     -fx-background-color: -fx-generic-background-color;
     /*-fx-background-color: blue;*/
     /*-fx-background-color: white;*/
-    -fx-background-radius: 20px;
+    -fx-background-radius: 10px;
 }
 
 .generic-transparent-container{
     -fx-background-color: -fx-generic-background-color;
-    -fx-background-radius: 20px;
+    -fx-background-radius: 10px;
     /*-fx-background-color: blue;*/
 }
 

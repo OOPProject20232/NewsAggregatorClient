@@ -9,6 +9,8 @@ import javafx.scene.shape.Rectangle;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -34,34 +36,37 @@ public class NewsItem extends NewsItemFrame{
     }
 
     public void loadText(){
-        articleHyperlinkTitleObject.setText(newsItemData.title);
-        description.setText(newsItemData.description);
+        articleHyperlinkTitleObject.setText(newsItemData.getTitle());
+        description.setText(newsItemData.getDescription());
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
         String formattedDate = "";
         try{
-            Date publishedDate = inputFormat.parse(newsItemData.publishedAt);
+            Date publishedDate = inputFormat.parse(newsItemData.getPublishedAt());
             formattedDate = outputFormat.format(publishedDate);
         }
         catch (Exception e){
             System.out.println("Error parsing date: " + e.getMessage());
         }
         publishedAt.setText(formattedDate);
-        author.setText(newsItemData.author.toString());
-        publisher.setText(newsItemData.publisher);
+        author.setText(newsItemData.getAuthor().toString());
+        publisher.setText(newsItemData.getPublisher());
     }
 
     public void loadImage(){
         String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
         Image thumbnail = new Image(noImageAvailablePath, true);
         try {
-            System.out.println("Processing image: " + newsItemData.urlToImage);
-            File tmpOutputFile = new File("src/main/resources/tmp/img");
-            if (newsItemData.urlToImage.endsWith(".webp")) {
-                System.out.println("Processing webp image: " + newsItemData.urlToImage);
+            System.out.println("Processing image: " + newsItemData.getUrlToImage());
+            String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
+            System.out.println("File name: " + fileName);
+            if (fileName.endsWith(".webp")) {
+                String tmpCachePath = "src/main/resources/tmp/img" + fileName.replace("/", "_");
+                File tmpOutputFile = new File(tmpCachePath);
+                System.out.println("Processing webp image: " + tmpCachePath);
                 try {
-                    FileDownloader.fileDownloader(newsItemData.urlToImage, tmpOutputFile.getAbsolutePath());
-                    BufferedImage bufferedImage = ImageIO.read(new File("%s/tmp.webp".formatted(tmpOutputFile.getAbsolutePath())));
+                    FileDownloader.fileDownloader(newsItemData.getUrlToImage(), fileName.replace("/", "_"));
+                    BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
                     thumbnail = SwingFXUtils.toFXImage(bufferedImage, null);
                 } catch (Exception ex) {
                     System.out.println("Error processing webp image: " + ex.getMessage());
@@ -69,9 +74,9 @@ public class NewsItem extends NewsItemFrame{
                 }
             }
             else {
-                thumbnail = new Image(newsItemData.urlToImage, true);
+                thumbnail = new Image(newsItemData.getUrlToImage(), true);
             }
-            if (newsItemData.urlToImage.isBlank() || newsItemData.urlToImage.isEmpty()){
+            if (newsItemData.getUrlToImage().isBlank() || newsItemData.getUrlToImage().isEmpty()){
                 thumbnail = new Image(noImageAvailablePath, true);
 
             }
@@ -92,7 +97,7 @@ public class NewsItem extends NewsItemFrame{
 
         // Load publisher logo
         try{
-            Image publisherImage = new Image(newsItemData.publisherLogoURL, true);
+            Image publisherImage = new Image(newsItemData.getPublisherLogoURL(), true);
             ImageView publisherLogo = new ImageView(publisherImage);
             publisherLogo.setFitHeight(16);
             publisherLogo.setFitWidth(16);

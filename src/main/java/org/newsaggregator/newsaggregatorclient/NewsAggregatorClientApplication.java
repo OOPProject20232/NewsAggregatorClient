@@ -14,6 +14,7 @@ import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.NoInternetDi
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NewsAggregatorClientApplication extends Application {
     private NewsAggregatorClientController controller;
@@ -40,34 +41,36 @@ public class NewsAggregatorClientApplication extends Application {
         }
     }
     public static void main(String[] args) {
+        AtomicReference<NewsRetriever> newsRetriever = new AtomicReference<>();
         new Thread(() -> {
-            NewsRetriever newsRetriever = new NewsRetriever();
-            newsRetriever.setLimit(50);
-            newsRetriever.setPageNumber(1);
+            newsRetriever.set(new NewsRetriever());
+            newsRetriever.get().setForceDownload(true);
+            newsRetriever.get().setLimit(50);
+            newsRetriever.get().setPageNumber(1);
             try {
-                newsRetriever.sendRequest("articles", true, "news.json");
+                newsRetriever.get().sendRequest("articles", true, "news.json");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }).start();
-        new Thread(() -> {
-            NewsRetriever newsRetriever = new NewsRetriever();
-            newsRetriever.setForceDownload(true);
-            try {
-                newsRetriever.sendRequest("v1/categories/articles?search=bitcoin", false, "bitcoin.json");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        }).start();
-        new Thread(() -> {
-            NewsRetriever newsRetriever = new NewsRetriever();
-            newsRetriever.setForceDownload(true);
-            try {
-                newsRetriever.sendRequest("v1/categories/articles?search=ethereum",false, "ethereum.json");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        }).start();
+//        new Thread(() -> {
+//            NewsRetriever newsRetriever = new NewsRetriever();
+//            newsRetriever.setForceDownload(true);
+//            try {
+//                newsRetriever.sendRequest("v1/categories/articles?search=bitcoin", false, "bitcoin.json");
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//        new Thread(() -> {
+//            NewsRetriever newsRetriever = new NewsRetriever();
+//            newsRetriever.setForceDownload(true);
+//            try {
+//                newsRetriever.sendRequest("v1/categories/articles?search=ethereum",false, "ethereum.json");
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
 
         launch();
     }

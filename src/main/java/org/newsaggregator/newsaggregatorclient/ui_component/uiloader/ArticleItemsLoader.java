@@ -65,7 +65,7 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
                 NewsItem newsItem = new NewsItem(itemData);
                 newsItem.loadText();
                 newsItem.getArticleHyperlinkObject().setOnAction(
-                        event -> hostServices.showDocument(itemData.url)
+                        event -> hostServices.showDocument(itemData.getUrl())
                 );
                 updateProgress(countItem, limit + begin);
                 newsCategoryGroupTitledPane.addNewsItem(newsItem);

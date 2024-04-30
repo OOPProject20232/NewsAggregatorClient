@@ -9,32 +9,69 @@ public class NewsItemData extends GenericData{
      * @author: Trần Quang Hưng
      *
      */
-    public List<String> category;
-    public String title;
-    public Object author;
-    public String description;
-    public String articleDetailedContent;
-    public String url;
-    public String urlToImage;
-    public String publishedAt;
-    public String content;
-    public String publisher;
-    public String publisherLogoURL;
+    private List<String> category;
+    private String title;
+    private Object author;
+
+    public List<String> getCategory() {
+        return category;
+    }
+
+    public void setCategory(List<String> category) {
+        this.category = category;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Object getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Object author) {
+        this.author = author;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getArticleDetailedContent() {
+        return articleDetailedContent;
+    }
+
+    public void setArticleDetailedContent(String articleDetailedContent) {
+        this.articleDetailedContent = articleDetailedContent;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    private String description;
+    private String articleDetailedContent;
+    private String url;
+    private String urlToImage;
+    private String publishedAt;
+    private String content;
+    private String publisher;
+    private String publisherLogoURL;
 
     public NewsItemData() {
 
-    }
-
-    public NewsItemData(List<String> category, String title, String author, String description, String url, String urlToImage, String publishedAt, String content, String publisher) {
-        this.category = category;
-        this.title = title;
-        this.author = author;
-        this.description = description;
-        this.url = url;
-        this.urlToImage = urlToImage;
-        this.publishedAt = publishedAt;
-        this.content = content;
-        this.publisher = publisher;
     }
 
     public void printNewsData(){
@@ -60,5 +97,45 @@ public class NewsItemData extends GenericData{
                 ",\npublishedAt='" + publishedAt + '\'' +
                 ",\ncontent='" + content + '\'' +
                 ",\npublisher='" + publisher + '\'';
+    }
+
+    public String getUrlToImage() {
+        return urlToImage;
+    }
+
+    public void setUrlToImage(String urlToImage) {
+        this.urlToImage = urlToImage;
+    }
+
+    public String getPublishedAt() {
+        return publishedAt;
+    }
+
+    public void setPublishedAt(String publishedAt) {
+        this.publishedAt = publishedAt;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getPublisherLogoURL() {
+        return publisherLogoURL;
+    }
+
+    public void setPublisherLogoURL(String publisherLogoURL) {
+        this.publisherLogoURL = publisherLogoURL;
     }
 }

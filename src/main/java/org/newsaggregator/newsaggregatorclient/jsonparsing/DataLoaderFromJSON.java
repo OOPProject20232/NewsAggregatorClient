@@ -32,37 +32,8 @@ public class DataLoaderFromJSON {
             List<NewsItemData> newsItemDataList = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                List<Object> categoryListObj = jsonObject.getJSONArray("category").toList();
-                List<String> categoryList = new ArrayList<>();
-                for (Object category : categoryListObj) {
-                    categoryList.add(category.toString());
-                }
-                String title = jsonObject.getString("article_title");
-                String author = jsonObject.getString("author");
-                String description = jsonObject.getString("article_summary");
-                String articleDetailedContent = jsonObject.getString("article_detailed_content");
-                String url = jsonObject.getString("article_link");
-                String publisher = jsonObject.getString("website_source");
-                String thumbnailImage = "";
-                try {
-                    thumbnailImage = jsonObject.getString("thumbnail_image");
-                }
-                catch (Exception e) {
-                    thumbnailImage = "";
-                }
-                String publishedAt = jsonObject.getString("creation_date");
-                String articleSummary = jsonObject.getString("article_summary");
-                NewsItemData newsItemData = new NewsItemData();
-                newsItemData.category = categoryList;
-                newsItemData.title = title;
-                newsItemData.author = author;
-                newsItemData.description = description;
-                newsItemData.articleDetailedContent = articleDetailedContent;
-                newsItemData.url = url;
-                newsItemData.urlToImage = thumbnailImage;
-                newsItemData.publishedAt = publishedAt;
-                newsItemData.content = articleSummary;
-                newsItemData.publisher = publisher;
+                JSON2NewsItemData json2NewsItemData = new JSON2NewsItemData();
+                NewsItemData newsItemData = json2NewsItemData.convert(jsonObject);
                 newsItemDataList.add(newsItemData);
             }
             return newsItemDataList;

@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import org.jetbrains.annotations.NotNull;
 import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
-import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetrieverByCategory;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsCategoryJSONLoader;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
@@ -22,6 +21,7 @@ import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategor
 
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NewsAggregatorClientController {
     /**
@@ -147,35 +147,31 @@ public class NewsAggregatorClientController {
         }
         else {
             List<NewsItemData> data = articleDataLoader.getNewsItemDataList(limit, 0);
-            new Thread(() -> {
-                ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, latestNews);
-                articleItemsLoader.loadItems(data);
-            }).start();
-            new Thread(() -> {
-                ArticleItemsLoader allArticleItemsLoader = new ArticleItemsLoader(50, 0, newsContainer, hostServices, allNews);
-                allArticleItemsLoader.loadItems(data);
-            }).start();
+            ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, latestNews);
+            articleItemsLoader.loadItems(data);
+            ArticleItemsLoader allArticleItemsLoader = new ArticleItemsLoader(50, 0, newsContainer, hostServices, allNews);
+            allArticleItemsLoader.loadItems(data);
         }
-        NewsCategoryJSONLoader bitcoinJSONLoader = getNewsCategoryJSONLoader("bitcoin");
-        try{
-            List<NewsItemData> bitcoinData = bitcoinJSONLoader.getNewsItemDataList(limit, 0);
-            new Thread(() -> {
-                ArticleItemsLoader bitcoinArticleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, bitcoinNews);
-                bitcoinArticleItemsLoader.loadItems(bitcoinData);
-            }).start();
-        } catch (Exception e) {
-            System.out.println("Bitcoin JSON loader is null");
-        }
-        NewsCategoryJSONLoader ethereumJSONLoader = getNewsCategoryJSONLoader("ethereum");
-        try{
-            List<NewsItemData> ethereumData = ethereumJSONLoader.getNewsItemDataList(limit, 0);
-            new Thread(() -> {
-                ArticleItemsLoader bitcoinArticleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, bitcoinNews);
-                bitcoinArticleItemsLoader.loadItems(ethereumData);
-            }).start();
-        } catch (Exception e) {
-            System.out.println("Bitcoin JSON loader is null");
-        }
+//        NewsCategoryJSONLoader bitcoinJSONLoader = getNewsCategoryJSONLoader("bitcoin");
+//        try{
+//            List<NewsItemData> bitcoinData = bitcoinJSONLoader.getNewsItemDataList(limit, 0);
+//            new Thread(() -> {
+//                ArticleItemsLoader bitcoinArticleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, bitcoinNews);
+//                bitcoinArticleItemsLoader.loadItems(bitcoinData);
+//            }).start();
+//        } catch (Exception e) {
+//            System.out.println("Bitcoin JSON loader is null");
+//        }
+//        NewsCategoryJSONLoader ethereumJSONLoader = getNewsCategoryJSONLoader("ethereum");
+//        try{
+//            List<NewsItemData> ethereumData = ethereumJSONLoader.getNewsItemDataList(limit, 0);
+//            new Thread(() -> {
+//                ArticleItemsLoader bitcoinArticleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, bitcoinNews);
+//                bitcoinArticleItemsLoader.loadItems(ethereumData);
+//            }).start();
+//        } catch (Exception e) {
+//            System.out.println("Bitcoin JSON loader is null");
+//        }
     }
 
     private static @NotNull NewsJSONLoader getNewsJSONLoader() {
@@ -190,7 +186,7 @@ public class NewsAggregatorClientController {
         });
         jsonThread.start();
         String newsString = articleDataLoader.getJSONString();
-        if (newsString == null) {
+        if (newsString.isEmpty()) {
             NewsRetriever newsRetriever = new NewsRetriever();
             newsRetriever.setLimit(50);
             newsRetriever.setPageNumber(1);
