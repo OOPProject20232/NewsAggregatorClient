@@ -14,7 +14,8 @@ target/
 *.log
 
 ### tmp data
-src/main/resources/tmp/img/*8
+src/main/resources/tmp/img/*
+src/main/resources/tmp/
 src/main/resources/json/*
 
 ### Eclipse ###
@@ -45,3 +46,4 @@ src/main/resources/json/news.json
 src/main/resources/tmp/img/tmp.jpg.webp
 .idea/inspectionProfiles/Project_Default.xml
 *.txt
+/src/main/resources/tmp/

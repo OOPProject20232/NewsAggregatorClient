@@ -41,36 +41,15 @@ public class NewsAggregatorClientApplication extends Application {
         }
     }
     public static void main(String[] args) {
-        AtomicReference<NewsRetriever> newsRetriever = new AtomicReference<>();
-        new Thread(() -> {
-            newsRetriever.set(new NewsRetriever());
-            newsRetriever.get().setForceDownload(true);
-            newsRetriever.get().setLimit(50);
-            newsRetriever.get().setPageNumber(1);
-            try {
-                newsRetriever.get().sendRequest("articles", true, "news.json");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        }).start();
-//        new Thread(() -> {
-//            NewsRetriever newsRetriever = new NewsRetriever();
-//            newsRetriever.setForceDownload(true);
-//            try {
-//                newsRetriever.sendRequest("v1/categories/articles?search=bitcoin", false, "bitcoin.json");
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//        new Thread(() -> {
-//            NewsRetriever newsRetriever = new NewsRetriever();
-//            newsRetriever.setForceDownload(true);
-//            try {
-//                newsRetriever.sendRequest("v1/categories/articles?search=ethereum",false, "ethereum.json");
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
+        NewsRetriever newsRetriever = new NewsRetriever();
+        newsRetriever.setForceDownload(true);
+        newsRetriever.setLimit(50);
+        newsRetriever.setPageNumber(1);
+        try {
+            newsRetriever.sendRequest("articles", true, "src/main/resources/json/news.json");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
 
         launch();
     }

@@ -58,7 +58,6 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
         if (begin + limit > data.size()) {
             limit = data.size() - begin;
         }
-
         Thread textThread = new Thread(() -> Platform.runLater(() -> {
             for (int countItem = begin; countItem < limit + begin; countItem++) {
                 NewsItemData itemData = data.get(countItem);

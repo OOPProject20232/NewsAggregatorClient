@@ -11,7 +11,6 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -134,7 +133,7 @@
                         </VBox>
                      </content>
                 </Tab>
-                  <Tab closable="false" text="">
+                  <Tab fx:id="searchTab" closable="false" text="">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -142,48 +141,9 @@
                            </image>
                         </ImageView>
                      </graphic>
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="generic-container">
-                           <children>
-                              <HBox fillHeight="false" prefHeight="48.0" prefWidth="600.0" spacing="30.0" styleClass="generic-container" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                 <children>
-                                    <StackPane alignment="CENTER_RIGHT" prefHeight="150.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <TextField maxHeight="1.7976931348623157E308" promptText="Tìm kiếm ở đây" styleClass="search-bar" StackPane.alignment="CENTER_RIGHT">
-                                             <font>
-                                                <Font size="16.0" />
-                                             </font>
-                                             <padding>
-                                                <Insets bottom="10.0" left="10.0" top="10.0" />
-                                             </padding>
-                                          </TextField>
-                                          <Button minWidth="-Infinity" mnemonicParsing="false" prefHeight="35.0" styleClass="search-button" text="Tìm kiếm">
-                                             <font>
-                                                <Font size="16.0" />
-                                             </font>
-                                             <graphic>
-                                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@assets/images/search-primary-color.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                             <StackPane.margin>
-                                                <Insets right="7.0" />
-                                             </StackPane.margin>
-                                          </Button>
-                                       </children>
-                                    </StackPane>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
-                                 </padding>
-                              </HBox>
-                           </children>
-                        </AnchorPane>
-                     </content>
+                     <fx:include source="search.fxml" />
                   </Tab>
-                <Tab closable="false" text="">
+                <Tab fx:id="marketDataTab" closable="false" text="">
                    <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                              <image>

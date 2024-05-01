@@ -1,12 +1,15 @@
 package org.newsaggregator.newsaggregatorclient;
 
 import javafx.application.HostServices;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -53,6 +56,12 @@ public class NewsAggregatorClientController {
     @FXML
     private Button reloadNews;
 
+    @FXML
+    private Tab searchTab;
+
+    @FXML
+    private Tab marketDataTab;
+
     private final HostServices hostServices;
 
     private int currentPage = 1;
@@ -88,6 +97,32 @@ public class NewsAggregatorClientController {
                }
             }
         );
+        searchTab.setOnSelectionChanged(event -> {
+            if (searchTab.isSelected()) {
+                NewsSearchController newsSearchController = new NewsSearchController();
+                FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("search.fxml"));
+                fxmlLoader.setController(newsSearchController);
+                try {
+                    searchTab.setContent(fxmlLoader.load());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                newsSearchController.initialize();
+            }
+        });
+        marketDataTab.setOnSelectionChanged(event -> {
+            if (marketDataTab.isSelected()) {
+                MarketDataController marketDataController = new MarketDataController();
+                FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("market_data.fxml"));
+                fxmlLoader.setController(marketDataController);
+                try {
+                    marketDataTab.setContent(fxmlLoader.load());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                marketDataController.initialize();
+            }
+        });
     }
 
     void loadWebsite(String url) {
@@ -147,31 +182,15 @@ public class NewsAggregatorClientController {
         }
         else {
             List<NewsItemData> data = articleDataLoader.getNewsItemDataList(limit, 0);
-            ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, latestNews);
-            articleItemsLoader.loadItems(data);
-            ArticleItemsLoader allArticleItemsLoader = new ArticleItemsLoader(50, 0, newsContainer, hostServices, allNews);
-            allArticleItemsLoader.loadItems(data);
+            new Thread(() -> Platform.runLater(() -> {
+                ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, latestNews);
+                articleItemsLoader.loadItems(data);
+            })).start();
+            new Thread(() -> Platform.runLater(() -> {
+                ArticleItemsLoader allArticleItemsLoader = new ArticleItemsLoader(50, 0, newsContainer, hostServices, allNews);
+                allArticleItemsLoader.loadItems(data);
+            })).start();
         }
-//        NewsCategoryJSONLoader bitcoinJSONLoader = getNewsCategoryJSONLoader("bitcoin");
-//        try{
-//            List<NewsItemData> bitcoinData = bitcoinJSONLoader.getNewsItemDataList(limit, 0);
-//            new Thread(() -> {
-//                ArticleItemsLoader bitcoinArticleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, bitcoinNews);
-//                bitcoinArticleItemsLoader.loadItems(bitcoinData);
-//            }).start();
-//        } catch (Exception e) {
-//            System.out.println("Bitcoin JSON loader is null");
-//        }
-//        NewsCategoryJSONLoader ethereumJSONLoader = getNewsCategoryJSONLoader("ethereum");
-//        try{
-//            List<NewsItemData> ethereumData = ethereumJSONLoader.getNewsItemDataList(limit, 0);
-//            new Thread(() -> {
-//                ArticleItemsLoader bitcoinArticleItemsLoader = new ArticleItemsLoader(20, 0, newsContainer, hostServices, bitcoinNews);
-//                bitcoinArticleItemsLoader.loadItems(ethereumData);
-//            }).start();
-//        } catch (Exception e) {
-//            System.out.println("Bitcoin JSON loader is null");
-//        }
     }
 
     private static @NotNull NewsJSONLoader getNewsJSONLoader() {
@@ -192,11 +211,10 @@ public class NewsAggregatorClientController {
             newsRetriever.setPageNumber(1);
             try {
                 newsRetriever.sendRequest("articles", true, "news.json");
-                articleDataLoader.loadJSON();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
-            articleDataLoader.loadJSON();
+            new Thread(articleDataLoader::loadJSON).start();
         }
         return articleDataLoader;
     }

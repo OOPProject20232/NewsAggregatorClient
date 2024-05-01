@@ -236,36 +236,6 @@
     -fx-border-width: 0 0 1px 0;
 }
 
-/* Search section */
-.search-button {
-    -fx-background-color: -fx-primary-fixed;
-    -fx-font-size: 16;
-    -fx-font-weight: 700;
-    -fx-text-fill: -fx-primary-color;
-    -fx-margin: 0 0 0 5px;
-    -fx-border-radius: 30px;
-    -fx-background-radius: 30px;
-    -fx-cursor: hand;
-}
-
-.search-button:hover {
-    -fx-background-color: -fx-primary-fixed-dim;
-}
-
-.search-bar{
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 30;
-    -fx-border-width: 0;
-    -fx-border-color: #000;
-    -fx-border-radius: 30;
-    -fx-width: 80%;
-    /*-fx-max-width: 600px;*/
-}
-
-.search-bar-wrapper{
-    /*-fx-max-width: 600px;*/
-}
-
 /*-------------*/
 /* Dialogs */
 .dialog-pane .label {
