@@ -17,7 +17,12 @@ public class NewsSearchController {
 
 
     public void initialize() {
-        // Khởi tạo các giá trị mặc định
+        /**
+         * Khởi tạo các giá trị mặc định
+         * - Disable nút tìm kiếm khi ô tìm kiếm trống hoặc chỉ chứa khoảng trắng
+         * - Xử lý sự kiện tìm kiếm khi nhấn Enter hoặc click vào nút tìm kiếm
+         * - Focus vào ô tìm kiếm
+         */
         searchButton.setDisable(true);
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchButton.setDisable(newValue.trim().isEmpty());

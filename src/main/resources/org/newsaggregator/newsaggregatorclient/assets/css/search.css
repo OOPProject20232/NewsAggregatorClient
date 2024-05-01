@@ -28,4 +28,19 @@
     /*-fx-max-width: 600px;*/
 }
 
+.combo-box{
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-outline-color;
+    -fx-border-width: 1px;
+    -fx-padding: .5em 1em;
+    -fx-font-size: 1em;
+    -fx-cursor: hand;
+    -fx-background-radius: 30px;
+    -fx-border-radius: 30px;
+}
+
+.toggle-button{
+    -fx-padding: .75em 1em;
+}
+
 
