@@ -1,10 +1,13 @@
 package org.newsaggregator.newsaggregatorclient.ui_component.datacard;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class NewsItemFrame extends GenericHorizontalCard {
     /**
@@ -27,10 +30,15 @@ public class NewsItemFrame extends GenericHorizontalCard {
     protected ImageView publisherImageView = new ImageView();
 
     public NewsItemFrame() {
+        this.setAlignment(Pos.CENTER_LEFT);
+        articleHyperlinkTitleObject.setWrapText(true);
+        articleHyperlinkTitleObject.getStyleClass().add("article-title");
         thumbnailImageView.setFitHeight(90);
         thumbnailImageView.setFitWidth(160);
         this.getChildren().add(thumbnailImageView);
         VBox newsInfo = new VBox();
+        newsInfo.setSpacing(5);
+        newsInfo.setAlignment(Pos.CENTER_LEFT);
         description = new Label();
         description.setWrapText(true);
         publishedAt = new Label();
@@ -41,9 +49,10 @@ public class NewsItemFrame extends GenericHorizontalCard {
         publisherImageView.setFitHeight(16);
         publisherImageView.setFitWidth(16);
         publisher.setGraphic(publisherImageView);
-        Label separator = new Label(" ⋅ ");
-        publisherFrame.getChildren().addAll(author, separator, publisher);
-        newsInfo.getChildren().addAll(articleHyperlinkTitleObject, description, publishedAt, publisherFrame);
+        Label separator = new Label("⋅");
+        separator.setStyle("-fx-font-weight: bold;");
+        publisherFrame.getChildren().addAll(publishedAt, separator, author);
+        newsInfo.getChildren().addAll(publisher, articleHyperlinkTitleObject, description, publisherFrame);
         this.getChildren().add(newsInfo);
     }
 

@@ -2,9 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -30,10 +27,10 @@
    <children>
       <VBox layoutX="134.0" layoutY="127.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="933.0" style="-fx-background-color: #EBEEF3;" />
-            <TabPane accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" side="LEFT" styleClass="background-container" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" prefHeight="205.0" prefWidth="933.0" style="-fx-background-color: #EBEEF3;" />
+            <TabPane accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="761.0" prefWidth="1128.0" side="LEFT" styleClass="background-container" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab closable="false" styleClass="generic-container" text="">
+                <Tab fx:id="newsTab" closable="false" styleClass="generic-container" text="">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -42,9 +39,9 @@
                         </ImageView>
                      </graphic>
                      <content>
-                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="generic-container">
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="generic-transparent-container">
                            <children>
-                              <Button fx:id="reloadNews" alignment="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-background-radius: 20;" text="Reload">
+                              <Button fx:id="reloadNews" alignment="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-background-radius: 24;" text="Reload">
                                  <graphic>
                                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -203,7 +200,7 @@
                              </image>
                         </ImageView>
                    </graphic>
-                    <fx:include source="market_data.fxml"/>
+                    <fx:include source="market_data.fxml" />
                 </Tab>
               </tabs>
             </TabPane>

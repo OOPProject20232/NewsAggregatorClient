@@ -12,10 +12,14 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.newsaggregator.newsaggregatorclient.downloaders.FileDownloader;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
 import javax.imageio.ImageIO;
 //import com.twelvemonkeys.imageio.plugins.webp.*;
@@ -35,41 +39,43 @@ public class NewsItem extends NewsItemFrame{
         this.setSpacing(10);
     }
 
-    public void loadText(){
+
+
+    public synchronized void loadText(){
         articleHyperlinkTitleObject.setText(newsItemData.getTitle());
         description.setText(newsItemData.getDescription());
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
         String formattedDate = "";
-        try{
-            Date publishedDate = inputFormat.parse(newsItemData.getPublishedAt());
-            formattedDate = outputFormat.format(publishedDate);
-        }
-        catch (Exception e){
-            System.out.println("Error parsing date: " + e.getMessage());
-        }
-        publishedAt.setText(formattedDate);
+//        try{
+//            Date publishedDate = inputFormat.parse(newsItemData.getPublishedAt());
+//            formattedDate = outputFormat.format(publishedDate);
+//        }
+//        catch (Exception e){
+//            System.out.println("Error parsing date: " + e.getMessage());
+//        }
+        publishedAt.setText(TimeFormatter.processDateTime(newsItemData.getPublishedAt()));
         author.setText(newsItemData.getAuthor().toString());
         publisher.setText(newsItemData.getPublisher());
     }
 
-    public void loadImage(){
+    public synchronized void loadImage(){
         String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
         Image thumbnail = new Image(noImageAvailablePath, true);
         try {
-            System.out.println("Processing image: " + newsItemData.getUrlToImage());
+            System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
             String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
             System.out.println("File name: " + fileName);
             if (fileName.endsWith(".webp")) {
                 String tmpCachePath = "src/main/resources/tmp/img" + fileName.replace("/", "_");
                 File tmpOutputFile = new File(tmpCachePath);
-                System.out.println("Processing webp image: " + tmpCachePath);
+                System.out.println("\u001B[32m"+"Processing webp image: " + tmpCachePath+"\u001B[0m");
                 try {
                     FileDownloader.fileDownloader(newsItemData.getUrlToImage(), fileName.replace("/", "_"));
                     BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
                     thumbnail = SwingFXUtils.toFXImage(bufferedImage, null);
                 } catch (Exception ex) {
-                    System.out.println("Error processing webp image: " + ex.getMessage());
+                    System.out.println("\u001B[31m"+"Error processing webp image: " + ex.getMessage()+"\u001B[0m");
                     thumbnail = new Image(noImageAvailablePath, true);
                 }
             }

@@ -59,6 +59,9 @@ public class NewsAggregatorClientController {
     private Tab searchTab;
 
     @FXML
+    private Tab newsTab;
+
+    @FXML
     private Tab marketDataTab;
 
     @FXML
@@ -130,6 +133,7 @@ public class NewsAggregatorClientController {
         redditTabButton.setOnAction(event -> {
             newsTypeTabPane.getSelectionModel().select(1);
         });
+        newsTab.setTooltip(new Tooltip("News"));
         searchTab.setOnSelectionChanged(event -> {
             if (searchTab.isSelected()) {
                 NewsSearchController newsSearchController = new NewsSearchController();

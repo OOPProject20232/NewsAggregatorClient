@@ -27,7 +27,7 @@ public class NewsCategoryJSONLoader implements IJSONLoader{
     }
 
     @Override
-    public void loadJSON() {
+    public synchronized void loadJSON() {
         JSONFileLoader jsonFileLoader = new JSONFileLoader(cacheFileName);
         jsonObject = jsonFileLoader.loadJSON();
     }

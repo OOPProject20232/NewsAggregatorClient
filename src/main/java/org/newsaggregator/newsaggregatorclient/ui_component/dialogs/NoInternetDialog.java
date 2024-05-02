@@ -13,6 +13,7 @@ public class NoInternetDialog extends GenericDialog{
         System.out.println(Paths.get("").toAbsolutePath());
 //        getDialogPane().getStylesheets().add(getClass().getResource("/dialog.css").toExternalForm());
         ButtonType close = new ButtonType("Close (and check your Internet connection)", ButtonBar.ButtonData.CANCEL_CLOSE);
+        setTitle("No Internet connection");
         setHeaderText("No Internet connection");
         setContentText("This app cannot work without Internet. Please check your Internet connection, then re-open the app");
         getDialogPane().getButtonTypes().add(close);

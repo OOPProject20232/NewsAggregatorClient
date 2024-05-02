@@ -24,7 +24,7 @@ public class NewsJSONLoader implements IJSONLoader {
     }
 
     @Override
-    public void loadJSON() {
+    public synchronized void loadJSON() {
         JSONFileLoader jsonFileLoader = new JSONFileLoader(cacheFileName);
         jsonObject = jsonFileLoader.loadJSON();
     }
@@ -35,7 +35,7 @@ public class NewsJSONLoader implements IJSONLoader {
     }
 
     @NotNull
-    public String getJSONString() {
+    public synchronized String getJSONString() {
         String result = "";
         try {
             result = jsonObject.toString();
@@ -45,8 +45,8 @@ public class NewsJSONLoader implements IJSONLoader {
         return result;
     }
 
-    public List<NewsItemData> getNewsItemDataList(int limit, int begin) {
-        System.out.println("Getting news item data list from JSON file");
+    public synchronized List<NewsItemData> getNewsItemDataList(int limit, int begin) {
+        System.out.println("\u001B[34m"+"Getting news item data list from JSON file"+ "\u001B[0m");
         JSONArray newsItems = jsonObject.getJSONArray("articles");
         List<NewsItemData> newsItemDataList = new ArrayList<>();
         if (begin >= newsItems.length()) {

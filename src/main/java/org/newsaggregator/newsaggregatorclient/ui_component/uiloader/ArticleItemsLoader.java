@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsItem;
+import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.LoadingDialog;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
 
 
     @Override
-    public NewsCategoryGroupTitledPane loadItems(List<NewsItemData> data) {
+    public synchronized NewsCategoryGroupTitledPane loadItems(List<NewsItemData> data) {
         if (begin + limit > data.size()) {
             limit = data.size() - begin;
         }
