@@ -26,9 +26,9 @@ public class JSONFileLoader {
         } catch (FileNotFoundException e) {
             NewsRetriever newsRetriever = new NewsRetriever();
             try {
-                newsRetriever.sendRequest("articles", true, "news.json");
                 newsRetriever.setLimit(50);
                 newsRetriever.setPageNumber(1);
+                newsRetriever.sendRequest("articles", true, "news.json");
                 scanner = new Scanner(dataFile);
             } catch (MalformedURLException | FileNotFoundException ex) {
                 throw new RuntimeException(ex);
