@@ -16,7 +16,7 @@ target/
 ### tmp data
 src/main/resources/tmp/img/*
 src/main/resources/tmp/
-src/main/resources/json/*
+src/main/resources/json/news.json
 
 ### Eclipse ###
 .apt_generated
