@@ -7,7 +7,7 @@
 }
 
 .tab-header-background{
-    -fx-background-color: -transparent;
+    -fx-background-color: transparent;
 }
 
 .tab{
