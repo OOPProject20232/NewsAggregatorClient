@@ -21,6 +21,7 @@ public class NewsAggregatorClientApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        System.out.println("\u001B[33m"+"Starting application"+ "\u001B[0m");
         FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("news_aggregator_client.fxml"));
         controller = new NewsAggregatorClientController(this.getHostServices());
         ConnectionChecker connectionChecker = new ConnectionChecker();
@@ -45,12 +46,13 @@ public class NewsAggregatorClientApplication extends Application {
         newsRetriever.setForceDownload(true);
         newsRetriever.setLimit(50);
         newsRetriever.setPageNumber(1);
+        int response;
         try {
-            newsRetriever.sendRequest("articles", true, "src/main/resources/json/news.json");
+            response = newsRetriever.sendRequest("articles", true, "src/main/resources/json/news.json");
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
-
+        System.out.println("NewsRetriever response: " + response);
         launch();
     }
 }

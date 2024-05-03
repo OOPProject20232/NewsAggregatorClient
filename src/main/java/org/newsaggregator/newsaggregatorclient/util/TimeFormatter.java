@@ -1,6 +1,7 @@
 package org.newsaggregator.newsaggregatorclient.util;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -14,10 +15,11 @@ public class TimeFormatter {
          * Nếu thời gian đăng chưa quá 1 tuần, hiển thị bài đăng cách đây bao nhiêu ngày
          * Còn lại hiển thị ngày tháng năm
          */
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        LocalDateTime published = LocalDateTime.parse(dateTime, formatter);
-        long diff = Math.abs(now.toEpochSecond(ZoneOffset.UTC) - published.toEpochSecond(ZoneOffset.UTC));
+        LocalDateTime postTime = LocalDateTime.parse(dateTime, formatter);
+        Duration duration = Duration.between(postTime, now);
+        long diff = duration.getSeconds();
         System.out.println("Diff: " + diff);
         if (diff < 60){
             return "Just now";

@@ -37,6 +37,7 @@ public class NewsRetriever implements IServerRequest{
         this.pageNumber = pageNumber;
     }
 
+
     @Override
     public synchronized int sendRequest(String endpoint, boolean isPaged, String cacheFilePath) throws MalformedURLException {
         try {
@@ -52,10 +53,6 @@ public class NewsRetriever implements IServerRequest{
             String cacheFile = cacheFolder + cacheFilePath;
             Path cachePath = Paths.get(cacheFile);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            if (forceDownload) {
-                System.out.println("Force download enabled, deleting cache file");
-                Files.delete(cachePath);
-            }
             if (cachePath.toFile().exists() && cachePath.toFile().length() == 0) {
                 Files.delete(cachePath);
             }
