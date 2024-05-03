@@ -23,13 +23,13 @@ public class NewsAggregatorClientApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("news_aggregator_client.fxml"));
         controller = new NewsAggregatorClientController(this.getHostServices());
-        fxmlLoader.setController(controller);
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
         ConnectionChecker connectionChecker = new ConnectionChecker();
         if (!connectionChecker.checkInternetConnection()) {
             NoInternetDialog dialog = new NoInternetDialog();
             dialog.showAndWait();
         } else {
+            fxmlLoader.setController(controller);
+            Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
             stage.setTitle("Crypto News Aggregator Client");
             stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/icon.png"))));
             stage.setScene(scene);

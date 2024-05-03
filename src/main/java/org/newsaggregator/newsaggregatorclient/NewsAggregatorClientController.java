@@ -20,6 +20,7 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_component.uiloader.ArticleItemsLoader;
 import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
+import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -77,6 +78,8 @@ public class NewsAggregatorClientController {
 
     private int currentPage = 1;
     private final int limit = 50;
+
+    private final String JSON_FOLDER_PẠTH = "src/main/resources/json/";
 
     public NewsAggregatorClientController(HostServices hostServices) {
         this.hostServices = hostServices;
@@ -197,7 +200,7 @@ public class NewsAggregatorClientController {
         articleViewer.setVisible(false);
     }
 
-    protected void showAllNewsCategories() {
+    protected synchronized void showAllNewsCategories() {
         /**
          * Hàm này sẽ hiển thị tất cả các tin tức theo từng danh mục,
          * được gọi khi ứng dụng được khởi chạy
@@ -212,7 +215,22 @@ public class NewsAggregatorClientController {
         newsContainer.add(ethereumNews, 1, 1, 1, 1);
         NewsCategoryGroupTitledPane allNews = new NewsCategoryGroupTitledPane("All news");
         newsContainer.add(allNews, 0, 2, 2, 1);
-        NewsJSONLoader articleDataLoader = getNewsJSONLoader();
+        NewsJSONLoader articleDataLoader = null;
+        try {
+            articleDataLoader = getNewsJSONLoader();
+        }
+        catch (Exception ex) {
+            CreateJSONCache.createFolder(JSON_FOLDER_PẠTH);
+            NewsRetriever newsRetriever = new NewsRetriever();
+            newsRetriever.setLimit(50);
+            newsRetriever.setPageNumber(1);
+            try {
+                newsRetriever.sendRequest("articles", true, "news.json");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            articleDataLoader = getNewsJSONLoader();
+        }
         if (articleDataLoader.getJSONString().isEmpty()) {
             System.out.println("Data is empty");
         }
@@ -229,18 +247,11 @@ public class NewsAggregatorClientController {
         }
     }
 
-    private static @NotNull NewsJSONLoader getNewsJSONLoader() {
+    private synchronized @NotNull NewsJSONLoader getNewsJSONLoader() {
         NewsJSONLoader articleDataLoader = new NewsJSONLoader();
         articleDataLoader.setCacheFileName("news.json");
+        CreateJSONCache.createFolder(JSON_FOLDER_PẠTH);
         articleDataLoader.loadJSON();
-//        Thread jsonThread = new Thread(() -> {
-//            try {
-//                articleDataLoader.loadJSON();
-//            } catch (Exception ex) {
-//                throw new RuntimeException(ex);
-//            }
-//        });
-//        jsonThread.start();
         String newsString = articleDataLoader.getJSONString();
         if (newsString.isEmpty()) {
             NewsRetriever newsRetriever = new NewsRetriever();
@@ -290,6 +301,7 @@ public class NewsAggregatorClientController {
             NewsRetriever articleRetriever = new NewsRetriever();
             articleRetriever.setLimit(50);
             articleRetriever.setPageNumber(1);
+            articleRetriever.setForceDownload(false);
             try {
                 articleRetriever.sendRequest("articles", true, "news.json");
                 Platform.runLater(() -> {

@@ -17,7 +17,8 @@ public class TimeFormatter {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         LocalDateTime published = LocalDateTime.parse(dateTime, formatter);
-        long diff = now.toEpochSecond(ZoneOffset.UTC) - published.toEpochSecond(ZoneOffset.UTC);
+        long diff = Math.abs(now.toEpochSecond(ZoneOffset.UTC) - published.toEpochSecond(ZoneOffset.UTC));
+        System.out.println("Diff: " + diff);
         if (diff < 60){
             return "Just now";
         }

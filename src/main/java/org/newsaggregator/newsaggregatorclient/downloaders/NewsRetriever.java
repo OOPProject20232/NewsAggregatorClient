@@ -38,7 +38,7 @@ public class NewsRetriever implements IServerRequest{
     }
 
     @Override
-    public int sendRequest(String endpoint, boolean isPaged, String cacheFilePath) throws MalformedURLException {
+    public synchronized int sendRequest(String endpoint, boolean isPaged, String cacheFilePath) throws MalformedURLException {
         try {
             /**
              * Class này chứa các hàm để gửi request đến server
