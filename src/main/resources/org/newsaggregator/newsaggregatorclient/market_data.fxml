@@ -4,18 +4,60 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="540.0" prefWidth="1085.0" styleClass="chart-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <LineChart prefHeight="400.0" prefWidth="827.0">
-         <xAxis>
-            <CategoryAxis side="BOTTOM" />
-         </xAxis>
-         <yAxis>
-            <NumberAxis minorTickVisible="false" side="LEFT" />
-         </yAxis>
-      </LineChart>
+      <VBox alignment="CENTER" layoutX="873.0" layoutY="170.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="BASELINE_LEFT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label contentDisplay="CENTER" styleClass="coin-title" text="\$$img$$ $$Coin name$$">
+                     <font>
+                        <Font size="48.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="price" text="\$$Price$$">
+                     <font>
+                        <Font size="32.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <LineChart prefHeight="400.0" prefWidth="827.0">
+               <xAxis>
+                  <CategoryAxis side="BOTTOM" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis minorTickVisible="false" side="LEFT" />
+               </yAxis>
+            </LineChart>
+            <HBox alignment="CENTER" prefHeight="52.0" prefWidth="1065.0" spacing="12.0">
+               <children>
+                  <ToggleButton mnemonicParsing="false" text="1 week">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="data_period" />
+                     </toggleGroup>
+                  </ToggleButton>
+                  <ToggleButton mnemonicParsing="false" text="1 month" toggleGroup="$data_period" />
+                  <ToggleButton mnemonicParsing="false" text="6 months" toggleGroup="$data_period" />
+                  <ToggleButton mnemonicParsing="false" text="YTD" toggleGroup="$data_period" />
+               </children>
+            </HBox>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0" styleClass="generic-container">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="1041.0" styleClass="generic-container" />
+              </content>
+            </ScrollPane>
+         </children>
+      </VBox>
    </children>
    <stylesheets>
       <URL value="@assets/css/chart.css" />

@@ -6,8 +6,7 @@ import javafx.concurrent.Task;
 import javafx.scene.layout.Pane;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
-import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsItem;
-import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsItemFrame;
 
 import java.util.List;
 
@@ -62,9 +61,9 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
         Thread textThread = new Thread(() -> Platform.runLater(() -> {
             for (int countItem = begin; countItem < limit + begin; countItem++) {
                 NewsItemData itemData = data.get(countItem);
-                NewsItem newsItem = new NewsItem(itemData);
-                newsItem.loadText();
-                newsItem.getArticleHyperlinkObject().setOnAction(
+                NewsItemFrame newsItem = new NewsItemFrame(itemData);
+                newsItem.setText();
+                newsItem.getArticleHyperlinkTitleObject().setOnAction(
                         event -> hostServices.showDocument(itemData.getUrl())
                 );
                 updateProgress(countItem, limit + begin);
@@ -73,8 +72,8 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
         }));
         textThread.start();
         Thread imageThread = new Thread(() -> Platform.runLater(() -> {
-            for (NewsItem newsItem : newsCategoryGroupTitledPane.getNewsItems()) {
-                newsItem.loadImage();
+            for (NewsItemFrame newsItem : newsCategoryGroupTitledPane.getNewsItems()) {
+                newsItem.setImage();
             }
         }));
         imageThread.start();

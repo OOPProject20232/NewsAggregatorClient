@@ -29,13 +29,13 @@ public class NewsCategoryGroupTitledPane extends TitledPane {
     public VBox getContainer() {
         return this.newsGroupLayout;
     }
-    public void addNewsItem(NewsItem newsItem) {
+    public void addNewsItem(NewsItemFrame newsItem) {
         this.newsGroupLayout.getChildren().add(newsItem);
     }
-    public Array<NewsItem> getNewsItems() {
-        Array<NewsItem> newsItems = new Array<>();
+    public Array<NewsItemFrame> getNewsItems() {
+        Array<NewsItemFrame> newsItems = new Array<>();
         for (int i = 0; i < this.newsGroupLayout.getChildren().size(); i++) {
-            newsItems.add((NewsItem) this.newsGroupLayout.getChildren().get(i));
+            newsItems.add((NewsItemFrame) this.newsGroupLayout.getChildren().get(i));
         }
         return newsItems;
     }

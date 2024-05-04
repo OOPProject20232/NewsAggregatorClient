@@ -27,15 +27,17 @@ public class CoinPriceRetriever implements IServerRequest{
                     return 304;
                 }
             }
-            connection.setRequestMethod("GET");
-            connection.connect();
+            else{
+                System.out.println("Cache file does not exist, sending request without If-Modified-Since header");
+                connection.setRequestMethod("GET");
+            }
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
                 System.out.println("Server responded with 200 OK, downloading file");
                 File cache = new File(cacheFile);
-//                if (!cache.exists()) {
-//                    cache.createNewFile();
-//                }
+                if (cache.exists()){
+                    cache.delete();
+                }
                 Files.copy(connection.getInputStream(), cache.toPath());
                 return 200;
             }

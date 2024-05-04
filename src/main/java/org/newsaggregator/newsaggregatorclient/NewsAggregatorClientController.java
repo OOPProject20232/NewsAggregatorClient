@@ -24,6 +24,7 @@ import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
 
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NewsAggregatorClientController {
@@ -33,22 +34,9 @@ public class NewsAggregatorClientController {
      */
 
     @FXML
-    private WebView articleWebView;
-    @FXML
     private GridPane newsContainer;
     @FXML
     protected SplitPane newsSplitPane;
-    @FXML
-    private Label addressBar;
-
-    @FXML
-    private VBox articleViewer;
-
-    @FXML
-    private Button reloadButton;
-
-    @FXML
-    private Button closeButton;
 
     @FXML
     private AnchorPane mainAnchorPane;
@@ -87,22 +75,6 @@ public class NewsAggregatorClientController {
 
     public void start(){
         newsSplitPane.setDividerPositions(1);
-        articleViewer.setVisible(false);
-        reloadButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    reloadWebsite();
-                }
-            }
-        );
-
-        closeButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    closeWebsite();
-                }
-            }
-        );
         newsContainer.getChildren().clear();
         reloadNews.setOnAction(event -> reloadNews());
         articleTabButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -164,40 +136,6 @@ public class NewsAggregatorClientController {
             }
         });
 
-    }
-
-    void loadWebsite(String url) {
-        /**
-         * Hàm này sẽ load bài báo hiển thị trên màn hình chính lên WebView
-         * Được gọi khi người dùng click vào một tin tức
-         * @param event: Sự kiện click chuột vào một tin tức
-         * @param url: Đường dẫn website cần load
-         */
-        System.out.println("Loading website: " + url);
-        newsSplitPane.setDividerPositions(0.5);
-        articleWebView.getEngine().load(url);
-        addressBar.setText(url);
-        articleViewer.setVisible(true);
-    }
-
-    private void reloadWebsite() {
-        /**
-         * Hàm này sẽ load lại trang web đang hiển thị trên WebView
-         * Được gọi khi người dùng click vào nút "tải lại" trên WebView
-         * @param event: Sự kiện click chuột vào nút "tải lại"
-         */
-        articleWebView.getEngine().reload();
-    }
-
-    protected void closeWebsite(){
-        /**
-         * Hàm này sẽ đóng trang web đang hiển thị trên WebView
-         * Được gọi khi người dùng click vào nút "đóng" trên WebView
-         */
-        articleWebView.getEngine().load(null);
-        addressBar.setText("");
-        newsSplitPane.setDividerPositions(1);
-        articleViewer.setVisible(false);
     }
 
     protected synchronized void showAllNewsCategories() {

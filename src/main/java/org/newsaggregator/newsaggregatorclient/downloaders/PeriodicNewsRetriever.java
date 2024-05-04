@@ -19,6 +19,8 @@ public class PeriodicNewsRetriever extends NewsRetriever{
         /**
          * Hàm này sẽ gửi request đến server sau mỗi period giây
          */
+        setLimit(50);
+        setPageNumber(1);
 //        thread = new Thread(() -> {
 //            while (true) {
 //                try {
