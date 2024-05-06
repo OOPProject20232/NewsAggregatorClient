@@ -1,8 +1,9 @@
 package org.newsaggregator.newsaggregatorclient.ui_component.datacard;
 
-import com.almasb.fxgl.core.collection.Array;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
+
+import java.util.ArrayList;
 
 public class NewsCategoryGroupTitledPane extends TitledPane {
     /**
@@ -29,13 +30,15 @@ public class NewsCategoryGroupTitledPane extends TitledPane {
     public VBox getContainer() {
         return this.newsGroupLayout;
     }
-    public void addNewsItem(NewsItemFrame newsItem) {
-        this.newsGroupLayout.getChildren().add(newsItem);
+
+    public void addItem(NewsItemCard data) {
+        this.newsGroupLayout.getChildren().add((NewsItemCard) data);
     }
-    public Array<NewsItemFrame> getNewsItems() {
-        Array<NewsItemFrame> newsItems = new Array<>();
+
+    public ArrayList<NewsItemCard> getItems() {
+        ArrayList<NewsItemCard> newsItems = new ArrayList<>();
         for (int i = 0; i < this.newsGroupLayout.getChildren().size(); i++) {
-            newsItems.add((NewsItemFrame) this.newsGroupLayout.getChildren().get(i));
+            newsItems.add((NewsItemCard) this.newsGroupLayout.getChildren().get(i));
         }
         return newsItems;
     }

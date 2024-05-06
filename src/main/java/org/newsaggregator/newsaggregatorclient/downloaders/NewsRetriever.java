@@ -20,6 +20,7 @@ public class NewsRetriever implements IServerRequest{
     private int pageNumber;
     private int limit;
     private boolean forceDownload;
+    private String endpoint = "v1/articles";
 
     public int getLimit() {
         return limit;
@@ -39,12 +40,12 @@ public class NewsRetriever implements IServerRequest{
 
 
     @Override
-    public synchronized int sendRequest(String endpoint, boolean isPaged, String cacheFilePath) throws MalformedURLException {
+    public synchronized int sendRequest(boolean isPaged, String cacheFilePath) throws MalformedURLException {
         try {
             /**
              * Class này chứa các hàm để gửi request đến server
              */
-            String serverURLString = serverDomain + "v1/" + endpoint;
+            String serverURLString = serverDomain + endpoint;
             URL url = URI.create(serverURLString).toURL();
             if (isPaged) {
                 if (pageNumber != 0 && limit != 0) url = URI.create(serverURLString + "?page=%s&limit=%s".formatted(pageNumber, limit)).toURL();
@@ -57,7 +58,7 @@ public class NewsRetriever implements IServerRequest{
                 Files.delete(cachePath);
             }
             if (cachePath.toFile().exists() && cachePath.toFile().length() > 0) {
-                System.out.println("Cache file exists, sending request with If-Modified-Since header");
+                System.out.println("Cache file exists, sending request with If-Modified-Since header (News)");
                 BasicFileAttributes attr = Files.readAttributes(cachePath, BasicFileAttributes.class);
                 ZonedDateTime lastModified = attr.lastModifiedTime().toInstant().atZone(ZoneOffset.UTC);
                 try {
@@ -66,25 +67,25 @@ public class NewsRetriever implements IServerRequest{
                     System.out.println("If-Modified-Since: " + lastModified.toString());
                     int responseCode = connection.getResponseCode();
                     if (responseCode == 304) {
-                        System.out.println("Server responded with 304 Not Modified, no need to download again");
+                        System.out.println("Server responded with 304 Not Modified, no need to download again (News)");
                         return 304;
                     }
                 } catch (IOException e) {
-                    System.out.println("Error sending request: " + e.getMessage());
+                    System.out.println("(News) Error sending request: " + e.getMessage());
                 }
             }
             else{
-                System.out.println("Cache file does not exist, sending request without If-Modified-Since header");
+                System.out.println("Cache file does not exist, sending request without If-Modified-Since header (News)");
                 try {
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Accept", "application/json");
                 } catch (IOException e) {
-                    System.out.println("Error sending request: " + e.getMessage());
+                    System.out.println("(News) Error sending request: " + e.getMessage());
                 }
             }
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
-                System.out.println("Server responded with 200 OK, downloading file");
+                System.out.println("Server responded with 200 OK, downloading file (News)");
                 FileOutputStream fileOutputStream;
                 try {
                     if (cachePath.toFile().length() == 0) {
@@ -103,16 +104,16 @@ public class NewsRetriever implements IServerRequest{
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                System.out.println("File downloaded successfully!");
+                System.out.println("File downloaded successfully! (News)");
                 return 200;
             }
             else {
-                System.out.println("Server responded with " + responseCode + " " + connection.getResponseMessage());
+                System.out.println("(News) Server responded with " + responseCode + " " + connection.getResponseMessage());
                 return responseCode;
             }
         }
         catch (IOException e) {
-            System.out.println("Error reading file attributes: " + e.getMessage());
+            System.out.println("News) Error reading file attributes: " + e.getMessage());
         }
         return 0;
     }

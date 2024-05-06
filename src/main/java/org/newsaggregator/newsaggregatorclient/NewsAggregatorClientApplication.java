@@ -8,22 +8,21 @@ import javafx.scene.image.Image;
 import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
 import org.newsaggregator.newsaggregatorclient.downloaders.CoinPriceRetriever;
 import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
-import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetrieverByCategory;
 import org.newsaggregator.newsaggregatorclient.downloaders.PeriodicNewsRetriever;
+import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.NoInternetDialog;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class NewsAggregatorClientApplication extends Application {
     private NewsAggregatorClientController controller;
 
     @Override
-    public void init() throws Exception {
-        CompletableFuture.runAsync(() -> {
+    public synchronized void init() throws Exception {
+        new Thread(() -> {
             System.out.println("Starting NewsRetriever");
             NewsRetriever newsRetriever = new NewsRetriever();
             newsRetriever.setForceDownload(true);
@@ -31,27 +30,27 @@ public class NewsAggregatorClientApplication extends Application {
             newsRetriever.setPageNumber(1);
             int response;
             try {
-                response = newsRetriever.sendRequest("articles", true, "src/main/resources/json/news.json");
+                response = newsRetriever.sendRequest( true, "news.json");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
             System.out.println("NewsRetriever response: " + response);
-        });
-        CompletableFuture.runAsync(() -> {
+        }).start();
+        new Thread(() -> {
             CoinPriceRetriever coinPriceRetriever = new CoinPriceRetriever();
             int response;
             try {
-                response = coinPriceRetriever.sendRequest("coins", false, "coins.json");
+                response = coinPriceRetriever.sendRequest(false, "coins.json");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
             System.out.println("CoinPriceRetriever response: " + response);
-        });
+        }).start();
 
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public synchronized void start(Stage stage) throws IOException {
         System.out.println("\u001B[33m"+"Starting application"+ "\u001B[0m");
         FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("news_aggregator_client.fxml"));
         controller = new NewsAggregatorClientController(this.getHostServices());
@@ -67,13 +66,11 @@ public class NewsAggregatorClientApplication extends Application {
             stage.setScene(scene);
             stage.show();
             controller.start();
-            PeriodicNewsRetriever periodicNewsRetriever = new PeriodicNewsRetriever();
-            periodicNewsRetriever.startRetrieving();
             controller.showAllNewsCategories();
         }
     }
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
         launch();
     }
 }

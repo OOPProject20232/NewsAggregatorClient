@@ -262,3 +262,21 @@
 .dialog-pane .label {
     -fx-text-fill: white;
 }
+
+/* Coin price*/
+
+.price{
+
+}
+
+.price__up{
+    -fx-text-fill: green;
+}
+
+.price__down{
+    -fx-text-fill: red;
+}
+
+.price__same {
+    -fx-text-fill: black;
+}

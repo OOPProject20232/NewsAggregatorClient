@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URI;
 
-public class NewsItemFrame extends HBox implements IGenericDataCard<NewsItemData>{
+public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>{
     /**
      * Class này chứa bộ khung để hiển thị một tin tức
      * Bao gồm các thành phần
@@ -40,7 +40,7 @@ public class NewsItemFrame extends HBox implements IGenericDataCard<NewsItemData
     private final String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
     private NewsItemData newsItemData;
 
-    public NewsItemFrame() {
+    public NewsItemCard() {
         this.setAlignment(Pos.CENTER_LEFT);
         articleHyperlinkTitleObject.setWrapText(true);
         articleHyperlinkTitleObject.getStyleClass().add("article-title");
@@ -67,7 +67,7 @@ public class NewsItemFrame extends HBox implements IGenericDataCard<NewsItemData
         this.getChildren().add(newsInfo);
     }
 
-    public NewsItemFrame(NewsItemData newsItemData) {
+    public NewsItemCard(NewsItemData newsItemData) {
         this();
         this.newsItemData = newsItemData;
         this.setSpacing(10);

@@ -17,21 +17,21 @@
    <children>
       <VBox alignment="CENTER" layoutX="873.0" layoutY="170.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="BASELINE_LEFT" prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="BASELINE_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="12.0">
                <children>
-                  <Label contentDisplay="CENTER" styleClass="coin-title" text="\$$img$$ $$Coin name$$">
+                  <Label fx:id="chartTitle" styleClass="coin-title" text="\$$img$$ $$Coin name$$">
                      <font>
                         <Font size="48.0" />
                      </font>
                   </Label>
-                  <Label styleClass="price" text="\$$Price$$">
+                  <Label fx:id="coinPriceLabel" styleClass="price" text="\$$Price$$">
                      <font>
                         <Font size="32.0" />
                      </font>
                   </Label>
                </children>
             </HBox>
-            <LineChart prefHeight="400.0" prefWidth="827.0">
+            <LineChart fx:id="coinPriceChart" alternativeRowFillVisible="false" createSymbols="false" prefHeight="400.0" prefWidth="827.0" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
                <xAxis>
                   <CategoryAxis side="BOTTOM" />
                </xAxis>
@@ -41,14 +41,14 @@
             </LineChart>
             <HBox alignment="CENTER" prefHeight="52.0" prefWidth="1065.0" spacing="12.0">
                <children>
-                  <ToggleButton mnemonicParsing="false" text="1 week">
+                  <ToggleButton fx:id="oneWeekButton" mnemonicParsing="false" selected="true" text="1 week">
                      <toggleGroup>
                         <ToggleGroup fx:id="data_period" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton mnemonicParsing="false" text="1 month" toggleGroup="$data_period" />
-                  <ToggleButton mnemonicParsing="false" text="6 months" toggleGroup="$data_period" />
-                  <ToggleButton mnemonicParsing="false" text="YTD" toggleGroup="$data_period" />
+                  <ToggleButton fx:id="oneMonthButton" mnemonicParsing="false" text="1 month" toggleGroup="$data_period" />
+                  <ToggleButton fx:id="sixMonthsButton" mnemonicParsing="false" text="6 months" toggleGroup="$data_period" />
+                  <ToggleButton fx:id="ytdButton" mnemonicParsing="false" text="YTD" toggleGroup="$data_period" />
                </children>
             </HBox>
             <ScrollPane prefHeight="200.0" prefWidth="200.0" styleClass="generic-container">

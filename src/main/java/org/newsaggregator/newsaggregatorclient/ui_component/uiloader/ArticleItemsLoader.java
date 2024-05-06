@@ -6,16 +6,23 @@ import javafx.concurrent.Task;
 import javafx.scene.layout.Pane;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
-import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsItemFrame;
+import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsItemCard;
 
 import java.util.List;
 
-public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsItemData>{
-    int begin;
+public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
     /**
-     * Class này chứa các hàm để load các tin tức từ các nguồn khác nhau
-     * lên trên GUI
+     * <p>
+     *     Class này chứa các hàm để load các tin tức từ các nguồn khác nhau
+     *      lên trên GUI
+     * </p>
+     *
+     * <p>
+     * Các đối tượng gọi tới lớp này sẽ truyền một tham số là một danh sách các tin tức, sau đó
+     * sẽ tạo 2 luồng để tải tin lên, một luồng để tải text và một luồng để tải hình ảnh
+     * </p>
      */
+    int begin;
     int limit;
     Pane container;
     HostServices hostServices;
@@ -52,8 +59,6 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
         System.out.println("Loading: " + workDone + "/" + max);
     }
 
-
-    @Override
     public synchronized NewsCategoryGroupTitledPane loadItems(List<NewsItemData> data) {
         if (begin + limit > data.size()) {
             limit = data.size() - begin;
@@ -61,18 +66,18 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader<NewsIt
         Thread textThread = new Thread(() -> Platform.runLater(() -> {
             for (int countItem = begin; countItem < limit + begin; countItem++) {
                 NewsItemData itemData = data.get(countItem);
-                NewsItemFrame newsItem = new NewsItemFrame(itemData);
+                NewsItemCard newsItem = new NewsItemCard(itemData);
                 newsItem.setText();
                 newsItem.getArticleHyperlinkTitleObject().setOnAction(
                         event -> hostServices.showDocument(itemData.getUrl())
                 );
                 updateProgress(countItem, limit + begin);
-                newsCategoryGroupTitledPane.addNewsItem(newsItem);
+                newsCategoryGroupTitledPane.addItem(newsItem);
             }
         }));
         textThread.start();
         Thread imageThread = new Thread(() -> Platform.runLater(() -> {
-            for (NewsItemFrame newsItem : newsCategoryGroupTitledPane.getNewsItems()) {
+            for (NewsItemCard newsItem : newsCategoryGroupTitledPane.getItems()) {
                 newsItem.setImage();
             }
         }));

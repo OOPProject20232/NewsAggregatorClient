@@ -38,7 +38,7 @@ public class PeriodicNewsRetriever extends NewsRetriever{
                 @Override
                 public void run() {
                     try {
-                        sendRequest("articles", true, "news.json");
+                        sendRequest(true, "news.json");
                     } catch (Exception e) {
                         System.out.println("Error sending request: " + e.getMessage());
                     }

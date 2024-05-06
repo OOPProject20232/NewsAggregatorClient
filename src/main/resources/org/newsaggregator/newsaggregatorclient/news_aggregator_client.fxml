@@ -135,7 +135,7 @@
                                           </TabPane>
                                        </children>
                                     </VBox>
-                                    <VBox fx:id="coinPrice" maxWidth="1.7976931348623157E308" prefHeight="564.0" prefWidth="181.0" style="-fx-padding: 0 5px;" styleClass="generic-container" />
+                                    <VBox fx:id="additionalInfoContainer" maxWidth="1.7976931348623157E308" prefHeight="564.0" prefWidth="181.0" style="-fx-padding: 0 5px;" styleClass="generic-container" />
                                 </items>
                               </SplitPane>
                            </children>
