@@ -3,15 +3,12 @@ package org.newsaggregator.newsaggregatorclient.jsonparsing;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class NewsJSONLoader implements IJSONLoader {
     private JSONObject jsonObject;
@@ -25,8 +22,13 @@ public class NewsJSONLoader implements IJSONLoader {
 
     @Override
     public synchronized void loadJSON() {
-        JSONFileLoader jsonFileLoader = new JSONFileLoader(cacheFileName);
-        jsonObject = jsonFileLoader.loadJSON();
+        JSONFileReader jsonFileReader = new JSONFileReader(cacheFileName);
+        try{
+            jsonObject = jsonFileReader.loadJSON();
+        } catch (Exception e) {
+            CreateJSONCache.createFolder(jsonFileReader.getFolderPath());
+            jsonObject = jsonFileReader.loadJSON();
+        }
     }
 
     public int getCount() {

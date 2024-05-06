@@ -1,9 +1,6 @@
-package org.newsaggregator.newsaggregatorclient.downloaders;
+package org.newsaggregator.newsaggregatorclient.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.channels.ReadableByteChannel;

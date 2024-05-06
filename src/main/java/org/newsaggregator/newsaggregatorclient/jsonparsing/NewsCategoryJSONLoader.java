@@ -1,16 +1,6 @@
 package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
-import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class NewsCategoryJSONLoader implements IJSONLoader{
     private JSONObject jsonObject;
@@ -28,8 +18,8 @@ public class NewsCategoryJSONLoader implements IJSONLoader{
 
     @Override
     public synchronized void loadJSON() {
-        JSONFileLoader jsonFileLoader = new JSONFileLoader(cacheFileName);
-        jsonObject = jsonFileLoader.loadJSON();
+        JSONFileReader jsonFileReader = new JSONFileReader(cacheFileName);
+        jsonObject = jsonFileReader.loadJSON();
     }
 
 

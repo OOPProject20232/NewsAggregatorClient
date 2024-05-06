@@ -8,5 +8,5 @@ public interface IServerRequest {
      */
     String serverDomain = "https://newsaggregator-mern.onrender.com/";
     String cacheFolder = "src/main/resources/json/";
-    int sendRequest(String endpoint, boolean isPaged, String cacheFilePath) throws MalformedURLException;
+    int sendRequest(boolean isPaged, String cacheFilePath) throws MalformedURLException;
 }

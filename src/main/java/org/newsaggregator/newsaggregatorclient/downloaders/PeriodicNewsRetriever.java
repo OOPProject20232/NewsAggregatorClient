@@ -19,6 +19,8 @@ public class PeriodicNewsRetriever extends NewsRetriever{
         /**
          * Hàm này sẽ gửi request đến server sau mỗi period giây
          */
+        setLimit(50);
+        setPageNumber(1);
 //        thread = new Thread(() -> {
 //            while (true) {
 //                try {
@@ -36,7 +38,7 @@ public class PeriodicNewsRetriever extends NewsRetriever{
                 @Override
                 public void run() {
                     try {
-                        sendRequest("articles", true, "news.json");
+                        sendRequest(true, "news.json");
                     } catch (Exception e) {
                         System.out.println("Error sending request: " + e.getMessage());
                     }

@@ -1,10 +1,13 @@
 package org.newsaggregator.newsaggregatorclient.util;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class TimeFormatter {
     public static String processDateTime(String dateTime){
@@ -14,10 +17,12 @@ public class TimeFormatter {
          * Nếu thời gian đăng chưa quá 1 tuần, hiển thị bài đăng cách đây bao nhiêu ngày
          * Còn lại hiển thị ngày tháng năm
          */
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        LocalDateTime published = LocalDateTime.parse(dateTime, formatter);
-        long diff = now.toEpochSecond(ZoneOffset.UTC) - published.toEpochSecond(ZoneOffset.UTC);
+        LocalDateTime postTime = LocalDateTime.parse(dateTime, formatter);
+        Duration duration = Duration.between(postTime, now);
+        long diff = duration.getSeconds();
+        System.out.println("Diff: " + diff);
         if (diff < 60){
             return "Just now";
         }
@@ -47,6 +52,38 @@ public class TimeFormatter {
             catch (Exception e){
                 return "Unknown";
             }
+        }
+    }
+
+    public static String convertISOToNormal(String dateTime){
+        /**
+         * Chuyển đổi chuỗi ngày tháng từ ISO sang dạng bình thường
+         */
+        SimpleDateFormat inp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        // Get time with current offset
+        SimpleDateFormat out = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        try {
+            Date date = inp.parse(dateTime);
+            return out.format(date);
+        }
+        catch (Exception e){
+            return "Unknown";
+        }
+    }
+
+    public static String convertISOToDate(String dateTime){
+        /**
+         * Chuyển đổi chuỗi ngày tháng từ ISO sang dạng bình thường
+         */
+        SimpleDateFormat inp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        // Get time with current offset
+        SimpleDateFormat out = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date date = inp.parse(dateTime);
+            return out.format(date);
+        }
+        catch (Exception e){
+            return "Unknown";
         }
     }
 }

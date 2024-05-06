@@ -12,55 +12,6 @@ public class NewsItemData extends GenericData{
     private List<String> category;
     private String title;
     private Object author;
-
-    public List<String> getCategory() {
-        return category;
-    }
-
-    public void setCategory(List<String> category) {
-        this.category = category;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Object getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Object author) {
-        this.author = author;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getArticleDetailedContent() {
-        return articleDetailedContent;
-    }
-
-    public void setArticleDetailedContent(String articleDetailedContent) {
-        this.articleDetailedContent = articleDetailedContent;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     private String description;
     private String articleDetailedContent;
     private String url;
@@ -137,5 +88,53 @@ public class NewsItemData extends GenericData{
 
     public void setPublisherLogoURL(String publisherLogoURL) {
         this.publisherLogoURL = publisherLogoURL;
+    }
+
+    public List<String> getCategory() {
+        return category;
+    }
+
+    public void setCategory(List<String> category) {
+        this.category = category;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Object getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Object author) {
+        this.author = author;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getArticleDetailedContent() {
+        return articleDetailedContent;
+    }
+
+    public void setArticleDetailedContent(String articleDetailedContent) {
+        this.articleDetailedContent = articleDetailedContent;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
