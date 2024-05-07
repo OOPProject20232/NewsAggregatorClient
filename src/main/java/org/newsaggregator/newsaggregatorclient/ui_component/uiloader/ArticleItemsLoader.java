@@ -28,7 +28,7 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
     HostServices hostServices;
     NewsCategoryGroupTitledPane newsCategoryGroupTitledPane;
 
-    public ArticleItemsLoader(int limit, int begin, Pane container, HostServices hostServices, NewsCategoryGroupTitledPane newsCategoryGroupTitledPane) {
+    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, NewsCategoryGroupTitledPane newsCategoryGroupTitledPane) {
         this.limit = limit;
         this.container = container;
         this.hostServices = hostServices;

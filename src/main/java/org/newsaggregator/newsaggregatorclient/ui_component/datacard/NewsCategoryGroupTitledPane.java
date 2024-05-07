@@ -17,7 +17,7 @@ public class NewsCategoryGroupTitledPane extends TitledPane {
      * - Nút xem tin tức (nút "chi tiết" hoặc link ẩn trên tiêu đề tin tức)
      */
 
-    private final VBox newsGroupLayout = new VBox();
+    protected final VBox newsGroupLayout = new VBox();
 
     public NewsCategoryGroupTitledPane(String category) {
         this.setCollapsible(false);

@@ -21,6 +21,7 @@ public class CoinNewestPriceGroupFrame extends TitledPane {
         this.getStyleClass().add("category");
 //        this.vgrowPolicyProgerty().setPriority(1);
         this.setContent(coinGroupLayout);
+        this.setMaxWidth(400);
     }
 
     public void addItem(CoinNewestPriceCard coinItem) {

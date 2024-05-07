@@ -11,6 +11,8 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
 
 import java.util.List;
 
+import static java.lang.Long.MAX_VALUE;
+
 public class CoinNewestPriceCard extends HBox implements IGenericDataCard<CoinPriceData>{
     private CoinPriceData coinPriceData;
     Label rank;
@@ -29,6 +31,7 @@ public class CoinNewestPriceCard extends HBox implements IGenericDataCard<CoinPr
     @Override
     public void setCardStyle() {
         this.setSpacing(12);
+        this.setMaxWidth(MAX_VALUE);
 //        this.getStylesheets().add(this.getClass().getResourceAsStream("assets/css/coin-newest-price-frame.css").toString());
     }
 

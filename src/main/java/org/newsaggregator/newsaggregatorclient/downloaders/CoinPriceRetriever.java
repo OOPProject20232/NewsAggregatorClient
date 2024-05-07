@@ -17,54 +17,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class CoinPriceRetriever implements IServerRequest{
     private String endpoint = "v1/coins";
     @Override
-    public int sendRequest(boolean isPaged, String cacheFilePath) throws MalformedURLException {
-        URL url = URI.create(serverDomain + endpoint).toURL();
-        try {
-            String cacheFile = cacheFolder + cacheFilePath;
-            // Check if file exists
-            boolean fileExists = new File(cacheFile).exists();
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            if (fileExists) {
-                System.out.println("Cache file exists, sending request with If-Modified-Since header (Coin)");
-                connection.setRequestMethod("HEAD");
-                connection.setRequestProperty("If-Modified-Since", Files.readAttributes(new File(cacheFile).toPath(), BasicFileAttributes.class).lastModifiedTime().toString());
-                int responseCode = connection.getResponseCode();
-                if (responseCode == 304) {
-                    System.out.println("Server responded with 304 Not Modified, no need to download again (Coin)");
-                    return 304;
-                }
-            }
-            else{
-                System.out.println("Cache file does not exist, sending request without If-Modified-Since header (Coin)");
-                connection.setRequestMethod("GET");
-            }
-            int responseCode = connection.getResponseCode();
-            if (responseCode == 200) {
-                System.out.println("Server responded with 200 OK, downloading file (Coin)");
-                FileOutputStream fileOutputStream;
-                try{
-                    if (Paths.get(cacheFile).toFile().length() == 0) {
-                        fileOutputStream = new FileOutputStream(cacheFile, true);
-                    }
-                    else {
-                        fileOutputStream = new FileOutputStream(cacheFile, false);
-                    }
-                    InputStream iStream = url.openStream();
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = iStream.read(buffer)) != -1) {
-                        fileOutputStream.write(buffer, 0, length);
-                    }
-                    fileOutputStream.close();
-                }
-                catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-                return 200;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
+    public int downloadCache(boolean isPaged, String cacheFilePath) throws MalformedURLException {
+        GenericRetriever genericRetriever = new GenericRetriever();
+        genericRetriever.setPaged(false);
+        genericRetriever.setDomain(serverDomain);
+        return genericRetriever.sendRequest(cacheFolder, cacheFilePath, endpoint);
     }
 }

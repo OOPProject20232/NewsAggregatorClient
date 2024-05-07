@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URI;
+import java.util.concurrent.CompletableFuture;
 
 public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>{
     /**
@@ -140,54 +141,105 @@ public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>
     @Override
     public synchronized void setImage() {
         String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
-        Image thumbnail = new Image(noImageAvailablePath, true);
-        try {
-            System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
-            String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
-            String cache = fileName.replace("/", "_");
-            if (cache.contains("?")) {
-                cache = cache.substring(0, cache.indexOf("?"));
-            }
-            System.out.println("File name: " + fileName);
-            if (fileName.endsWith(".webp")) {
-                String tmpCachePath = "src/main/resources/tmp/img" + cache;
-                if (!new File(tmpCachePath).exists()) {
-                    new File(tmpCachePath).delete();
-                    FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
+        // Download thumbnails in other thread, then load them
+        CompletableFuture.runAsync(() -> {
+            Image thumbnail = new Image(noImageAvailablePath, true);
+            try {
+                System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
+                String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
+                String cache = fileName.replace("/", "_");
+                if (cache.contains("?")) {
+                    cache = cache.substring(0, cache.indexOf("?"));
                 }
-                File tmpOutputFile = new File(tmpCachePath);
-                System.out.println("\u001B[32m"+"Processing webp image: " + tmpCachePath+"\u001B[0m");
-                try {
-                    BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
-                    thumbnail = SwingFXUtils.toFXImage(bufferedImage, null);
-                } catch (Exception ex) {
-                    System.out.println("\u001B[31m"+"Error processing webp image: " + ex.getMessage()+"\u001B[0m");
+                System.out.println("File name: " + fileName);
+                if (fileName.endsWith(".webp")) {
+                    String tmpCachePath = "src/main/resources/tmp/img" + cache;
+                    if (!new File(tmpCachePath).exists()) {
+                        new File(tmpCachePath).delete();
+                        FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
+                    }
+                    File tmpOutputFile = new File(tmpCachePath);
+                    System.out.println("\u001B[32m"+"Processing webp image: " + tmpCachePath+"\u001B[0m");
+                    try {
+                        BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
+                        thumbnail = SwingFXUtils.toFXImage(bufferedImage, null);
+                    } catch (Exception ex) {
+                        System.out.println("\u001B[31m"+"Error processing webp image: " + ex.getMessage()+"\u001B[0m");
+                        thumbnail = new Image(noImageAvailablePath, true);
+                    }
+                } else {
+                    if (!new File("src/main/resources/tmp/img" + cache).exists()) {
+                        FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
+                    }
+                    thumbnail = new Image("file:src/main/resources/tmp/img" + cache, true);
+                }
+                if (newsItemData.getUrlToImage().isBlank() || newsItemData.getUrlToImage().isEmpty()){
                     thumbnail = new Image(noImageAvailablePath, true);
-                }
-            } else {
-                if (!new File("src/main/resources/tmp/img" + cache).exists()) {
-                    FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
-                }
-                thumbnail = new Image("file:src/main/resources/tmp/img" + cache, true);
-            }
-            if (newsItemData.getUrlToImage().isBlank() || newsItemData.getUrlToImage().isEmpty()){
-                thumbnail = new Image(noImageAvailablePath, true);
 
+                }
             }
-        }
-        catch (Exception e) {
-            System.out.println("Error loading image: " + e.getMessage());
-            thumbnail = new Image(noImageAvailablePath, true);
-        }
-        finally {
-            int thumbnailHeight = 90;
-            int thumbnailWidth = 160;
-            Rectangle clip = new Rectangle(thumbnailWidth, thumbnailHeight);
-            clip.setArcHeight(10);
-            clip.setArcWidth(10);
-            thumbnailImageView.setImage(thumbnail);
-            thumbnailImageView.setClip(clip);
-        }
+            catch (Exception e) {
+                System.out.println("Error loading image: " + e.getMessage());
+                thumbnail = new Image(noImageAvailablePath, true);
+            }
+            finally {
+                int thumbnailHeight = 90;
+                int thumbnailWidth = 160;
+                Rectangle clip = new Rectangle(thumbnailWidth, thumbnailHeight);
+                clip.setArcHeight(10);
+                clip.setArcWidth(10);
+                thumbnailImageView.setImage(thumbnail);
+                thumbnailImageView.setClip(clip);
+            }
+        });
+
+//        try {
+//            System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
+//            String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
+//            String cache = fileName.replace("/", "_");
+//            if (cache.contains("?")) {
+//                cache = cache.substring(0, cache.indexOf("?"));
+//            }
+//            System.out.println("File name: " + fileName);
+//            if (fileName.endsWith(".webp")) {
+//                String tmpCachePath = "src/main/resources/tmp/img" + cache;
+//                if (!new File(tmpCachePath).exists()) {
+//                    new File(tmpCachePath).delete();
+//                    FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
+//                }
+//                File tmpOutputFile = new File(tmpCachePath);
+//                System.out.println("\u001B[32m"+"Processing webp image: " + tmpCachePath+"\u001B[0m");
+//                try {
+//                    BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
+//                    thumbnail = SwingFXUtils.toFXImage(bufferedImage, null);
+//                } catch (Exception ex) {
+//                    System.out.println("\u001B[31m"+"Error processing webp image: " + ex.getMessage()+"\u001B[0m");
+//                    thumbnail = new Image(noImageAvailablePath, true);
+//                }
+//            } else {
+//                if (!new File("src/main/resources/tmp/img" + cache).exists()) {
+//                    FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
+//                }
+//                thumbnail = new Image("file:src/main/resources/tmp/img" + cache, true);
+//            }
+//            if (newsItemData.getUrlToImage().isBlank() || newsItemData.getUrlToImage().isEmpty()){
+//                thumbnail = new Image(noImageAvailablePath, true);
+//
+//            }
+//        }
+//        catch (Exception e) {
+//            System.out.println("Error loading image: " + e.getMessage());
+//            thumbnail = new Image(noImageAvailablePath, true);
+//        }
+//        finally {
+//            int thumbnailHeight = 90;
+//            int thumbnailWidth = 160;
+//            Rectangle clip = new Rectangle(thumbnailWidth, thumbnailHeight);
+//            clip.setArcHeight(10);
+//            clip.setArcWidth(10);
+//            thumbnailImageView.setImage(thumbnail);
+//            thumbnailImageView.setClip(clip);
+//        }
 
         // Load publisher logo
         try{

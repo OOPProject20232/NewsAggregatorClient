@@ -8,14 +8,11 @@ import javafx.scene.image.Image;
 import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
 import org.newsaggregator.newsaggregatorclient.downloaders.CoinPriceRetriever;
 import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
-import org.newsaggregator.newsaggregatorclient.downloaders.PeriodicNewsRetriever;
-import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.ui_component.dialogs.NoInternetDialog;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 public class NewsAggregatorClientApplication extends Application {
     private NewsAggregatorClientController controller;
@@ -30,7 +27,7 @@ public class NewsAggregatorClientApplication extends Application {
             newsRetriever.setPageNumber(1);
             int response;
             try {
-                response = newsRetriever.sendRequest( true, "news.json");
+                response = newsRetriever.downloadCache( true, "news.json");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -40,7 +37,7 @@ public class NewsAggregatorClientApplication extends Application {
             CoinPriceRetriever coinPriceRetriever = new CoinPriceRetriever();
             int response;
             try {
-                response = coinPriceRetriever.sendRequest(false, "coins.json");
+                response = coinPriceRetriever.downloadCache(false, "coins.json");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
