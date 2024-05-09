@@ -2,7 +2,8 @@ package org.newsaggregator.newsaggregatorclient.downloaders;
 
 import java.net.MalformedURLException;
 
-public class ArticleRetrieverByCategories extends NewsRetriever implements IServerRequest  {
+@Deprecated
+public class ArticleRetrieverByCategories extends NewsRetriever implements ICacheDownloader {
 
     @Override
     public int downloadCache(boolean isPaged, String cacheFilePath) throws MalformedURLException {

@@ -13,6 +13,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+@Deprecated
 public class GenericRetriever {
     private boolean isPaged;
     private String domain;
@@ -62,7 +63,7 @@ public class GenericRetriever {
                 Files.deleteIfExists(cachePath);
             }
             if (cachePath.toFile().exists() && cachePath.toFile().length() > 0) {
-                System.out.println("Cache file exists, sending request with If-Modified-Since header (News)");
+                System.out.println("Cache file exists, sending request with If-Modified-Since header");
                 BasicFileAttributes attr = Files.readAttributes(cachePath, BasicFileAttributes.class);
                 ZonedDateTime lastModified = attr.lastModifiedTime().toInstant().atZone(ZoneOffset.UTC);
                 try {
@@ -71,14 +72,14 @@ public class GenericRetriever {
                     System.out.println("If-Modified-Since: " + lastModified.toString());
                     int responseCode = connection.getResponseCode();
                     if (responseCode == 304) {
-                        System.out.println("Server responded with 304 Not Modified, no need to download again (News)");
+                        System.out.println("Server responded with 304 Not Modified, no need to download again");
                         return 304;
                     }
                 } catch (IOException e) {
                     System.out.println("Error sending request: " + e.getMessage());
                 }
             } else {
-                System.out.println("Cache file does not exist, sending request without If-Modified-Since header (News)");
+                System.out.println("Cache file does not exist, sending request without If-Modified-Since header");
                 try {
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Accept", "application/json");

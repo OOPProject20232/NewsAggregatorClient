@@ -1,4 +1,4 @@
-package org.newsaggregator.newsaggregatorclient.ui_component.datacard;
+package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
 
 import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 

@@ -1,15 +1,11 @@
-package org.newsaggregator.newsaggregatorclient.ui_component.datacard;
+package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
 
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
+import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
-import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
-
-import java.util.List;
 
 import static java.lang.Long.MAX_VALUE;
 
@@ -64,6 +60,8 @@ public class CoinNewestPriceCard extends HBox implements IGenericDataCard<CoinPr
         System.out.println(imageUrl);
         Image logo = new Image(imageUrl, true);
         coinImage = new ImageView(logo);
+        coinImage.setCache(true);
+        coinImage.setCacheHint(CacheHint.SPEED);
         coinImage.setFitHeight(16);
         coinImage.setFitWidth(16);
         coinSymbol.setGraphic(coinImage);

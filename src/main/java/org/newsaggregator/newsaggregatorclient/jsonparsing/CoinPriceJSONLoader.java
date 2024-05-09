@@ -3,8 +3,10 @@ package org.newsaggregator.newsaggregatorclient.jsonparsing;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
+import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
 import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
 
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,22 +18,16 @@ public class CoinPriceJSONLoader implements IJSONLoader{
     private String filePath;
     JSONObject coinPrices;
     @Override
-    public void loadJSON() {
-        JSONFileReader jsonFileReader = new JSONFileReader(filePath);
-        try{
-            coinPrices = jsonFileReader.loadJSON();
-        } catch (Exception e) {
-            CreateJSONCache.createFolder(jsonFileReader.getFolderPath());
-            coinPrices = jsonFileReader.loadJSON();
+    public synchronized void loadJSON() {
+        String url = "https://newsaggregator-mern.onrender.com/v1/coins";
+        try {
+            coinPrices = DataReaderFromIS.fetchJSON(url);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void setCacheFileName(String cacheFileName) {
-        this.filePath = cacheFileName;
-    }
-
-    public List<CoinPriceData> getNewestCoinPrices() throws IllegalArgumentException{
+    public synchronized List<CoinPriceData> getNewestCoinPrices() throws IllegalArgumentException{
         List<CoinPriceData> coinPrices = new ArrayList<>();
         JSONArray coinPricesArray = this.coinPrices.getJSONArray("coins");
         for (int i = 0; i < coinPricesArray.length(); i++) {

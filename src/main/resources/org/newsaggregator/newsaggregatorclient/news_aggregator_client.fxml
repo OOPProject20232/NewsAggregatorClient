@@ -17,12 +17,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="933.0" stylesheets="@assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="1074.0" stylesheets="@assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutX="134.0" layoutY="127.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER_LEFT" fillHeight="false" maxHeight="48.0" minHeight="48.0" prefHeight="48.0" prefWidth="933.0" style="-fx-background-color: #EBEEF3;" VBox.vgrow="NEVER" />
-            <TabPane accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="761.0" prefWidth="1128.0" side="LEFT" styleClass="background-container" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <TabPane fx:id="mainTabPane" accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="761.0" prefWidth="1128.0" side="LEFT" styleClass="background-container" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
                 <Tab fx:id="newsTab" closable="false" styleClass="generic-container" text="">
                      <graphic>
@@ -103,7 +103,7 @@
                                           </TabPane>
                                        </children>
                                     </VBox>
-                                    <VBox fx:id="additionalInfoContainer" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="564.0" prefWidth="181.0" style="-fx-padding: 0 5px;" styleClass="generic-container" />
+                                    <VBox fx:id="additionalInfoContainer" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="564.0" prefWidth="601.0" style="-fx-padding: 0 5px;" styleClass="generic-container" />
                                 </items>
                               </SplitPane>
                            </children>

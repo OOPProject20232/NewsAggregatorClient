@@ -1,12 +1,15 @@
-package org.newsaggregator.newsaggregatorclient.ui_component.uiloader;
+package org.newsaggregator.newsaggregatorclient.ui_components.uiloader;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import org.newsaggregator.newsaggregatorclient.ArticlesFrame;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
-import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
-import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsItemCard;
+import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CategoryClickable;
+import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsCategoryGroupTitledPane;
+import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
 import java.util.List;
 
@@ -27,13 +30,15 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
     Pane container;
     HostServices hostServices;
     NewsCategoryGroupTitledPane newsCategoryGroupTitledPane;
+    ArticlesFrame articlesFrame;
 
-    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, NewsCategoryGroupTitledPane newsCategoryGroupTitledPane) {
+    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, NewsCategoryGroupTitledPane newsCategoryGroupTitledPane, ArticlesFrame articlesFrame) {
         this.limit = limit;
         this.container = container;
         this.hostServices = hostServices;
         this.newsCategoryGroupTitledPane = newsCategoryGroupTitledPane;
         this.begin = begin;
+        this.articlesFrame = articlesFrame;
 //        this.newsCategoryGroupTitledPane.setMaxWidth(800);
     }
     @Override
@@ -63,25 +68,29 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
         if (begin + limit > data.size()) {
             limit = data.size() - begin;
         }
-        Thread textThread = new Thread(() -> Platform.runLater(() -> {
+        Thread textThread = new Thread(() -> {
             for (int countItem = begin; countItem < limit + begin; countItem++) {
+                final int count = countItem;
                 NewsItemData itemData = data.get(countItem);
-                NewsItemCard newsItem = new NewsItemCard(itemData);
-                newsItem.setText();
-                newsItem.getArticleHyperlinkTitleObject().setOnAction(
-                        event -> hostServices.showDocument(itemData.getUrl())
-                );
-                updateProgress(countItem, limit + begin);
-                newsCategoryGroupTitledPane.addItem(newsItem);
+                Platform.runLater(() -> {
+                    NewsItemCard newsItem = new NewsItemCard(itemData);
+                    newsItem.setText();
+                    Platform.runLater(newsItem::setImage);
+                    newsItem.setPublisherLogo();
+                    newsItem.getArticleHyperlinkTitleObject().setOnAction(
+                            event -> hostServices.showDocument(itemData.getUrl())
+                    );
+                    for (Node tmp: newsItem.getCategories()){
+                        CategoryClickable category = (CategoryClickable) tmp;
+                        category.setOnAction((event) -> articlesFrame.setSearchText(category.getText()));
+                    }
+                    updateProgress(count, limit + begin);
+                    newsCategoryGroupTitledPane.addItem(newsItem);
+                });
             }
-        }));
+        });
         textThread.start();
-        Thread imageThread = new Thread(() -> Platform.runLater(() -> {
-            for (NewsItemCard newsItem : newsCategoryGroupTitledPane.getItems()) {
-                newsItem.setImage();
-            }
-        }));
-        imageThread.start();
+
         return newsCategoryGroupTitledPane;
     }
 }

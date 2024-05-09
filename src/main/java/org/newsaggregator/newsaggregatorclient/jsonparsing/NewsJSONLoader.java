@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
 import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
 
 import java.io.File;
@@ -14,20 +15,24 @@ public class NewsJSONLoader implements IJSONLoader {
     private JSONObject jsonObject;
     private String jsonString;
     private String cacheFileName;
+    int pageNumber;
+    int limit;
 
-    @Override
-    public void setCacheFileName(String cacheFileName) {
-        this.cacheFileName = cacheFileName;
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 
     @Override
-    public synchronized void loadJSON() {
-        JSONFileReader jsonFileReader = new JSONFileReader(cacheFileName);
+    public synchronized void loadJSON(){
+        String url = DOMAIN + "v1/articles?page=" + pageNumber + "&limit=" + limit;
         try{
-            jsonObject = jsonFileReader.loadJSON();
+            jsonObject = DataReaderFromIS.fetchJSON(url);
         } catch (Exception e) {
-            CreateJSONCache.createFolder(jsonFileReader.getFolderPath());
-            jsonObject = jsonFileReader.loadJSON();
+            e.printStackTrace();
         }
     }
 

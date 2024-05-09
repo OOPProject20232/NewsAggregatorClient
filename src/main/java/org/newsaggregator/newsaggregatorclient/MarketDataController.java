@@ -1,5 +1,6 @@
 package org.newsaggregator.newsaggregatorclient;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
@@ -55,30 +56,29 @@ public class MarketDataController {
     public void initialize() {
         // Khởi tạo các giá trị mặc định
         coinPriceChart.setCreateSymbols(false);
-        try{
-            coinPriceJSONLoader.getJSONString();
-        }
-        catch (Exception e){
-            coinPriceJSONLoader.setCacheFileName("coins.json");
-            coinPriceJSONLoader.loadJSON();
-        }
-        demoLoadMarketData(7, true, symbolList);
-        oneWeekButton.setOnAction(event -> {
-            coinPriceChart.getData().clear();
+        coinPriceChart.setAnimated(false);
+        Platform.runLater(() -> {
+            try{
+                coinPriceJSONLoader.getJSONString();
+            }
+            catch (Exception e){
+                coinPriceJSONLoader.loadJSON();
+            }
             demoLoadMarketData(7, true, symbolList);
+            oneWeekButton.setOnAction(event -> {
+                demoLoadMarketData(7, true, symbolList);
+            });
+            oneMonthButton.setOnAction(event -> {
+                demoLoadMarketData(30, true, symbolList);
+            });
+            sixMonthsButton.setOnAction(event -> {
+                demoLoadMarketData(180, true, symbolList);
+            });
+            ytdButton.setOnAction(event -> {
+                demoLoadMarketData(365, true, symbolList);
+            });
         });
-        oneMonthButton.setOnAction(event -> {
-            coinPriceChart.getData().clear();
-            demoLoadMarketData(30, true, symbolList);
-        });
-        sixMonthsButton.setOnAction(event -> {
-            coinPriceChart.getData().clear();
-            demoLoadMarketData(180, true, symbolList);
-        });
-        ytdButton.setOnAction(event -> {
-            coinPriceChart.getData().clear();
-            demoLoadMarketData(365, true, symbolList);
-        });
+
     }
 
     public void demoLoadMarketData(int period, boolean clearSeries, String ...symbols) {
@@ -108,7 +108,7 @@ public class MarketDataController {
                 System.out.println(date + ": " + dataMap.get(date));
                 series.getData().add(new XYChart.Data<>(TimeFormatter.convertISOToDate(date), Float.parseFloat(dataMap.get(date))));
             }
-            coinPriceChart.getData().add(series);
+            Platform.runLater(()->coinPriceChart.getData().add(series));
         }
     }
 }

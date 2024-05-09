@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -54,9 +55,13 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="2.0" prefWidth="889.0" spacing="10.0">
                <children>
-                  <ToggleButton mnemonicParsing="false" selected="true" text="Articles" />
-                  <ToggleButton mnemonicParsing="false" text="Reddit post" />
-                  <ComboBox prefHeight="39.0" prefWidth="142.0" promptText="Sort by" />
+                  <ToggleButton mnemonicParsing="false" selected="true" text="Articles">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="search" />
+                     </toggleGroup></ToggleButton>
+                  <ToggleButton mnemonicParsing="false" text="Reddit post" toggleGroup="$search" />
+                  <ComboBox fx:id="sortByComboBox" prefHeight="39.0" prefWidth="142.0" promptText="Sort by" />
+                  <ComboBox fx:id="searchFieldComboBox" prefWidth="150.0" promptText="Search for" />
                </children>
             </HBox>
          </children>

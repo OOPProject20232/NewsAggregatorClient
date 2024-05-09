@@ -4,29 +4,16 @@ import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
-import org.jetbrains.annotations.NotNull;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
-import org.newsaggregator.newsaggregatorclient.downloaders.CoinPriceRetriever;
-import org.newsaggregator.newsaggregatorclient.downloaders.NewsRetriever;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
-import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
-import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
-import org.newsaggregator.newsaggregatorclient.ui_component.datacard.CoinNewestPriceGroupFrame;
-import org.newsaggregator.newsaggregatorclient.ui_component.datacard.InfiniteNews;
-import org.newsaggregator.newsaggregatorclient.ui_component.uiloader.ArticleItemsLoader;
-import org.newsaggregator.newsaggregatorclient.ui_component.datacard.NewsCategoryGroupTitledPane;
-import org.newsaggregator.newsaggregatorclient.ui_component.uiloader.CoinItemsLoader;
-import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
+import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CoinNewestPriceGroupFrame;
+import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.CoinNewestPriceItemsLoader;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 public class NewsAggregatorClientController {
@@ -71,6 +58,9 @@ public class NewsAggregatorClientController {
     @FXML
     private VBox additionalInfoContainer;
 
+    @FXML
+    private TabPane mainTabPane;
+
     private final HostServices hostServices;
 
     private int currentArticlePage = 1;
@@ -80,14 +70,15 @@ public class NewsAggregatorClientController {
     private final String JSON_FOLDER_PATH = "src/main/resources/json/";
     private CoinPriceJSONLoader coinPriceJSONLoader;
     private final ArticlesFrame articleScrollPane;
+    private NewsSearchController newsSearchController = new NewsSearchController();
 
     public NewsAggregatorClientController(HostServices hostServices) {
         this.hostServices = hostServices;
-        this.articleScrollPane = new ArticlesFrame(hostServices);
+        this.articleScrollPane = new ArticlesFrame(hostServices, this);
     }
 
-    public void start(){
-        newsSplitPane.setDividerPositions(1);
+    public synchronized void start(){
+        newsSplitPane.setDividerPositions(.8);
         reloadNews.setOnAction(event -> reloadNews());
         newsArticlesPane.getChildren().add(articleScrollPane);
         AnchorPane.setBottomAnchor(articleScrollPane, 0.0);
@@ -125,7 +116,6 @@ public class NewsAggregatorClientController {
         newsTab.setTooltip(new Tooltip("News"));
         searchTab.setOnSelectionChanged(event -> {
             if (searchTab.isSelected()) {
-                NewsSearchController newsSearchController = new NewsSearchController();
                 FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("search.fxml"));
                 fxmlLoader.setController(newsSearchController);
                 try {
@@ -162,20 +152,7 @@ public class NewsAggregatorClientController {
         CoinNewestPriceGroupFrame coinNewestPriceGroupFrame = new CoinNewestPriceGroupFrame();
         coinNewestPriceGroupFrame.getStylesheets().add(NewsAggregatorClientController.class.getResource("assets/css/main.css").toExternalForm());
         additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
-
-        try {
-            coinPriceJSONLoader = getCoinPriceJSONLoader();
-        }
-        catch (Exception ex) {
-            CreateJSONCache.createFolder(JSON_FOLDER_PATH);
-            CoinPriceRetriever coinPriceRetriever = new CoinPriceRetriever();
-            try {
-                coinPriceRetriever.downloadCache(true, "coins.json");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            coinPriceJSONLoader = getCoinPriceJSONLoader();
-        }
+        coinPriceJSONLoader = getCoinPriceJSONLoader();
 
         if (coinPriceJSONLoader.getJSONString().isEmpty()) {
             System.out.println("Data is empty");
@@ -185,51 +162,18 @@ public class NewsAggregatorClientController {
             List<CoinPriceData> coinData = coinPriceJSONLoader.getNewestCoinPrices();
             new Thread(() -> Platform.runLater(() -> {
                 System.out.println("\u001B[35m" + "Loading coin items" + "\u001B[0m");
-                CoinItemsLoader coinItemsLoader = new CoinItemsLoader(coinNewestPriceGroupFrame, hostServices);
-                CoinNewestPriceGroupFrame coins =  coinItemsLoader.loadItems(coinData);
+                CoinNewestPriceItemsLoader coinNewestPriceItemsLoader = new CoinNewestPriceItemsLoader(coinNewestPriceGroupFrame, hostServices);
+                CoinNewestPriceGroupFrame coins =  coinNewestPriceItemsLoader.loadItems(coinData);
                 additionalInfoContainer.getChildren().add(coins);
-                System.out.println(coinItemsLoader.getItems());
+                System.out.println(coinNewestPriceItemsLoader.getItems());
             })).start();
         }
 
     }
 
-    private synchronized @NotNull NewsJSONLoader getNewsJSONLoader() {
-        NewsJSONLoader articleDataLoader = new NewsJSONLoader();
-        articleDataLoader.setCacheFileName("news.json");
-        CreateJSONCache.createFolder(JSON_FOLDER_PATH);
-        articleDataLoader.loadJSON();
-        String newsString = articleDataLoader.getJSONString();
-        if (newsString.isEmpty()) {
-            NewsRetriever newsRetriever = new NewsRetriever();
-            newsRetriever.setLimit(50);
-            newsRetriever.setPageNumber(1);
-            try {
-                newsRetriever.downloadCache(true, "news.json");
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            articleDataLoader.loadJSON();
-//            new Thread(articleDataLoader::loadJSON).start();
-        }
-        return articleDataLoader;
-    }
-
     private synchronized CoinPriceJSONLoader getCoinPriceJSONLoader() {
         CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
-        coinPriceJSONLoader.setCacheFileName("coins.json");
-        CreateJSONCache.createFolder(JSON_FOLDER_PATH);
         coinPriceJSONLoader.loadJSON();
-        String coinString = coinPriceJSONLoader.getJSONString();
-        if (coinString.isEmpty()) {
-            CoinPriceRetriever coinPriceRetriever = new CoinPriceRetriever();
-            try {
-                coinPriceRetriever.downloadCache(true, "coins.json");
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            coinPriceJSONLoader.loadJSON();
-        }
         return coinPriceJSONLoader;
     }
 
@@ -239,22 +183,21 @@ public class NewsAggregatorClientController {
          * Được gọi khi người dùng click vào nút "tải lại" trên màn hình chính
          * @param event: Sự kiện click chuột vào nút "tải lại"
          */
-        new Thread (() -> {
-            NewsRetriever articleRetriever = new NewsRetriever();
-            articleRetriever.setLimit(50);
-            articleRetriever.setPageNumber(1);
-            articleRetriever.setForceDownload(true);
-            CoinPriceRetriever coinPriceRetriever = new CoinPriceRetriever();
-            try {
-                articleRetriever.downloadCache(true, "news.json");
-                coinPriceRetriever.downloadCache(false, "coins.json");
-                Platform.runLater(() -> {
-                    articleScrollPane.clearAllNews();
-                    showAllNewsCategories();
-                });
-            } catch (MalformedURLException ex) {
-                throw new RuntimeException(ex);
-            }
-        }).start();
+        SelectionModel newsTypeTabs = newsTypeTabPane.getSelectionModel();
+        // News
+        if (newsTypeTabs.getSelectedIndex() == 0) {
+            articleScrollPane.clearAllNews();
+            articleScrollPane.resetArticlePage();
+            showAllNewsCategories();
+        }
+        else {
+            // Reddit
+        }
+    }
+
+    public void setSearchText(String text){
+        SelectionModel<Tab> mainTabs = mainTabPane.getSelectionModel();
+        mainTabs.select(searchTab);
+        newsSearchController.insertSearchText(text);
     }
 }

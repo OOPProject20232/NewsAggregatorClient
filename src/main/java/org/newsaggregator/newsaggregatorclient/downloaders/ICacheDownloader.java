@@ -2,7 +2,8 @@ package org.newsaggregator.newsaggregatorclient.downloaders;
 
 import java.net.MalformedURLException;
 
-public interface IServerRequest {
+@Deprecated
+public interface ICacheDownloader {
     /**
      * Interface này chứa các hàm để gửi request đến server
      */

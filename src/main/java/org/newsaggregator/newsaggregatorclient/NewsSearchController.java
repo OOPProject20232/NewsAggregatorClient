@@ -3,11 +3,11 @@ package org.newsaggregator.newsaggregatorclient;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import org.newsaggregator.newsaggregatorclient.jsonparsing.SearchJSONLoader;
 
-public class NewsSearchController {
+public class NewsSearchController{
     /**
      * Controller của tab tìm kiếm tin tức
      */
@@ -44,6 +44,9 @@ public class NewsSearchController {
     private void search() {
         // Hàm xử lý sự kiện tìm kiếm tin tức
         System.out.println("Searching for: " + searchTextField.getText());
+        SearchJSONLoader searchJSONLoader = new SearchJSONLoader(searchTextField.getText(), "articles", "desc");
+        searchJSONLoader.loadJSON();
+        System.out.println(searchJSONLoader);
     }
 
     private void autocomplete() {
@@ -65,5 +68,10 @@ public class NewsSearchController {
                 }
             };
         }
+    }
+
+    public void insertSearchText(String searchKeyword){
+        searchTextField.setText(searchKeyword);
+        search();
     }
 }

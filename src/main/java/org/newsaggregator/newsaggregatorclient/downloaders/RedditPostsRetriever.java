@@ -2,7 +2,8 @@ package org.newsaggregator.newsaggregatorclient.downloaders;
 
 import java.net.MalformedURLException;
 
-public class RedditPostsRetriever implements IServerRequest{
+@Deprecated
+public class RedditPostsRetriever implements ICacheDownloader {
     private int limit;
     private int pageNumber;
 

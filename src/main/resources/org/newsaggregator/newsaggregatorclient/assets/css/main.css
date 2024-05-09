@@ -169,6 +169,15 @@
     -fx-font-weight: bold;
     -fx-background-color: #fff;
     -fx-border-radius: 20px 20px 0px 0px;
+    -fx-underline: none;
+}
+
+.category .title:hover{
+    -fx-underline: true;
+}
+
+.category .title:visited{
+    -fx-underline: none;
 }
 
 .category .category__layout{
@@ -279,4 +288,26 @@
 
 .price__same {
     -fx-text-fill: black;
+}
+
+/*Category label*/
+
+.category-label{
+    -fx-text-fill: -fx-primary-color;
+    -fx-background-color: -fx-inverse-primary;
+    -fx-underline: false;
+    -fx-cursor: hand;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 16px;
+}
+
+.load-more-button{
+    -fx-background-color: -fx-primary-fixed;
+    -fx-text-fill: -fx-primary-color;
+    -fx-font-size: 1em;
+    -fx-font-weight: bold;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 30px;
+    -fx-cursor: hand;
+    -fx-padding: .5em 1em;
 }

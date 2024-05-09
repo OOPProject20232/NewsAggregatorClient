@@ -1,23 +1,28 @@
-package org.newsaggregator.newsaggregatorclient.ui_component.datacard;
+package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
 
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
+import javafx.scene.CacheHint;
+import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
-import org.newsaggregator.newsaggregatorclient.util.FileDownloader;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URI;
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
 
 public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>{
     /**
@@ -38,6 +43,7 @@ public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>
     protected Label author;
     protected Label publisher;
     protected ImageView publisherImageView = new ImageView();
+    protected FlowPane categoryFrame = new FlowPane();
     private final String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
     private NewsItemData newsItemData;
 
@@ -66,6 +72,10 @@ public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>
         publisherFrame.getChildren().addAll(publishedAt, separator, author);
         newsInfo.getChildren().addAll(publisher, articleHyperlinkTitleObject, description, publisherFrame);
         this.getChildren().add(newsInfo);
+        categoryFrame.setHgap(8);
+        categoryFrame.setVgap(8);
+        categoryFrame.setAlignment(Pos.CENTER_LEFT);
+        newsInfo.getChildren().add(categoryFrame);
     }
 
     public NewsItemCard(NewsItemData newsItemData) {
@@ -124,7 +134,7 @@ public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>
 
     @Override
     public void setCardStyle() {
-        this.getStylesheets().add("org/newsaggregator/newsaggregatorclient/ui_component/datacard/datacard.css");
+        this.getStylesheets().add("org/newsaggregator/newsaggregatorclient/ui_components/datacard/datacard.css");
         this.getStyleClass().add("datacard");
         this.getStyleClass().add("horizontal");
     }
@@ -136,53 +146,69 @@ public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>
         publishedAt.setText(TimeFormatter.processDateTime(newsItemData.getPublishedAt()));
         author.setText(newsItemData.getAuthor().toString());
         publisher.setText(newsItemData.getPublisher());
+        for (String category : newsItemData.getCategory()) {
+            CategoryClickable categoryLabel = new CategoryClickable(category);
+//            categoryLabel.getStyleClass().add("category");
+            categoryFrame.getChildren().add(categoryLabel);
+        }
     }
 
     @Override
     public synchronized void setImage() {
-        String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
-        // Download thumbnails in other thread, then load them
-        CompletableFuture.runAsync(() -> {
-            Image thumbnail = new Image(noImageAvailablePath, true);
-            try {
-                System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
-                String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
-                String cache = fileName.replace("/", "_");
-                if (cache.contains("?")) {
-                    cache = cache.substring(0, cache.indexOf("?"));
-                }
-                System.out.println("File name: " + fileName);
+        System.out.println("Set image to: " + newsItemData.getTitle());
+//        final String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
+        try {
+            System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
+            String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
+            String tmpCache = fileName.replace("/", "_");
+            if (tmpCache.contains("?")) {
+                tmpCache = tmpCache.substring(0, tmpCache.lastIndexOf("?"));
+            }
+            final String cache = tmpCache;
+
+            System.out.println("File name: " + fileName);
+            Platform.runLater(()->{
+                Image thumbnail;
                 if (fileName.endsWith(".webp")) {
-                    String tmpCachePath = "src/main/resources/tmp/img" + cache;
-                    if (!new File(tmpCachePath).exists()) {
-                        new File(tmpCachePath).delete();
-                        FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
-                    }
-                    File tmpOutputFile = new File(tmpCachePath);
-                    System.out.println("\u001B[32m"+"Processing webp image: " + tmpCachePath+"\u001B[0m");
+//                    FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
+//                    String tmpCachePath = "src/main/resources/tmp/img/" + cache;
+//                    File tmpOutputFile = new File(tmpCachePath);
+                    System.out.println("\u001B[32m"+"Processing webp image: " + newsItemData.getUrlToImage()+"\u001B[0m");
                     try {
-                        BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
-                        thumbnail = SwingFXUtils.toFXImage(bufferedImage, null);
+//                        BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
+                        // get buffered image directly from input stream
+                        HttpURLConnection connection = (HttpURLConnection) URI.create(newsItemData.getUrlToImage()).toURL().openConnection();
+                        connection.setRequestMethod("GET");
+                        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = in.read()) > 0) {
+                            out.write(buffer, 0, length);
+                        }
+                        in.close();
+                        byte[] bytes = out.toByteArray();
+                        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+                        ImageInputStream imageInputStream = ImageIO.createImageInputStream(byteArrayInputStream);
+                        BufferedImage bufferedImage = ImageIO.read(imageInputStream);
+                        try {
+                            thumbnail = SwingFXUtils.toFXImage(bufferedImage, null);
+                        }
+                        catch (Exception ex) {
+                            thumbnail = new Image(noImageAvailablePath, true);
+                            System.out.println("\u001B[31m"+"Error processing webp image: " + ex.getMessage()+"\u001B[0m");
+                        }
                     } catch (Exception ex) {
-                        System.out.println("\u001B[31m"+"Error processing webp image: " + ex.getMessage()+"\u001B[0m");
                         thumbnail = new Image(noImageAvailablePath, true);
+                        System.out.println("\u001B[31m"+"Error processing webp image: " + ex.getMessage()+"\u001B[0m");
                     }
                 } else {
-                    if (!new File("src/main/resources/tmp/img" + cache).exists()) {
-                        FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
-                    }
-                    thumbnail = new Image("file:src/main/resources/tmp/img" + cache, true);
+//                    thumbnail = new Image("file:src/main/resources/tmp/img" + cache, true);
+                    thumbnail = new Image(newsItemData.getUrlToImage(), true);
                 }
                 if (newsItemData.getUrlToImage().isBlank() || newsItemData.getUrlToImage().isEmpty()){
                     thumbnail = new Image(noImageAvailablePath, true);
-
                 }
-            }
-            catch (Exception e) {
-                System.out.println("Error loading image: " + e.getMessage());
-                thumbnail = new Image(noImageAvailablePath, true);
-            }
-            finally {
                 int thumbnailHeight = 90;
                 int thumbnailWidth = 160;
                 Rectangle clip = new Rectangle(thumbnailWidth, thumbnailHeight);
@@ -190,67 +216,32 @@ public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>
                 clip.setArcWidth(10);
                 thumbnailImageView.setImage(thumbnail);
                 thumbnailImageView.setClip(clip);
-            }
-        });
+            });
+        }
+        catch (Exception e) {
+            System.out.println("Error loading image: " + e.getMessage());
+        }
+    }
 
-//        try {
-//            System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
-//            String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
-//            String cache = fileName.replace("/", "_");
-//            if (cache.contains("?")) {
-//                cache = cache.substring(0, cache.indexOf("?"));
-//            }
-//            System.out.println("File name: " + fileName);
-//            if (fileName.endsWith(".webp")) {
-//                String tmpCachePath = "src/main/resources/tmp/img" + cache;
-//                if (!new File(tmpCachePath).exists()) {
-//                    new File(tmpCachePath).delete();
-//                    FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
-//                }
-//                File tmpOutputFile = new File(tmpCachePath);
-//                System.out.println("\u001B[32m"+"Processing webp image: " + tmpCachePath+"\u001B[0m");
-//                try {
-//                    BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
-//                    thumbnail = SwingFXUtils.toFXImage(bufferedImage, null);
-//                } catch (Exception ex) {
-//                    System.out.println("\u001B[31m"+"Error processing webp image: " + ex.getMessage()+"\u001B[0m");
-//                    thumbnail = new Image(noImageAvailablePath, true);
-//                }
-//            } else {
-//                if (!new File("src/main/resources/tmp/img" + cache).exists()) {
-//                    FileDownloader.fileDownloader(newsItemData.getUrlToImage(), cache);
-//                }
-//                thumbnail = new Image("file:src/main/resources/tmp/img" + cache, true);
-//            }
-//            if (newsItemData.getUrlToImage().isBlank() || newsItemData.getUrlToImage().isEmpty()){
-//                thumbnail = new Image(noImageAvailablePath, true);
-//
-//            }
-//        }
-//        catch (Exception e) {
-//            System.out.println("Error loading image: " + e.getMessage());
-//            thumbnail = new Image(noImageAvailablePath, true);
-//        }
-//        finally {
-//            int thumbnailHeight = 90;
-//            int thumbnailWidth = 160;
-//            Rectangle clip = new Rectangle(thumbnailWidth, thumbnailHeight);
-//            clip.setArcHeight(10);
-//            clip.setArcWidth(10);
-//            thumbnailImageView.setImage(thumbnail);
-//            thumbnailImageView.setClip(clip);
-//        }
-
+    public synchronized void setPublisherLogo(){
         // Load publisher logo
         try{
-            Image publisherImage = new Image(newsItemData.getPublisherLogoURL(), true);
-            ImageView publisherLogo = new ImageView(publisherImage);
-            publisherLogo.setFitHeight(16);
-            publisherLogo.setFitWidth(16);
-            publisher.setGraphic(publisherLogo);
+            Platform.runLater(() -> {
+                Image publisherImage = new Image(newsItemData.getPublisherLogoURL(), true);
+                ImageView publisherLogo = new ImageView(publisherImage);
+                publisherLogo.setCache(true);
+                publisherLogo.setCacheHint(CacheHint.SPEED);
+                publisherLogo.setFitHeight(16);
+                publisherLogo.setFitWidth(16);
+                publisher.setGraphic(publisherLogo);
+            });
         }
         catch (Exception e) {
             System.out.println("Error loading publisher logo: " + e.getMessage());
         }
+    }
+
+    public List<Node> getCategories(){
+        return categoryFrame.getChildren();
     }
 }

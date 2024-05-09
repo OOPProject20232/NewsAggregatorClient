@@ -1,6 +1,4 @@
-package org.newsaggregator.newsaggregatorclient.ui_component.dialogs;
-
-import javafx.scene.control.Dialog;
+package org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
 
 public class LoadingDialog extends GenericDialog{
     /**

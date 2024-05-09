@@ -1,8 +1,7 @@
-package org.newsaggregator.newsaggregatorclient.ui_component.datacard;
+package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class CoinNewestPriceGroupFrame extends TitledPane {

@@ -5,13 +5,14 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.channels.ReadableByteChannel;
 
+@Deprecated
 public class FileDownloader {
     /**
      * Class này chứa các hàm để download file từ mạng
      * Hiện tại chưa cần dùng đến
      */
 
-    public static void fileDownloader(String urlString, String fileName) {
+    public synchronized static void fileDownloader(String urlString, String fileName) {
         try {
             URL url = URI.create(urlString).toURL();
             ReadableByteChannel rbc = java.nio.channels.Channels.newChannel(url.openStream());

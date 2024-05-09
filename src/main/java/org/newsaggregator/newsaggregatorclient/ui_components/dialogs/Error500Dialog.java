@@ -1,4 +1,4 @@
-package org.newsaggregator.newsaggregatorclient.ui_component.dialogs;
+package org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
 
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;

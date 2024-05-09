@@ -16,10 +16,10 @@
 
 .search-bar{
     -fx-background-color: #ffffff;
-    -fx-background-radius: 30;
+    -fx-background-radius: 36;
     -fx-border-width: 0;
     -fx-border-color: #000;
-    -fx-border-radius: 30;
+    -fx-border-radius: 36;
     -fx-width: 80%;
     /*-fx-max-width: 600px;*/
 }
@@ -35,8 +35,23 @@
     -fx-padding: .5em 1em;
     -fx-font-size: 1em;
     -fx-cursor: hand;
-    -fx-background-radius: 30px;
-    -fx-border-radius: 30px;
+    -fx-background-radius: 32px;
+    -fx-border-radius: 32px;
+}
+
+.combo-box:showing{
+    -fx-background-radius: 16px 16px 0 0;
+    -fx-background-color: white;
+    -fx-border-radius: 16px 16px 0 0;
+    -fx-border-width: 1px 1px 0 1px;
+}
+
+.combo-box-popup, .combo-box-popup .list-view{
+    -fx-border-color: -fx-outline-color;
+    -fx-border-width: 0px 1px 1px 1px;
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 16px 16px;
+    -fx-border-radius: 0 0 16px 16px;
 }
 
 .toggle-button{

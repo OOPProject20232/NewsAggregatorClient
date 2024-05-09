@@ -2,9 +2,8 @@ package org.newsaggregator.newsaggregatorclient.downloaders;
 
 import java.net.MalformedURLException;
 
-import org.newsaggregator.newsaggregatorclient.downloaders.GenericRetriever;
-
-public class NewsRetriever implements IServerRequest{
+@Deprecated
+public class NewsRetriever implements ICacheDownloader {
     private int pageNumber;
     private int limit;
     private boolean forceDownload;

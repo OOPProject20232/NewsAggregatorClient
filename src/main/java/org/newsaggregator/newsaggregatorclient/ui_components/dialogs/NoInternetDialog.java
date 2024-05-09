@@ -1,9 +1,9 @@
-package org.newsaggregator.newsaggregatorclient.ui_component.dialogs;
+package org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
 
-import javafx.css.Style;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 
 import java.nio.file.Paths;
 

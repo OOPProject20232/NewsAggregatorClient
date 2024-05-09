@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+@Deprecated
 public class JSONFileReader {
     private String cacheFileName;
     private final String JSON_FOLDER_PATH = "src/main/resources/json/";
@@ -15,7 +16,7 @@ public class JSONFileReader {
         this.cacheFileName = cacheFileName;
     }
 
-    public JSONObject loadJSON() {
+    public synchronized JSONObject loadJSON() {
         String jsonFilePath = JSON_FOLDER_PATH + cacheFileName;
         System.out.println("Loading JSON file from " + jsonFilePath);
         CreateJSONCache.createFolder(JSON_FOLDER_PATH);

@@ -1,16 +1,17 @@
 package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSON2NewsItemData extends IJSONConverter<NewsItemData> {
+public class JSON2NewsItemData {
     /**
      * Class này là 1 tiện ích chuyển đổi từ 1 JSONObject có định dạng 1 article (không phải post) sang NewsItemData
      */
-    public NewsItemData convert(JSONObject newsItemObject) {
+    public NewsItemData convert( JSONObject newsItemObject) {
         NewsItemData newsItemData = new NewsItemData();
         List<Object> categoryListObj = newsItemObject.getJSONArray("categories").toList();
         List<String> categoryList = new ArrayList<>();
