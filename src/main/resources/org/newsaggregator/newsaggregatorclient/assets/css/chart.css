@@ -10,12 +10,12 @@
 
 .chart-container{
     -fx-background-color: -fx-generic-background-color;
-    -fx-border-radius: 20px;
+    -fx-border-radius: 24px;
     -fx-border-style: none;
     -fx-width: 100%;
-    -fx-background-radius: 10px;
-    -fx-padding: 10px;
-    -fx-spacing: 10px;
+    -fx-background-radius: 24px;
+    -fx-padding: 12px;
+    -fx-spacing: 12px;
     -fx-box-border: transparent;
 }
 

@@ -1,11 +1,13 @@
 package org.newsaggregator.newsaggregatorclient;
 
+import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.SearchJSONLoader;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 
 public class NewsSearchController{
     /**
@@ -44,9 +46,14 @@ public class NewsSearchController{
     private void search() {
         // Hàm xử lý sự kiện tìm kiếm tin tức
         System.out.println("Searching for: " + searchTextField.getText());
-        SearchJSONLoader searchJSONLoader = new SearchJSONLoader(searchTextField.getText(), "articles", "desc");
-        searchJSONLoader.loadJSON();
-        System.out.println(searchJSONLoader);
+        LoadingDialog loadingDialog = new LoadingDialog();
+        loadingDialog.show();
+        Platform.runLater(() -> {
+            SearchJSONLoader searchJSONLoader = new SearchJSONLoader(searchTextField.getText(), "articles", "desc");
+            searchJSONLoader.loadJSON();
+            System.out.println(searchJSONLoader);
+            loadingDialog.close();
+        });
     }
 
     private void autocomplete() {

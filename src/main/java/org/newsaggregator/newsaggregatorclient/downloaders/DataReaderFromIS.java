@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class DataReaderFromIS {
     public static JSONObject fetchJSON(String urlString) throws MalformedURLException {
@@ -30,7 +31,8 @@ public class DataReaderFromIS {
                     response.append(inputLine);
                 }
                 in.close();
-                Files.createTempFile("news", ".json");
+//                Path path =  Files.createTempFile("news", ".json");
+//                System.out.println(path.toAbsolutePath());
                 return new JSONObject(response.toString());
             }
         } catch (Exception e) {
