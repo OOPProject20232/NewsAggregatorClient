@@ -9,9 +9,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
+import javafx.util.Duration;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CoinNewestPriceGroupFrame;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.CoinNewestPriceItemsLoader;
 
 import java.util.List;
@@ -78,7 +80,7 @@ public class NewsAggregatorClientController {
     }
 
     public synchronized void start(){
-        newsSplitPane.setDividerPositions(.8);
+        newsSplitPane.setDividerPositions(.7);
         reloadNews.setOnAction(event -> reloadNews());
         newsArticlesPane.getChildren().add(articleScrollPane);
         AnchorPane.setBottomAnchor(articleScrollPane, 0.0);
@@ -113,7 +115,9 @@ public class NewsAggregatorClientController {
         redditTabButton.setOnAction(event -> {
             newsTypeTabPane.getSelectionModel().select(1);
         });
-        newsTab.setTooltip(new Tooltip("News"));
+        Tooltip newsTooltip = new Tooltip("Latest news");
+        newsTooltip.setShowDelay(Duration.millis(10));
+        newsTab.setTooltip(newsTooltip);
         searchTab.setOnSelectionChanged(event -> {
             if (searchTab.isSelected()) {
                 FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("search.fxml"));
@@ -126,6 +130,9 @@ public class NewsAggregatorClientController {
                 newsSearchController.initialize();
             }
         });
+        Tooltip searchTooltip = new Tooltip("Search news");
+        searchTooltip.setShowDelay(Duration.millis(10));
+        searchTab.setTooltip(searchTooltip);
         marketDataTab.setOnSelectionChanged(event -> {
             if (marketDataTab.isSelected()) {
                 MarketDataController marketDataController = new MarketDataController();
@@ -139,7 +146,9 @@ public class NewsAggregatorClientController {
                 marketDataController.initialize();
             }
         });
-
+        Tooltip marketTooltip = new Tooltip("Market data");
+        marketTooltip.setShowDelay(Duration.millis(10));
+        marketDataTab.setTooltip(marketTooltip);
     }
 
     protected synchronized void showAllNewsCategories() {
@@ -152,6 +161,7 @@ public class NewsAggregatorClientController {
         CoinNewestPriceGroupFrame coinNewestPriceGroupFrame = new CoinNewestPriceGroupFrame();
         coinNewestPriceGroupFrame.getStylesheets().add(NewsAggregatorClientController.class.getResource("assets/css/main.css").toExternalForm());
         additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
+
         coinPriceJSONLoader = getCoinPriceJSONLoader();
 
         if (coinPriceJSONLoader.getJSONString().isEmpty()) {

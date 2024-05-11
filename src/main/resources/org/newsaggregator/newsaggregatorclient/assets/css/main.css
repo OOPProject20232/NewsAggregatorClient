@@ -18,6 +18,10 @@
     -fx-text-norm: #000000;
 }
 
+.root{
+    -fx-font-size: 14px;
+}
+
 /* Main container */
 .background-container{
     -fx-background-color: -fx-surface-container;

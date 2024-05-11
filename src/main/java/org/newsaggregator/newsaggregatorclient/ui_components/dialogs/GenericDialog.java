@@ -2,7 +2,12 @@ package org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Dialog;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
+
+import java.util.Objects;
 
 public class GenericDialog extends Dialog<Void> {
     /**
@@ -10,7 +15,9 @@ public class GenericDialog extends Dialog<Void> {
      */
     public GenericDialog() {
         getDialogPane().getStyleClass().addAll("dialog", "generic-container");
-        getDialogPane().getStylesheets().add(this.getClass().getResource("dialogs.css").toExternalForm());
+        getDialogPane().getStylesheets().add(
+            NewsAggregatorClientApplication.class.getResourceAsStream("/assets/css/chart.css").toString()
+        );
     }
 
 }

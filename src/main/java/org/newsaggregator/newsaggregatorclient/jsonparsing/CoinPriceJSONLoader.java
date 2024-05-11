@@ -50,7 +50,7 @@ public class CoinPriceJSONLoader implements IJSONLoader{
             coinPriceData.setRank(rank.toString());
             coinPriceData.setCoinSymbol(coinSymbol);
             coinPriceData.setDate(date);
-            coinPriceData.setPriceChange(getChangeInPrice(coinPriceData, coinSymbol));
+            coinPriceData.setPriceChange(getChangeInPrice(coinPriceData, coinSymbol, 1));
             coinPrices.add(coinPriceData);
         }
         // Print all values in coinPrices
@@ -116,7 +116,7 @@ public class CoinPriceJSONLoader implements IJSONLoader{
         return coinPrices;
     }
 
-    public Float getChangeInPrice(CoinPriceData coinPriceData, String coinSymbol) {
+    public Float getChangeInPrice(CoinPriceData coinPriceData, String coinSymbol, int period) {
         /**
          * Get the change in price compared to the previous day
          */
@@ -130,9 +130,9 @@ public class CoinPriceJSONLoader implements IJSONLoader{
                 List<String> keys = new ArrayList<>(prices.toMap().keySet());
                 keys.sort(Comparator.reverseOrder());
                 String today = keys.get(0);
-                String yesterday = keys.get(1);
+                String past = keys.get(period);
                 float todayPrice = Float.parseFloat(prices.getString(today));
-                float yesterdayPrice = Float.parseFloat(prices.getString(yesterday));
+                float yesterdayPrice = Float.parseFloat(prices.getString(past));
                 return todayPrice - yesterdayPrice;
             }
         }

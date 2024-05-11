@@ -3,8 +3,6 @@ package org.newsaggregator.newsaggregatorclient.jsonparsing;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.RedditPostData;
 import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
-import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
-
 import java.util.List;
 
 public class RedditPostJSONLoader implements IJSONLoader{

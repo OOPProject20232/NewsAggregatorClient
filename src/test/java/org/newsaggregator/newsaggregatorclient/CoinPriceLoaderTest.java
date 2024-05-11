@@ -5,7 +5,6 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
 public class CoinPriceLoaderTest {
     public static void main(String[] args) {
         CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
-        coinPriceJSONLoader.setCacheFileName("coins.json");
         coinPriceJSONLoader.loadJSON();
         coinPriceJSONLoader.getNewestCoinPrices();
         System.out.println("Coin prices by period: 1 day");
