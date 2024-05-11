@@ -13,5 +13,8 @@ hoặc GitHub Desktop (GUI + git)
 
 Các bước tải dự án
 1. Tải từ repo này về:
-  `gỉt clone https://github.com/OOPProject20232/NewsAggregatorClient.git`
+  ```
+gỉt clone https://github.com/OOPProject20232/NewsAggregatorClient.git
+```
+
 2. Mở bằng IDE tuỳ chọn và làm theo hướng dẫn
