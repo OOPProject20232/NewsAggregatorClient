@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 
+import java.awt.dnd.DragGestureListener;
 import java.util.Objects;
 
 public class GenericDialog extends Dialog<Void> {
@@ -15,9 +16,16 @@ public class GenericDialog extends Dialog<Void> {
      */
     public GenericDialog() {
         getDialogPane().getStyleClass().addAll("dialog", "generic-container");
-        getDialogPane().getStylesheets().add(
-            NewsAggregatorClientApplication.class.getResourceAsStream("/assets/css/chart.css").toString()
-        );
+        try {
+            getDialogPane().getStylesheets().add(
+                    NewsAggregatorClientApplication.class.getResourceAsStream("/assets/css/dialogs.css").toString()
+            );
+        }
+        catch (NullPointerException e) {
+            getDialogPane().getStylesheets().add(
+                    GenericDialog.class.getResourceAsStream("dialogs.css").toString()
+            );
+        }
     }
 
 }

@@ -31,14 +31,18 @@
                   </Label>
                </children>
             </HBox>
-            <LineChart fx:id="coinPriceChart" alternativeRowFillVisible="false" createSymbols="false" prefHeight="400.0" prefWidth="827.0" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
-               <xAxis>
-                  <CategoryAxis side="BOTTOM" />
-               </xAxis>
-               <yAxis>
-                  <NumberAxis minorTickVisible="false" side="LEFT" />
-               </yAxis>
-            </LineChart>
+            <HBox fx:id="coinPriceFrame" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <LineChart fx:id="coinPriceChart" alternativeRowFillVisible="false" createSymbols="false" prefHeight="273.0" prefWidth="1037.0" verticalGridLinesVisible="false" verticalZeroLineVisible="false" HBox.hgrow="ALWAYS">
+                     <xAxis>
+                        <CategoryAxis side="BOTTOM" />
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis minorTickVisible="false" side="LEFT" />
+                     </yAxis>
+                  </LineChart>
+               </children>
+            </HBox>
             <HBox alignment="CENTER" prefHeight="52.0" prefWidth="1065.0" spacing="12.0">
                <children>
                   <ToggleButton fx:id="oneWeekButton" mnemonicParsing="false" selected="true" text="1 week">

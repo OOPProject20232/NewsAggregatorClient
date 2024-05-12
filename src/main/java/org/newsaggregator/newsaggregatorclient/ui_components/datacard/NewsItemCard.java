@@ -181,7 +181,7 @@ public class NewsItemCard extends HBox implements IGenericDataCard<NewsItemData>
                         connection.setRequestMethod("GET");
                         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[1024];
+                        byte[] buffer = new byte[65534];
                         int length;
                         while ((length = in.read()) > 0) {
                             out.write(buffer, 0, length);

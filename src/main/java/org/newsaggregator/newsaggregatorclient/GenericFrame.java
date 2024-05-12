@@ -18,7 +18,7 @@ public class GenericFrame extends ScrollPane {
         AnchorPane.setLeftAnchor(itemsContainer, 0.0);
         AnchorPane.setRightAnchor(itemsContainer, 0.0);
         setFitToWidth(true);
-        setFitToHeight(true);
+//        setFitToHeight(true);
         itemsContainer.getChildren().clear();
         itemsContainer.getStyleClass().addAll("generic-transparent-container");
         itemsContainer.setHgap(36);

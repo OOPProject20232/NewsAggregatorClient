@@ -1,10 +1,7 @@
 package org.newsaggregator.newsaggregatorclient.util;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
@@ -59,14 +56,15 @@ public class TimeFormatter {
         /**
          * Chuyển đổi chuỗi ngày tháng từ ISO sang dạng bình thường
          */
-        SimpleDateFormat inp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         // Get time with current offset
         SimpleDateFormat out = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
         try {
-            Date date = inp.parse(dateTime);
-            return out.format(date);
+            OffsetDateTime date = OffsetDateTime.parse(dateTime);
+            return date.format(DateTimeFormatter.ofPattern(out.toPattern()));
         }
         catch (Exception e){
+            e.printStackTrace();
             return "Unknown";
         }
     }

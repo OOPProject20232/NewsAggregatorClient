@@ -7,11 +7,38 @@ public class RedditPostData extends GenericData{
     private String subreddit;
     private String postedTime;
 
-    public RedditPostData(String title, String author, String url, String subreddit) {
-        this.title = title;
-        this.author = author;
-        this.url = url;
-        this.subreddit = subreddit;
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
+    }
+
+    private String mediaUrl;
+
+    private int upvotes;
+
+    public int getDownvotes() {
+        return downvotes;
+    }
+
+    public void setDownvotes(int downvotes) {
+        this.downvotes = downvotes;
+    }
+
+    public String getPostContent() {
+        return postContent;
+    }
+
+    public void setPostContent(String postContent) {
+        this.postContent = postContent;
+    }
+
+    private int downvotes;
+    private String postContent;
+
+    public RedditPostData(){
     }
 
     public String getTitle() {
@@ -54,4 +81,35 @@ public class RedditPostData extends GenericData{
         this.subreddit = subreddit;
     }
 
+    public String getPostedTime() {
+        return postedTime;
+    }
+
+    public void setPostedTime(String postedTime) {
+        this.postedTime = postedTime;
+    }
+
+    public int getUpvotes() {
+        return upvotes;
+    }
+
+    public void setUpvotes(int upvotes) {
+        this.upvotes = upvotes;
+    }
+
+    @Override
+    public String toString() {
+        return """
+                RedditPostData{
+                    title='%s',
+                    author='%s',
+                    url='%s',
+                    subreddit='%s',
+                    postedTime='%s',
+                    upvotes=%d,
+                    downvotes=%d,
+                    postContent='%s'
+                }
+                """.formatted(title, author, url, subreddit, postedTime, upvotes, downvotes, postContent);
+    }
 }

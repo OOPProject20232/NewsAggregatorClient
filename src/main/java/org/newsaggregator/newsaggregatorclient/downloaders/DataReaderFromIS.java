@@ -31,8 +31,6 @@ public class DataReaderFromIS {
                     response.append(inputLine);
                 }
                 in.close();
-//                Path path =  Files.createTempFile("news", ".json");
-//                System.out.println(path.toAbsolutePath());
                 return new JSONObject(response.toString());
             }
         } catch (Exception e) {

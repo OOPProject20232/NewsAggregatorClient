@@ -10,10 +10,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
+import org.jetbrains.annotations.NotNull;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CoinNewestPriceGroupFrame;
-import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.CoinNewestPriceItemsLoader;
 
 import java.util.List;
@@ -24,14 +24,13 @@ public class NewsAggregatorClientController {
      * Được gọi khi ứng dụng được khởi chạy
      */
 
-//    @FXML
-//    private GridPane newsContainer;
     // Các thuộc tính có @FXML có tên trùng với các thành phần được đánh dấu fx:id trong file FXML
     @FXML
     private AnchorPane newsArticlesPane;
 
     @FXML
-    protected SplitPane newsSplitPane;
+    @NotNull
+    private SplitPane newsDivider;
 
     @FXML
     private AnchorPane mainAnchorPane;
@@ -79,10 +78,10 @@ public class NewsAggregatorClientController {
         this.articleScrollPane = new ArticlesFrame(hostServices, this);
     }
 
+    @FXML
     public synchronized void start(){
-        newsSplitPane.setDividerPositions(.7);
+        newsDivider.setDividerPositions(450/mainAnchorPane.getWidth());
         reloadNews.setOnAction(event -> reloadNews());
-        newsArticlesPane.getChildren().add(articleScrollPane);
         AnchorPane.setBottomAnchor(articleScrollPane, 0.0);
         AnchorPane.setTopAnchor(articleScrollPane, 0.0);
         AnchorPane.setLeftAnchor(articleScrollPane, 0.0);
@@ -149,6 +148,7 @@ public class NewsAggregatorClientController {
         Tooltip marketTooltip = new Tooltip("Market data");
         marketTooltip.setShowDelay(Duration.millis(10));
         marketDataTab.setTooltip(marketTooltip);
+        newsArticlesPane.getChildren().add(articleScrollPane);
     }
 
     protected synchronized void showAllNewsCategories() {

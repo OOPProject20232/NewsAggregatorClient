@@ -12,6 +12,7 @@ import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsCatego
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
     /**
@@ -64,7 +65,7 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
         System.out.println("Loading: " + workDone + "/" + max);
     }
 
-    public synchronized NewsCategoryGroupTitledPane loadItems(List<NewsItemData> data) {
+    public synchronized void loadItems(List<NewsItemData> data) {
         if (begin + limit > data.size()) {
             limit = data.size() - begin;
         }
@@ -91,6 +92,5 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
         });
         textThread.start();
 
-        return newsCategoryGroupTitledPane;
     }
 }

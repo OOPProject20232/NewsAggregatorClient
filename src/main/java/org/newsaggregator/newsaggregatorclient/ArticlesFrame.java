@@ -29,23 +29,9 @@ public class ArticlesFrame extends GenericFrame {
         super();
         resetArticlePage();
         this.hostServices = hostServices;
-//        AnchorPane container = new AnchorPane();
-//        this.setContent(container);
-//        container.getChildren().add(newsContainer);
-//        AnchorPane.setBottomAnchor(newsContainer, 0.0);
-//        AnchorPane.setTopAnchor(newsContainer, 0.0);
-//        AnchorPane.setLeftAnchor(newsContainer, 0.0);
-//        AnchorPane.setRightAnchor(newsContainer, 0.0);
-//        setFitToWidth(true);
-//        setFitToHeight(true);
-//        newsContainer.getChildren().clear();
-//        newsContainer.getStyleClass().addAll("generic-transparent-container");
-//        newsContainer.setHgap(36);
-//        newsContainer.setVgap(36);
-//        newsContainer.setPadding(new Insets(48, 48, 48, 48));
-//        container.getStyleClass().addAll( "generic-transparent-container");
-//        this.getStyleClass().addAll("generic-transparent-container");
         this.mainController = mainController;
+        this.setFitToHeight(true);
+
     }
 
     public synchronized void loadArticles() {
@@ -102,8 +88,8 @@ public class ArticlesFrame extends GenericFrame {
                 List<NewsItemData> data = articleDataLoader.getNewsItemDataList(limit, 0);
                 ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(limit, 0, hostServices, allNews, this);
                 articleItemsLoader.loadItems(data);
-                loadingDialog.close();
             });
+            loadingDialog.close();
         }
         catch (Exception e){
             // Error, return to old page number

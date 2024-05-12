@@ -1,5 +1,6 @@
 package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
@@ -9,7 +10,7 @@ public class InfiniteNews extends NewsCategoryGroupTitledPane{
         super(category);
         VBox outerBox = new VBox();
         this.setContent(outerBox);
-        outerBox.setAlignment(javafx.geometry.Pos.CENTER);
+        outerBox.setAlignment(Pos.TOP_CENTER);
         outerBox.getStyleClass().add("category__layout");
         loadMoreButton = new Button("Load more");
         loadMoreButton.getStyleClass().add("load-more-button");

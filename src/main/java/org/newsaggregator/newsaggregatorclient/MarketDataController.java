@@ -8,12 +8,14 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import javafx.scene.shape.Line;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
+import org.newsaggregator.newsaggregatorclient.ui_components.chart.CustomCursor;
 import org.newsaggregator.newsaggregatorclient.ui_components.chart.LineChartWithCrosshair;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
@@ -54,6 +56,9 @@ public class MarketDataController {
 
     @FXML
     VBox marketDataArea;
+
+    @FXML
+    HBox coinPriceFrame;
 
     NewsAggregatorClientController mainController;
 
@@ -112,23 +117,13 @@ public class MarketDataController {
         xAxis.setLabel("Date");
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Price");
-        LineChartWithCrosshair lineChartWithCrosshair = new LineChartWithCrosshair(xAxis, yAxis);
+        LineChartWithCrosshair lineChartWithCrosshair = new LineChartWithCrosshair(xAxis, yAxis, new CustomCursor(new Line(), new Line(), true));
         lineChartWithCrosshair.setCreateSymbols(true);
         lineChartWithCrosshair.setAnimated(false);
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("BTC");
-        series.getData().add(new XYChart.Data<>("2021-01-01", 10000));
-        series.getData().add(new XYChart.Data<>("2021-01-02", 11000));
-        series.getData().add(new XYChart.Data<>("2021-01-03", 12000));
-        series.getData().add(new XYChart.Data<>("2021-01-04", 13000));
-        series.getData().add(new XYChart.Data<>("2021-01-05", 14000));
-        series.getData().add(new XYChart.Data<>("2021-01-06", 15000));
-        series.getData().add(new XYChart.Data<>("2021-01-07", 16000));
-        series.getData().add(new XYChart.Data<>("2021-01-08", 17000));
-        series.getData().add(new XYChart.Data<>("2021-01-09", 18000));
-        series.getData().add(new XYChart.Data<>("2021-01-10", 19000));
-        lineChartWithCrosshair.getData().add(series);
-        marketDataArea.getChildren().add(lineChartWithCrosshair);
+        coinPriceChart = lineChartWithCrosshair;
+        coinPriceFrame.getChildren().clear();
+        coinPriceFrame.getChildren().add(lineChartWithCrosshair);
+        HBox.setHgrow(lineChartWithCrosshair, javafx.scene.layout.Priority.ALWAYS);
     }
 
     public void demoLoadMarketData(int period, boolean clearSeries, String ...symbols) {

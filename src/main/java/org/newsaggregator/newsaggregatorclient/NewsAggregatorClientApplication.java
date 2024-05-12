@@ -19,12 +19,11 @@ public class NewsAggregatorClientApplication extends Application {
     @Override
     public synchronized void start(Stage stage) throws IOException {
         System.out.println("\u001B[33m"+"Starting application"+ "\u001B[0m");
-        FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("/news_aggregator_client.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("news_aggregator_client.fxml"));
         NewsAggregatorClientController controller = new NewsAggregatorClientController(this.getHostServices());
-//        stage.setScene(null);
         if (!connectionChecker.checkInternetConnection()) {
             NoInternetDialog dialog = new NoInternetDialog();
-            dialog.getDialogPane().getStylesheets().add(this.getClass().getResourceAsStream("assets/css/dialogs.css").toString());
+//            dialog.getDialogPane().getStylesheets().add(this.getClass().getResourceAsStream("/assets/css/dialogs.css").toString());
             stage.setScene(dialog.getDialogPane().getScene());
             stage = (Stage) dialog.getDialogPane().getScene().getWindow();
             stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/no-internet.png"))));
@@ -33,16 +32,16 @@ public class NewsAggregatorClientApplication extends Application {
             LoadingDialog loadingDialog = new LoadingDialog();
             loadingDialog.show();
             fxmlLoader.setController(controller);
-            Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 1000);
             stage.setTitle("Crypto News Aggregator Client");
             stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/icon.png"))));
             stage.setScene(scene);
-            stage.show();
+            Stage finalStage = stage;
             controller.start();
-            Platform.runLater(() -> {
-                controller.showAllNewsCategories();
-                loadingDialog.close();
-            });
+            controller.showAllNewsCategories();
+            loadingDialog.close();
+            finalStage.show();
+//            loadingDialog.close();
 //            controller.showAllNewsCategories();
         }
     }
