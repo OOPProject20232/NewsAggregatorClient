@@ -230,7 +230,7 @@ public class NewsAggregatorClientController {
         // News
         if (newsTypeTabs.getSelectedIndex() == 0) {
             articleScrollPane.clearAllNews();
-            articleScrollPane.resetArticlePage();
+            articleScrollPane.resetPage();
             try {
                 articleScrollPane.loadArticles();
             } catch (NoRouteToHostException e) {
@@ -243,7 +243,7 @@ public class NewsAggregatorClientController {
         }
         else {
             // Reddit
-            redditFrame.resetRedditPage();
+            redditFrame.resetPage();
             redditFrame.loadReddit();
             loadingDialog.close();
         }

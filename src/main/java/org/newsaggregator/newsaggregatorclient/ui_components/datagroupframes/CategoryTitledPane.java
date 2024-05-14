@@ -5,7 +5,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
-import org.newsaggregator.newsaggregatorclient.ui_components.datacard.HorizontalDataCard;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
 public class CategoryTitledPane<T, D extends GenericData> extends TitledPane {
@@ -32,7 +31,7 @@ public class CategoryTitledPane<T, D extends GenericData> extends TitledPane {
         setText(title);
     }
 
-    public void addItem(HorizontalDataCard<D> dataCard){
+    public void addItem(T dataCard){
         itemsGroupLayout.getChildren().add((Node) dataCard);
     }
 

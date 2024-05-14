@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class RedditFrame extends GenericFrame {
     private HostServices hostServices;
     private NewsAggregatorClientController mainController;
-    private int currentRedditPage = 1;
     private final int limit = 50;
     RedditGroupTitledPane allReddit = new RedditGroupTitledPane("All Reddit");
     BooleanProperty isLoaded = new SimpleBooleanProperty(false);
@@ -49,7 +48,7 @@ public class RedditFrame extends GenericFrame {
     }
 
     public void loadMoreReddit(){
-        currentRedditPage++;
+        nextPage();
         AtomicReference<RedditPostJSONLoader> redditDataLoader = new AtomicReference<>();
         Platform.runLater(() -> {
             redditDataLoader.set(getRedditJSONLoader());
@@ -69,13 +68,9 @@ public class RedditFrame extends GenericFrame {
     private RedditPostJSONLoader getRedditJSONLoader(){
         RedditPostJSONLoader redditPostJSONLoader = new RedditPostJSONLoader();
         redditPostJSONLoader.setLimit(limit);
-        redditPostJSONLoader.setPageNumber(currentRedditPage);
+        redditPostJSONLoader.setPageNumber(currentPage);
         redditPostJSONLoader.loadJSON();
         return redditPostJSONLoader;
-    }
-
-    public void resetRedditPage(){
-        currentRedditPage = 1;
     }
 
     public boolean isLoaded(){

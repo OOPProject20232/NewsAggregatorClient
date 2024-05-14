@@ -27,10 +27,10 @@ public class MarketDataController {
      */
 
 //    private Map<String, List<CoinPriceData>> coinPriceData;
-    private static CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
-    private String currency = "$";
-    private String symbol = "BTC";
-    private String[] symbolList = {"BTC"};
+    private CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
+    private final String currency = "$";
+    private final String symbol = "BTC";
+    private final String[] symbolList = {"BTC"};
 
     @FXML
     Label chartTitle;
@@ -38,8 +38,7 @@ public class MarketDataController {
     @FXML
     Label coinPriceLabel;
 
-    @FXML
-    LineChart<String, Number> coinPriceChart;
+    LineChartWithCrosshair<String, Number> coinPriceChart;
 
     @FXML
     ToggleButton oneWeekButton;
@@ -93,8 +92,6 @@ public class MarketDataController {
         // Khởi tạo các giá trị mặc định
         LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show();
-        coinPriceChart.setCreateSymbols(true);
-        coinPriceChart.setAnimated(false);
         coinPriceJSONLoader.setLimit(100);
         Platform.runLater(() -> {
             try{
@@ -131,13 +128,13 @@ public class MarketDataController {
         xAxis.setLabel("Date");
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Price");
-        LineChartWithCrosshair<String, Number> lineChartWithCrosshair = new LineChartWithCrosshair<>(xAxis, yAxis, new CustomCursor(new Line(), new Line(), true));
-        lineChartWithCrosshair.setCreateSymbols(true);
-        lineChartWithCrosshair.setAnimated(false);
-        coinPriceChart = lineChartWithCrosshair;
+        coinPriceChart = new LineChartWithCrosshair<>(xAxis, yAxis, new CustomCursor(new Line(), new Line(), true));
+        coinPriceChart.setCreateSymbols(true);
+        coinPriceChart.setAnimated(false);
+        VBox.setVgrow(coinPriceChart, javafx.scene.layout.Priority.ALWAYS);
         coinPriceFrame.getChildren().clear();
-        coinPriceFrame.getChildren().add(lineChartWithCrosshair);
-        HBox.setHgrow(lineChartWithCrosshair, javafx.scene.layout.Priority.ALWAYS);
+        coinPriceFrame.getChildren().add(coinPriceChart);
+        HBox.setHgrow(coinPriceChart, javafx.scene.layout.Priority.ALWAYS);
     }
 
     public void loadMarketData(int period, boolean clearSeries, String ...symbols) {
@@ -156,6 +153,7 @@ public class MarketDataController {
             coinPriceChart.getData().clear();
         }
         List<CoinPriceData> coinPriceDataList = coinPriceJSONLoader.getNewestCoinPrices();
+        double priceChangeByPeriod =  coinPriceJSONLoader.getChangeInPrice(coinPriceDataList.getFirst(), symbol, period);
         for (String symbol : symbols) {
             Map<String, String> dataMap = coinPriceJSONLoader.getCoinPricesBySymbol(symbol, period);
             if (dataMap == null || coinPriceDataList == null) {
@@ -191,6 +189,7 @@ public class MarketDataController {
             }
             Platform.runLater(() -> {
                 coinPriceChart.getData().add(series);
+//                series.getNode().setStyle("-fx-stroke: #000000");
                 for (XYChart.Data<String, Number> data : series.getData()) {
                     DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
                     float yValue = data.getYValue().floatValue();

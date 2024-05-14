@@ -10,6 +10,7 @@ import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.Error500Dialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.SplashScreen;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -19,7 +20,7 @@ public class NewsAggregatorClientApplication extends Application {
     public synchronized void start(Stage stage) throws IOException {
         System.out.println("\u001B[33m"+"Starting application"+ "\u001B[0m");
         FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("news_aggregator_client.fxml"));
-        LoadingDialog loadingDialog = new LoadingDialog();
+        SplashScreen loadingDialog = new SplashScreen();
         loadingDialog.show();
         NewsAggregatorClientController controller = new NewsAggregatorClientController(this.getHostServices());
         fxmlLoader.setController(controller);

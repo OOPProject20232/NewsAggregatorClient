@@ -89,12 +89,14 @@ public class ArticleItemsLoader<T>
                     NewsItemCard newsItem = new NewsItemCard(itemData);
                     newsItem.setContainingSummary(containingSummary);
                     newsItem.setContainingCategories(containingCategories);
-                    newsItem.setParentWidth(((CategoryTitledPane) newsCategoryGroupTitledPane).getWidth() - 20);
+                    newsItem.setParentWidth(((CategoryTitledPane<?, ?>) newsCategoryGroupTitledPane).getWidth() - 20);
                     newsItem.setText();
                     Platform.runLater(newsItem::setImage);
                     newsItem.setPublisherLogo();
                     newsItem.getArticleHyperlinkTitleObject().setOnAction(
-                            event -> hostServices.showDocument(itemData.getUrl())
+                            event -> {
+                                hostServices.showDocument(itemData.getUrl());;
+                            }
                     );
                     newsItem.getReadMore().setOnAction(
                             event -> hostServices.showDocument(itemData.getUrl())
@@ -107,7 +109,7 @@ public class ArticleItemsLoader<T>
                         category.setOnAction((event) -> articlesFrame.setSearchText(category.getText()));
                     }
                     updateProgress(count, limit + begin);
-                    CategoryTitledPane newsCategoryGroupTitledPane1 = (CategoryTitledPane) newsCategoryGroupTitledPane;
+                    CategoryTitledPane<NewsItemCard,?> newsCategoryGroupTitledPane1 = (CategoryTitledPane<NewsItemCard,?>) newsCategoryGroupTitledPane;
                     newsCategoryGroupTitledPane1.addItem(newsItem);
                 });
             }

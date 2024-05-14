@@ -1,0 +1,32 @@
+package org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
+
+import java.util.Objects;
+
+public class SplashScreen extends Dialog<Void> {
+    FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("splashscreen.fxml"));
+    public SplashScreen() {
+        try {
+            this.getDialogPane().setContent(fxmlLoader.load());
+            Stage stage = (Stage) getDialogPane().getScene().getWindow();
+            stage.setWidth(300);
+            stage.setHeight(450);
+            stage.setIconified(false);
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("/assets/images/logo.png"))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ButtonType close = new ButtonType("Close", ButtonType.CANCEL.getButtonData());
+        getDialogPane().getButtonTypes().add(close);
+        getDialogPane().lookupButton(close).setVisible(false);
+        getDialogPane().lookupButton(close).setStyle("-fx-pref-height: 0");
+    }
+}

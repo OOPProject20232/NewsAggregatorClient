@@ -6,6 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import org.newsaggregator.newsaggregatorclient.datamodel.RedditPostData;
 
 /**
@@ -30,7 +32,10 @@ public class RedditCard extends HorizontalDataCard<RedditPostData> {
         this.setCardStyle();
         HBox voteBox = new HBox();
         voteBox.getChildren().addAll(upvoteCount, downvoteCount);
-        getChildren().addAll(subreddit, thumbnail, title, content , author, voteBox);
+        VBox contentBox = new VBox();
+        contentBox.getChildren().addAll(subreddit, thumbnail, title, content, author, voteBox);
+        VBox.setVgrow(contentBox, Priority.ALWAYS);
+        getChildren().add(contentBox);
     }
 
     @Override

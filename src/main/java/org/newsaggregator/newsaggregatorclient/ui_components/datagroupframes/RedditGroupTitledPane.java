@@ -13,10 +13,6 @@ public class RedditGroupTitledPane extends CategoryTitledPane<RedditCard, Reddit
 //        container.setHgap(24);
 //        container.setVgap(24);
 //        container.getStyleClass().add("category--invisible");
-        this.getStyleClass().clear();
-        this.getContainer().getStyleClass().clear();
-        this.getStyleClass().add("category--invisible");
-        this.getContainer().getStyleClass().add("category--invisible");
     }
 
     public RedditGroupTitledPane(String title){

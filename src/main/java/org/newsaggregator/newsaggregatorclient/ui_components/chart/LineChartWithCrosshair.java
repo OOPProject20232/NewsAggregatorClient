@@ -5,12 +5,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 
-public class LineChartWithCrosshair<X, Y> extends LineChart {
+import java.awt.geom.Area;
+
+public class LineChartWithCrosshair<X, Y> extends AreaChart<X, Y> {
     /**
      * Custom LineChart for showing crosshair lines on mouse hover.
      * Based on this StackOverflow answer: https://stackoverflow.com/a/56230124

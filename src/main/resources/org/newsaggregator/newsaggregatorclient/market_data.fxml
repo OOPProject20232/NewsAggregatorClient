@@ -3,9 +3,6 @@
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -51,31 +48,24 @@
                               <Insets left="12.0" right="12.0" />
                            </padding>
                         </HBox>
-                        <VBox fx:id="coinPriceFrame" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                        <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <LineChart fx:id="coinPriceChart" alternativeRowFillVisible="false" createSymbols="false" prefHeight="273.0" prefWidth="1037.0" verticalGridLinesVisible="false" verticalZeroLineVisible="false" VBox.vgrow="ALWAYS">
-                                 <xAxis>
-                                    <CategoryAxis side="BOTTOM" />
-                                 </xAxis>
-                                 <yAxis>
-                                    <NumberAxis minorTickVisible="false" side="LEFT" />
-                                 </yAxis>
-                              </LineChart>
+                              <VBox fx:id="coinPriceFrame" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS" />
+                              <HBox alignment="CENTER" prefHeight="50.0" prefWidth="1037.0" spacing="24.0">
+                                 <children>
+                                    <ToggleButton fx:id="oneWeekButton" mnemonicParsing="false" selected="true" text="1 week">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="period" />
+                                       </toggleGroup>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="oneMonthButton" mnemonicParsing="false" text="1 month" toggleGroup="$period" />
+                                    <ToggleButton fx:id="sixMonthsButton" mnemonicParsing="false" text="6 months" toggleGroup="$period" />
+                                    <ToggleButton fx:id="ytdButton" mnemonicParsing="false" text="YTD" toggleGroup="$period" />
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
-                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="1037.0" spacing="24.0">
-                           <children>
-                              <ToggleButton fx:id="oneWeekButton" mnemonicParsing="false" selected="true" text="1 week">
-                                 <toggleGroup>
-                                    <ToggleGroup fx:id="period" />
-                                 </toggleGroup>
-                              </ToggleButton>
-                              <ToggleButton fx:id="oneMonthButton" mnemonicParsing="false" text="1 month" toggleGroup="$period" />
-                              <ToggleButton fx:id="sixMonthsButton" mnemonicParsing="false" text="6 months" toggleGroup="$period" />
-                              <ToggleButton fx:id="ytdButton" mnemonicParsing="false" text="YTD" toggleGroup="$period" />
-                           </children>
-                        </HBox>
-                        <TableView fx:id="coinPriceTable" prefHeight="200.0" prefWidth="200.0" scaleShape="false" styleClass="chart-container">
+                        <TableView fx:id="coinPriceTable" prefHeight="200.0" prefWidth="200.0" scaleShape="false" styleClass="chart-container" VBox.vgrow="SOMETIMES">
                           <columns>
                             <TableColumn fx:id="coinNameColumn" prefWidth="75.0" text="Coin" />
                             <TableColumn fx:id="coinPriceColumn" prefWidth="75.0" text="Price" />

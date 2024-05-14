@@ -9,6 +9,8 @@ import javafx.scene.layout.GridPane;
 public class GenericFrame extends ScrollPane {
     protected final GridPane itemsContainer = new GridPane();
     protected final String JSON_FOLDER_PATH = "src/main/resources/json/";
+    protected int currentPage = 2;
+    protected int limit = 30;
     public GenericFrame(){
         AnchorPane container = new AnchorPane();
         this.setContent(container);
@@ -32,5 +34,17 @@ public class GenericFrame extends ScrollPane {
 
     public GridPane getItemsContainer() {
         return itemsContainer;
+    }
+
+    public void resetPage() {
+        currentPage = 2;
+    }
+
+    public void nextPage() {
+        currentPage+=1;
+    }
+
+    public void previousPage() {
+        currentPage-=1;
     }
 }

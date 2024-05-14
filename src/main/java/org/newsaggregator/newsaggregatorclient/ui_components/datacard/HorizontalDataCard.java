@@ -18,6 +18,7 @@ public abstract class HorizontalDataCard<T extends GenericData> extends HBox {
     public void setCardStyle(){
         this.getStyleClass().add("datacard");
         VBox.setVgrow(this, Priority.ALWAYS);
+        setMinHeight(800);
     }
     public abstract void setText();
 

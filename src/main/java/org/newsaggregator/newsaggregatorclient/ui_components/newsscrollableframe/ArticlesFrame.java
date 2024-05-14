@@ -22,14 +22,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ArticlesFrame extends GenericFrame {
     private HostServices hostServices;
     private NewsAggregatorClientController mainController;
-    private int currentArticlePage = 1;
     private final int limit = 30;
 //    private final GridPane newsContainer = new GridPane();
     InfiniteNews allNews;
 
     public ArticlesFrame (HostServices hostServices, NewsAggregatorClientController mainController) {
         super();
-        resetArticlePage();
+        resetPage();
         this.hostServices = hostServices;
         this.mainController = mainController;
         this.setFitToHeight(true);
@@ -78,6 +77,11 @@ public class ArticlesFrame extends GenericFrame {
             newsCategoryJSONLoader.set(getNewsCategoryJSONLoader("ethereum"));
             getNewsCategory(ethereumNews, newsCategoryJSONLoader);
         })).start();
+        setOnScroll(event -> {
+            if (getVvalue() >= .7) {
+                loadMoreArticles();
+            }
+        });
     }
 
     private synchronized void getNewsCategory(NewsCategoryGroupTitledPane ethereumNews, AtomicReference<NewsCategoryJSONLoader> newsCategoryJSONLoader) {
@@ -97,7 +101,7 @@ public class ArticlesFrame extends GenericFrame {
 
     private synchronized @NotNull NewsJSONLoader getNewsJSONLoader() throws NoRouteToHostException {
         NewsJSONLoader articleDataLoader = new NewsJSONLoader();
-        articleDataLoader.setPageNumber(currentArticlePage);
+        articleDataLoader.setPageNumber(currentPage);
         articleDataLoader.setLimit(limit);
         articleDataLoader.loadJSON();
         return articleDataLoader;
@@ -115,12 +119,12 @@ public class ArticlesFrame extends GenericFrame {
     }
 
     private synchronized void loadMoreArticles(){
-        LoadingDialog loadingDialog = new LoadingDialog();
-        loadingDialog.show();
+        nextPage();
+//        LoadingDialog loadingDialog = new LoadingDialog();
+//        loadingDialog.show();
         System.out.println("Loading more articles");
-        nextArticlePage();
         try {
-            System.out.println("Current article page: " + currentArticlePage);
+            System.out.println("Current article page: " + currentPage);
             NewsJSONLoader articleDataLoader = getNewsJSONLoader();
             Platform.runLater(() -> {
                 List<NewsItemData> data = articleDataLoader.getNewsItemDataList(limit, 0);
@@ -128,7 +132,7 @@ public class ArticlesFrame extends GenericFrame {
                 articleItemsLoader.loadItems(data);
 
             });
-            loadingDialog.close();
+//            loadingDialog.close();
         }
         catch (NoRouteToHostException e){
 
@@ -136,16 +140,8 @@ public class ArticlesFrame extends GenericFrame {
         catch (Exception e){
             // Error, return to old page number
             e.printStackTrace();
-            currentArticlePage--;
+            previousPage();
         }
-    }
-
-    public void resetArticlePage() {
-        currentArticlePage = 2;
-    }
-
-    public void nextArticlePage() {
-        currentArticlePage+=1;
     }
 
     public void setSearchText(String text){

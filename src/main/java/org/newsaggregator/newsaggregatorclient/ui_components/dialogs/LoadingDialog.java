@@ -24,6 +24,7 @@ public class LoadingDialog extends GenericAlert {
 //        this.setTitle("Đang tải dữ liệu");
 //        this.setHeaderText("Vui lòng chờ trong giây lát");
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
+        stage.setIconified(false);
         try{
             stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResource("refresh.png").toExternalForm())));
 //            getDialogPane().getStylesheets().add(this.getClass().getResource("dialogs.css").toExternalForm());
