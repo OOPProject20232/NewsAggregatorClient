@@ -1,11 +1,12 @@
-package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
+package org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes;
 
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.VBox;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.ui_components.datacard.HorizontalDataCard;
+import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
 import java.util.ArrayList;
 
-public class NewsCategoryGroupTitledPane extends TitledPane {
+public class NewsCategoryGroupTitledPane extends CategoryTitledPane<NewsItemCard, NewsItemData> {
     /**
      * TitledPane chứa các tin tức theo từng danh mục, được tạo bới controller khi nhập dữ liệu từ database
      * Bao gồm
@@ -17,28 +18,19 @@ public class NewsCategoryGroupTitledPane extends TitledPane {
      * - Nút xem tin tức (nút "chi tiết" hoặc link ẩn trên tiêu đề tin tức)
      */
 
-    protected final VBox newsGroupLayout = new VBox();
-
     public NewsCategoryGroupTitledPane(String category) {
         this.setCollapsible(false);
         this.setText(category);
-        this.setContent(this.newsGroupLayout);
-        this.newsGroupLayout.getStyleClass().add("category__layout");
-        this.getStyleClass().add("category");
-    }
-
-    public VBox getContainer() {
-        return this.newsGroupLayout;
     }
 
     public void addItem(NewsItemCard data) {
-        this.newsGroupLayout.getChildren().add((NewsItemCard) data);
+        this.getContainer().getChildren().add(data);
     }
 
     public ArrayList<NewsItemCard> getItems() {
         ArrayList<NewsItemCard> newsItems = new ArrayList<>();
-        for (int i = 0; i < this.newsGroupLayout.getChildren().size(); i++) {
-            newsItems.add((NewsItemCard) this.newsGroupLayout.getChildren().get(i));
+        for (int i = 0; i < this.getContainer().getChildren().size(); i++) {
+            newsItems.add((NewsItemCard) this.getContainer().getChildren().get(i));
         }
         return newsItems;
     }

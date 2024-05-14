@@ -14,9 +14,14 @@ public class TimeFormatter {
          * Nếu thời gian đăng chưa quá 1 tuần, hiển thị bài đăng cách đây bao nhiêu ngày
          * Còn lại hiển thị ngày tháng năm
          */
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tmp = LocalDateTime.now();
+        System.out.println("Current time: " + tmp);
+//        ZoneOffset zoneOffset = ZoneOffset.of(ZoneId.systemDefault().getId());
+        OffsetDateTime now = tmp.atOffset(ZoneOffset.of("+07:00"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        LocalDateTime postTime = LocalDateTime.parse(dateTime, formatter);
+        LocalDateTime tmpPostTime = LocalDateTime.parse(dateTime, formatter);
+        System.out.println("Post time: " + tmpPostTime);
+        OffsetDateTime postTime = tmpPostTime.atOffset(ZoneOffset.of("+00:00"));
         Duration duration = Duration.between(postTime, now);
         long diff = duration.getSeconds();
         System.out.println("Diff: " + diff);
@@ -28,9 +33,10 @@ public class TimeFormatter {
         }
         else if (diff < 3600){
             return diff/60 + " minutes ago";
-        }
-        else
-        if (diff < 86400){
+        } else if (diff < 7200) {
+            return "1 hour ago";
+
+        } else if (diff < 86400){
             return diff/3600 + " hours ago";
         }
         else if (diff < 172800){
@@ -57,11 +63,12 @@ public class TimeFormatter {
          * Chuyển đổi chuỗi ngày tháng từ ISO sang dạng bình thường
          */
         // Get time with current offset
-        SimpleDateFormat out = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
+        DateTimeFormatter inp = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        DateTimeFormatter out = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         try {
-            OffsetDateTime date = OffsetDateTime.parse(dateTime);
-            return date.format(DateTimeFormatter.ofPattern(out.toPattern()));
+            LocalDateTime tmpDate = LocalDateTime.parse(dateTime, inp);
+            OffsetDateTime date = tmpDate.atOffset(ZoneOffset.of("+07:00"));
+            return date.format(out);
         }
         catch (Exception e){
             e.printStackTrace();

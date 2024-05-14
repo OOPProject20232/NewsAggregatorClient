@@ -1,5 +1,9 @@
 package org.newsaggregator.newsaggregatorclient.datamodel;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class CoinPriceData extends GenericData {
     /**
      * Lớp lưu trữ dữ liệu giá của một coin
@@ -11,9 +15,10 @@ public class CoinPriceData extends GenericData {
     private String coinName;
     private String coinSymbol;
     private String price;
-    private Float priceChange;
+    private double priceChange;
     private String date;
     private String rank;
+    private long marketCap;
 
 
     public CoinPriceData(){
@@ -34,7 +39,13 @@ public class CoinPriceData extends GenericData {
     }
 
     public String getPrice() {
-        return "$%s".formatted(price);
+        if (Double.parseDouble(price) > .01) {
+            DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+            return "$%s".formatted(df.format(Double.parseDouble(price)));
+        }
+        else{
+            return "$%.8f".formatted(Double.parseDouble(price));
+        }
     }
 
     public Float getRawPrice() {
@@ -42,7 +53,13 @@ public class CoinPriceData extends GenericData {
     }
 
     public String getFormattedPrice(String currency) {
-        return "%s%s".formatted(currency, price);
+        if (Double.parseDouble(price) > .01) {
+            DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+            return "%s%s".formatted(currency, df.format(Double.parseDouble(price)));
+        }
+        else{
+            return "%s%.8f".formatted(currency, Double.parseDouble(price));
+        }
     }
 
     public void setPrice(String price) {
@@ -51,7 +68,7 @@ public class CoinPriceData extends GenericData {
 
     @Override
     public String toString() {
-        return "CoinPriceData{date=%s, coinName='%s', price='%s'}".formatted(date, coinName, price);
+        return "CoinPriceData{date=%s, coinName='%s', price='%s', marketCap=%s}".formatted(date, coinName, price, getFormattedMarketCap("$"));
     }
 
     public void setDate(String date) {
@@ -79,22 +96,22 @@ public class CoinPriceData extends GenericData {
     }
 
     public String getPriceChangeState() {
-        if (priceChange > 0) {
+        if (priceChange > 0.01) {
             return "up";
-        } else if (priceChange < 0) {
-            return "down";
-        } else {
+        } else if (Math.abs(priceChange) <= 0.01) {
             return "same";
+        } else {
+            return "down";
         }
     }
 
     public String getPriceChange() {
-        if (priceChange > 0) {
-            return "+%s".formatted(priceChange);
-        } else if (priceChange < 0.001) {
-            return priceChange.toString();
+        if (priceChange > 0.01) {
+            return "+%,.2f".formatted(priceChange);
+        } else if (Math.abs(priceChange) <= 0.01) {
+            return "0";
         } else {
-            return "-%s".formatted(priceChange);
+            return "- %,.2f".formatted(-priceChange);
         }
     }
 
@@ -104,5 +121,17 @@ public class CoinPriceData extends GenericData {
 
     public String getLogoURL(){
         return "https://assets.coincap.io/assets/icons/%s@2x.png".formatted(coinSymbol.toLowerCase());
+    }
+
+    public long getMarketCap() {
+        return marketCap;
+    }
+
+    public void setMarketCap(long marketCap) {
+        this.marketCap = marketCap;
+    }
+
+    public String getFormattedMarketCap(String currency) {
+        return "%s%,d".formatted(currency, marketCap);
     }
 }

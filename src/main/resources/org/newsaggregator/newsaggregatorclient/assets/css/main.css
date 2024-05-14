@@ -1,6 +1,7 @@
 /* Global styles */
 * {
-    -fx-generic-background-color: #F7F9FF;
+    /*-fx-generic-background-color: #F7F9FF;*/
+    -fx-generic-background-color: #F1F4F9;
     -fx-surface-container-lowest: #FFFFFF;
     -fx-surface-container-low: #F1F4F9;
     -fx-surface-container: #EBEEF3;
@@ -21,6 +22,8 @@
 .root{
     -fx-font-size: 14px;
 }
+
+
 
 /* Main container */
 .background-container{
@@ -187,6 +190,24 @@
 .category .category__layout{
     -fx-border-color: #fff;
     -fx-spacing: 12px;
+}
+
+.category--invisible{
+    -fx-background-color: -fx-generic-background-color;
+}
+
+.category--invisible .content{
+    -fx-background-color: #fff;
+    -fx-border-radius: 0px 0px 10px 10px;
+    -fx-border-style: none;
+    -fx-background-radius: 0px 0px 10px 10px;
+}
+
+.category--invisible .title {
+    -fx-font-size: 1.5em;
+    -fx-font-weight: bold;
+    -fx-border-radius: 20px 20px 0px 0px;
+    -fx-underline: none;
 }
 
 .article-title{

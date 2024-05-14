@@ -9,21 +9,24 @@
     -fx-spacing: 10px;
     -fx-box-border: transparent;
 }
-.datacard .horizontal .content{
-    -fx-background-color: #fff;
+.datacard .content{
     -fx-border-radius: 0px 0px 10px 10px;
     -fx-border-style: none;
     -fx-background-radius: 0px 0px 10px 10px;
 }
 
-.datacard .horizontal .title {
-    -fx-font-size: 1.5em;
+.datacard .title {
+    -fx-text-fill: black;
+    -fx-padding: 0;
+    -fx-margin: 0;
     -fx-font-weight: bold;
-    -fx-background-color: #fff;
-    -fx-border-radius: 20px 20px 0px 0px;
 }
 
-.datacard .horizontal .datacard__layout{
+.hyperlink .label{
+    -fx-text-fill: black;
+}
+
+.datacard .datacard__layout{
     -fx-border-color: #fff;
     -fx-spacing: 10px;
 }

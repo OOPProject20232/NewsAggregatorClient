@@ -7,15 +7,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
-import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CoinNewestPriceGroupFrame;
+import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CoinNewestPriceGroupTitledPane;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe.ArticlesFrame;
+import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe.RedditFrame;
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.CoinNewestPriceItemsLoader;
 
+import java.net.NoRouteToHostException;
 import java.util.List;
 
 public class NewsAggregatorClientController {
@@ -29,8 +35,11 @@ public class NewsAggregatorClientController {
     private AnchorPane newsArticlesPane;
 
     @FXML
+    private AnchorPane redditAnchorPane;
+
+    @FXML
     @NotNull
-    private SplitPane newsDivider;
+    private HBox newsDivider;
 
     @FXML
     private AnchorPane mainAnchorPane;
@@ -66,26 +75,31 @@ public class NewsAggregatorClientController {
 
     private int currentArticlePage = 1;
     private int currentRedditPage = 1;
-    private final int limit = 50;
+    private final static int coinLimit = 20;
 
     private final String JSON_FOLDER_PATH = "src/main/resources/json/";
     private CoinPriceJSONLoader coinPriceJSONLoader;
     private final ArticlesFrame articleScrollPane;
     private NewsSearchController newsSearchController = new NewsSearchController();
+    private final RedditFrame redditFrame;
 
     public NewsAggregatorClientController(HostServices hostServices) {
         this.hostServices = hostServices;
         this.articleScrollPane = new ArticlesFrame(hostServices, this);
+        this.redditFrame = new RedditFrame(hostServices, this);
     }
 
     @FXML
     public synchronized void start(){
-        newsDivider.setDividerPositions(450/mainAnchorPane.getWidth());
         reloadNews.setOnAction(event -> reloadNews());
         AnchorPane.setBottomAnchor(articleScrollPane, 0.0);
         AnchorPane.setTopAnchor(articleScrollPane, 0.0);
         AnchorPane.setLeftAnchor(articleScrollPane, 0.0);
         AnchorPane.setRightAnchor(articleScrollPane, 0.0);
+        AnchorPane.setBottomAnchor(redditFrame, 0.0);
+        AnchorPane.setTopAnchor(redditFrame, 0.0);
+        AnchorPane.setLeftAnchor(redditFrame, 0.0);
+        AnchorPane.setRightAnchor(redditFrame, 0.0);
         articleTabButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             ImageView articleIcon = new ImageView();
             articleIcon.setFitHeight(24);
@@ -113,6 +127,9 @@ public class NewsAggregatorClientController {
         });
         redditTabButton.setOnAction(event -> {
             newsTypeTabPane.getSelectionModel().select(1);
+            if (!redditFrame.isLoaded()) {
+                redditFrame.loadReddit();
+            }
         });
         Tooltip newsTooltip = new Tooltip("Latest news");
         newsTooltip.setShowDelay(Duration.millis(10));
@@ -149,6 +166,7 @@ public class NewsAggregatorClientController {
         marketTooltip.setShowDelay(Duration.millis(10));
         marketDataTab.setTooltip(marketTooltip);
         newsArticlesPane.getChildren().add(articleScrollPane);
+        redditAnchorPane.getChildren().add(redditFrame);
     }
 
     protected synchronized void showAllNewsCategories() {
@@ -157,10 +175,20 @@ public class NewsAggregatorClientController {
          * được gọi khi ứng dụng được khởi chạy
          * Dữ liệu tin tức sẽ được lấy từ database thông qua trung gian
          */
-        articleScrollPane.loadArticles();
-        CoinNewestPriceGroupFrame coinNewestPriceGroupFrame = new CoinNewestPriceGroupFrame();
+        LoadingDialog loadingDialog = new LoadingDialog();
+        Platform.runLater(() -> {
+            try {
+                articleScrollPane.loadArticles();
+            } catch (NoRouteToHostException e) {
+                loadingDialog.close();
+                NoInternetDialog noInternetDialog = new NoInternetDialog();
+                noInternetDialog.show();
+            }
+            loadingDialog.close();
+
+        });
+        CoinNewestPriceGroupTitledPane coinNewestPriceGroupFrame = new CoinNewestPriceGroupTitledPane();
         coinNewestPriceGroupFrame.getStylesheets().add(NewsAggregatorClientController.class.getResource("assets/css/main.css").toExternalForm());
-        additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
 
         coinPriceJSONLoader = getCoinPriceJSONLoader();
 
@@ -169,12 +197,14 @@ public class NewsAggregatorClientController {
         }
         else {
             additionalInfoContainer.getChildren().clear();
+//            coinNewestPriceGroupFrame.addAllCoins(coinPriceJSONLoader);
+            additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
             List<CoinPriceData> coinData = coinPriceJSONLoader.getNewestCoinPrices();
             new Thread(() -> Platform.runLater(() -> {
                 System.out.println("\u001B[35m" + "Loading coin items" + "\u001B[0m");
                 CoinNewestPriceItemsLoader coinNewestPriceItemsLoader = new CoinNewestPriceItemsLoader(coinNewestPriceGroupFrame, hostServices);
-                CoinNewestPriceGroupFrame coins =  coinNewestPriceItemsLoader.loadItems(coinData);
-                additionalInfoContainer.getChildren().add(coins);
+                coinNewestPriceItemsLoader.loadItems(coinData);
+//                additionalInfoContainer.getChildren().add(coins);
                 System.out.println(coinNewestPriceItemsLoader.getItems());
             })).start();
         }
@@ -183,6 +213,7 @@ public class NewsAggregatorClientController {
 
     private synchronized CoinPriceJSONLoader getCoinPriceJSONLoader() {
         CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
+        coinPriceJSONLoader.setLimit(coinLimit);
         coinPriceJSONLoader.loadJSON();
         return coinPriceJSONLoader;
     }
@@ -194,14 +225,27 @@ public class NewsAggregatorClientController {
          * @param event: Sự kiện click chuột vào nút "tải lại"
          */
         SelectionModel newsTypeTabs = newsTypeTabPane.getSelectionModel();
+        LoadingDialog loadingDialog = new LoadingDialog();
+        loadingDialog.show();
         // News
         if (newsTypeTabs.getSelectedIndex() == 0) {
             articleScrollPane.clearAllNews();
             articleScrollPane.resetArticlePage();
+            try {
+                articleScrollPane.loadArticles();
+            } catch (NoRouteToHostException e) {
+                NoInternetDialog noInternetDialog = new NoInternetDialog();
+                noInternetDialog.show();
+                loadingDialog.close();
+            }
             showAllNewsCategories();
+            loadingDialog.close();
         }
         else {
             // Reddit
+            redditFrame.resetRedditPage();
+            redditFrame.loadReddit();
+            loadingDialog.close();
         }
     }
 

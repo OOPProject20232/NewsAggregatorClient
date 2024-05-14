@@ -1,5 +1,9 @@
 package org.newsaggregator.newsaggregatorclient.ui_components.uiloader;
 
-public interface ItemsLoader {
+import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 
+import java.util.List;
+
+public interface ItemsLoader<T extends GenericData> {
+    public void loadItems(List<T> data);
 }

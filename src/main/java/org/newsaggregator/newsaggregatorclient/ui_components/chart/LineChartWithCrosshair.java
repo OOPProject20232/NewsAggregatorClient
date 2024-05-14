@@ -8,11 +8,12 @@ import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 
 public class LineChartWithCrosshair<X, Y> extends LineChart {
     /**
      * Custom LineChart for showing crosshair lines on mouse hover.
-     * Based this StackOverflow answer: https://stackoverflow.com/a/56230124
+     * Based on this StackOverflow answer: https://stackoverflow.com/a/56230124
      */
 
     private Line vLine;
@@ -24,6 +25,7 @@ public class LineChartWithCrosshair<X, Y> extends LineChart {
 
     public LineChartWithCrosshair(Axis<X> xAxis, Axis<Y> yAxis, CustomCursor customCursor) {
         super(xAxis, yAxis);
+        this.setVerticalGridLinesVisible(false);
         vLine = customCursor.getvLine();
 //        hLine = customCursor.gethLine();
         showCrossHair.set(customCursor.isEstUtilisé());

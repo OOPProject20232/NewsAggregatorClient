@@ -5,16 +5,19 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import org.newsaggregator.newsaggregatorclient.ArticlesFrame;
+import org.newsaggregator.newsaggregatorclient.ui_components.datacard.HorizontalDataCard;
+import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe.ArticlesFrame;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CategoryClickable;
-import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsCategoryGroupTitledPane;
+import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.NewsCategoryGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
+public class ArticleItemsLoader<T>
+        extends Task<Void> implements ItemsLoader<NewsItemData>{
     /**
      * <p>
      *     Class này chứa các hàm để load các tin tức từ các nguồn khác nhau
@@ -30,16 +33,24 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
     int limit;
     Pane container;
     HostServices hostServices;
-    NewsCategoryGroupTitledPane newsCategoryGroupTitledPane;
+    T newsCategoryGroupTitledPane;
     ArticlesFrame articlesFrame;
+    boolean containingSummary = true;
+    boolean containingCategories = true;
 
-    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, NewsCategoryGroupTitledPane newsCategoryGroupTitledPane, ArticlesFrame articlesFrame) {
+    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, T newsCategoryGroupTitledPane, ArticlesFrame articlesFrame) {
         this.limit = limit;
         this.container = container;
         this.hostServices = hostServices;
         this.newsCategoryGroupTitledPane = newsCategoryGroupTitledPane;
         this.begin = begin;
         this.articlesFrame = articlesFrame;
+        if (limit <= 0) {
+            throw new IllegalArgumentException("Limit must be greater than 0");
+        }
+        if (begin < 0) {
+            throw new IllegalArgumentException("Begin must be greater than or equal to 0");
+        }
 //        this.newsCategoryGroupTitledPane.setMaxWidth(800);
     }
     @Override
@@ -65,6 +76,7 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
         System.out.println("Loading: " + workDone + "/" + max);
     }
 
+
     public synchronized void loadItems(List<NewsItemData> data) {
         if (begin + limit > data.size()) {
             limit = data.size() - begin;
@@ -75,10 +87,19 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
                 NewsItemData itemData = data.get(countItem);
                 Platform.runLater(() -> {
                     NewsItemCard newsItem = new NewsItemCard(itemData);
+                    newsItem.setContainingSummary(containingSummary);
+                    newsItem.setContainingCategories(containingCategories);
+                    newsItem.setParentWidth(((CategoryTitledPane) newsCategoryGroupTitledPane).getWidth() - 20);
                     newsItem.setText();
                     Platform.runLater(newsItem::setImage);
                     newsItem.setPublisherLogo();
                     newsItem.getArticleHyperlinkTitleObject().setOnAction(
+                            event -> hostServices.showDocument(itemData.getUrl())
+                    );
+                    newsItem.getReadMore().setOnAction(
+                            event -> hostServices.showDocument(itemData.getUrl())
+                    );
+                    newsItem.getThumbnailHyperlink().setOnAction(
                             event -> hostServices.showDocument(itemData.getUrl())
                     );
                     for (Node tmp: newsItem.getCategories()){
@@ -86,11 +107,19 @@ public class ArticleItemsLoader extends Task<Void> implements ItemsLoader{
                         category.setOnAction((event) -> articlesFrame.setSearchText(category.getText()));
                     }
                     updateProgress(count, limit + begin);
-                    newsCategoryGroupTitledPane.addItem(newsItem);
+                    CategoryTitledPane newsCategoryGroupTitledPane1 = (CategoryTitledPane) newsCategoryGroupTitledPane;
+                    newsCategoryGroupTitledPane1.addItem(newsItem);
                 });
             }
         });
         textThread.start();
+    }
 
+    public void setContainingSummary(boolean containingSummary) {
+        this.containingSummary = containingSummary;
+    }
+
+    public void setContainingCategories(boolean containingCategories) {
+        this.containingCategories = containingCategories;
     }
 }

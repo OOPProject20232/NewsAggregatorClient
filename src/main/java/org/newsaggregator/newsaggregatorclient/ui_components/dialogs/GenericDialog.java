@@ -16,16 +16,19 @@ public class GenericDialog extends Dialog<Void> {
      */
     public GenericDialog() {
         getDialogPane().getStyleClass().addAll("dialog", "generic-container");
-        try {
-            getDialogPane().getStylesheets().add(
-                    NewsAggregatorClientApplication.class.getResourceAsStream("/assets/css/dialogs.css").toString()
-            );
-        }
-        catch (NullPointerException e) {
-            getDialogPane().getStylesheets().add(
-                    GenericDialog.class.getResourceAsStream("dialogs.css").toString()
-            );
-        }
+//        try {
+//            getDialogPane().getStylesheets().add(
+//                    NewsAggregatorClientApplication.class.getResourceAsStream("/assets/css/dialogs.css").toString()
+//            );
+//        }
+//        catch (NullPointerException e) {
+//            getDialogPane().getStylesheets().add(
+//                    GenericDialog.class.getResourceAsStream("dialogs.css").toString()
+//            );
+//        }
+        getDialogPane().getStylesheets().add(
+                "src/main/resources/org/newsaggregator/newsaggregatorclient/assets/css/dialogs.css"
+        );
     }
 
 }

@@ -50,8 +50,25 @@
     -fx-border-color: -fx-outline-color;
     -fx-border-width: 0px 1px 1px 1px;
     -fx-background-color: white;
-    -fx-background-radius: 0 0 16px 16px;
+    -fx-background-radius: 16px;
+    -fx-background-insets: 4px;
     -fx-border-radius: 0 0 16px 16px;
+    -fx-padding: 8px;
+}
+
+.combo-box-popup .list-view .list-cell{
+    -fx-padding: 8px;
+    -fx-background-radius: 16px;
+}
+
+.combo-box-popup .list-view .list-cell:hover{
+    -fx-background-color: -fx-outline-color-variant;
+}
+
+.combo-box-popup .list-view .list-cell:selected{
+    -fx-background-color: -fx-primary-fixed;
+    -fx-text-fill: -fx-primary-color;
+    -fx-font-weight: bold;
 }
 
 .toggle-button{

@@ -1,7 +1,7 @@
-package org.newsaggregator.newsaggregatorclient;
+package org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe;
 
-import javafx.application.HostServices;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -18,13 +18,19 @@ public class GenericFrame extends ScrollPane {
         AnchorPane.setLeftAnchor(itemsContainer, 0.0);
         AnchorPane.setRightAnchor(itemsContainer, 0.0);
         setFitToWidth(true);
-//        setFitToHeight(true);
+        setFitToHeight(true);
         itemsContainer.getChildren().clear();
         itemsContainer.getStyleClass().addAll("generic-transparent-container");
         itemsContainer.setHgap(36);
         itemsContainer.setVgap(36);
         itemsContainer.setPadding(new Insets(48, 48, 48, 48));
+        itemsContainer.setAlignment(Pos.BASELINE_CENTER);
+//        itemsContainer.setGridLinesVisible(true);
         container.getStyleClass().addAll( "generic-transparent-container");
         this.getStyleClass().addAll("generic-transparent-container");
+    }
+
+    public GridPane getItemsContainer() {
+        return itemsContainer;
     }
 }

@@ -9,18 +9,15 @@ public class ConnectionChecker {
 
     }
 
-    public boolean checkInternetConnection() {
+    public static int checkInternetConnection() throws IOException{
         try {
-            URL testAddress = URI.create("https://www.google.com").toURL();
-            URLConnection connection = testAddress.openConnection();
+            URL testAddress = URI.create("https://newsaggregator-mern.onrender.com/v1/articles?page=1&limit=1").toURL();
+            HttpURLConnection connection = (HttpURLConnection) testAddress.openConnection();
             connection.connect();
-            return true;
-        }
-        catch (MalformedURLException e) {
-            return false;
+            return connection.getResponseCode();
         }
         catch (IOException e) {
-            return false;
+            return 0;
         }
     }
 }

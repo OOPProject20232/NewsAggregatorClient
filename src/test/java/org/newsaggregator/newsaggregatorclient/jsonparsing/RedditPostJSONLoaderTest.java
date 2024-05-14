@@ -12,8 +12,8 @@ class RedditPostJSONLoaderTest {
         redditPostJSONLoader.setPageNumber(1);
         redditPostJSONLoader.loadJSON();
         assertNotNull(redditPostJSONLoader.getJsonObject());
-        for (int i = 0; i < redditPostJSONLoader.getPostsList().size(); i++) {
-            System.out.println(redditPostJSONLoader.getPostsList().get(i));
-        }
+//        for (int i = 0; i < redditPostJSONLoader.getPostsList().size(); i++) {
+//            System.out.println(redditPostJSONLoader.getPostsList().get(i));
+//        }
     }
 }

@@ -1,15 +1,14 @@
 package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
 
+import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 
-import static java.lang.Long.MAX_VALUE;
-
-public class CoinNewestPriceCard extends HBox implements IGenericDataCard<CoinPriceData>{
+public class CoinNewestPriceCard extends HorizontalDataCard<CoinPriceData>{
     private CoinPriceData coinPriceData;
     Label rank;
     Label coinName;
@@ -26,8 +25,9 @@ public class CoinNewestPriceCard extends HBox implements IGenericDataCard<CoinPr
 
     @Override
     public void setCardStyle() {
-        this.setSpacing(12);
-        this.setMaxWidth(MAX_VALUE);
+        this.setSpacing(SPACING);
+        this.getStylesheets().add(STYLESHEET);
+//        this.setMaxWidth(100);
 //        this.getStylesheets().add(this.getClass().getResourceAsStream("assets/css/coin-newest-price-frame.css").toString());
     }
 
@@ -43,15 +43,26 @@ public class CoinNewestPriceCard extends HBox implements IGenericDataCard<CoinPr
         coinPriceChange = new Label(coinPriceData.getPriceChange());
         coinPriceChange.getStyleClass().add("price__" + changeState);
         if (changeState.equals("up")) {
-            coinPriceChange.setText("▲" + coinPriceChange.getText());
+            coinPriceChange.setText("▲ " + coinPriceChange.getText());
         }
         else if (changeState.equals("down")) {
-            coinPriceChange.setText("▼" + coinPriceChange.getText());
+            coinPriceChange.setText("▼ " + coinPriceChange.getText());
         }
         else{
-            coinPriceChange.setText("―" + coinPriceChange.getText());
+            coinPriceChange.setText("―");
         }
-        getChildren().addAll(rank, coinSymbol, coinPrice, coinPriceChange);
+        HBox priceBox = new HBox();
+        priceBox.setAlignment(Pos.CENTER_RIGHT);
+        priceBox.setSpacing(12);
+        HBox.setHgrow(priceBox, javafx.scene.layout.Priority.ALWAYS);
+        HBox priceChangeBox = new HBox();
+        priceChangeBox.setAlignment(Pos.CENTER_LEFT);
+        priceChangeBox.setMinWidth(100);
+        priceChangeBox.setMaxWidth(100);
+//        HBox.setHgrow(priceChangeBox, javafx.scene.layout.Priority.ALWAYS);
+        priceChangeBox.getChildren().add(coinPriceChange);
+        priceBox.getChildren().addAll(coinPrice, priceChangeBox);
+        getChildren().addAll(coinSymbol, priceBox);
     }
 
     @Override

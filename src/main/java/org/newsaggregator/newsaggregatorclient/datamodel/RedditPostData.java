@@ -6,35 +6,9 @@ public class RedditPostData extends GenericData{
     private String url;
     private String subreddit;
     private String postedTime;
-
-    public String getMediaUrl() {
-        return mediaUrl;
-    }
-
-    public void setMediaUrl(String mediaUrl) {
-        this.mediaUrl = mediaUrl;
-    }
-
+    private static final String redditUrl = "https://www.reddit.com/";
     private String mediaUrl;
-
     private int upvotes;
-
-    public int getDownvotes() {
-        return downvotes;
-    }
-
-    public void setDownvotes(int downvotes) {
-        this.downvotes = downvotes;
-    }
-
-    public String getPostContent() {
-        return postContent;
-    }
-
-    public void setPostContent(String postContent) {
-        this.postContent = postContent;
-    }
-
     private int downvotes;
     private String postContent;
 
@@ -50,7 +24,7 @@ public class RedditPostData extends GenericData{
     }
 
     public String getAuthor() {
-        return author;
+        return "u/" + author;
     }
 
     public void setAuthor(String author) {
@@ -70,11 +44,11 @@ public class RedditPostData extends GenericData{
     }
 
     public String getLinkToSub(){
-        return "https://www.reddit.com/r/" + subreddit;
+        return redditUrl + subreddit;
     }
 
     public String getLinkToAuthor(){
-        return "https://www.reddit.com/u/" + author;
+        return redditUrl + getAuthor();
     }
 
     public void setSubreddit(String subreddit) {
@@ -111,5 +85,34 @@ public class RedditPostData extends GenericData{
                     postContent='%s'
                 }
                 """.formatted(title, author, url, subreddit, postedTime, upvotes, downvotes, postContent);
+    }
+
+    public String getRedditUrl() {
+        return redditUrl;
+    }
+
+
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
+    }
+
+    public int getDownvotes() {
+        return downvotes;
+    }
+
+    public void setDownvotes(int downvotes) {
+        this.downvotes = downvotes;
+    }
+
+    public String getPostContent() {
+        return postContent;
+    }
+
+    public void setPostContent(String postContent) {
+        this.postContent = postContent;
     }
 }

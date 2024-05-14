@@ -4,8 +4,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.SearchJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 
@@ -18,6 +17,22 @@ public class NewsSearchController{
 
     @FXML
     private TextField searchTextField;
+
+    @FXML
+    private ToggleButton articleToggleButton;
+
+    @FXML
+    private ToggleButton redditToggleButton;
+
+    @FXML
+    private ComboBox<String> searchFieldComboBox;
+
+    @FXML
+    private ComboBox<String> searchOrderComboBox;
+
+    private String searchType;
+    private String searchOrder;
+    private String searchField;
 
 
     public void initialize() {
@@ -41,6 +56,10 @@ public class NewsSearchController{
         });
         searchButton.setOnAction(event -> search());
         searchTextField.requestFocus();
+        searchFieldComboBox.getItems().clear();
+        searchOrderComboBox.getItems().clear();
+        searchFieldComboBox.getItems().addAll("all", "categories");
+        searchOrderComboBox.getItems().addAll("Newest", "Oldest");
     }
 
     private void search() {
@@ -49,7 +68,7 @@ public class NewsSearchController{
         LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show();
         Platform.runLater(() -> {
-            SearchJSONLoader searchJSONLoader = new SearchJSONLoader(searchTextField.getText(), "articles", "desc");
+            SearchJSONLoader searchJSONLoader = new SearchJSONLoader(searchTextField.getText(), "articles", "desc", "r");
             searchJSONLoader.loadJSON();
             System.out.println(searchJSONLoader);
             loadingDialog.close();

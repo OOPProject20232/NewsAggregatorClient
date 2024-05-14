@@ -8,25 +8,32 @@ public class SearchJSONLoader implements IJSONLoader {
     String searchType;
     String isDesc;
     JSONObject jsonObject;
+    String isExactOrRegex;
+    int limit = 10;
+    int page = 1;
 
-    public SearchJSONLoader(String searchQuery, String searchType, String isDesc) {
+    public SearchJSONLoader(String searchQuery, String searchType, String isDesc, String isExactOrRegex) {
         this.searchQuery = searchQuery;
         this.searchType = searchType;
         this.isDesc = isDesc;
+        this.isExactOrRegex = isExactOrRegex;
+        if (!isExactOrRegex.equals("e") && !isExactOrRegex.equals("r")) {
+            throw new IllegalArgumentException("isExactOrRegex must be either 'e' or 'r'");
+        }
     }
 
     @Override
     public void loadJSON() {
-        String url = DOMAIN + "v1/articles/search?text=%s&sort=%s".formatted(searchQuery, isDesc);
+        String url = DOMAIN + "v1/articles/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
         switch (searchType){
             case "articles":
-                url = DOMAIN + "v1/articles/search?text=%s&sort=%s".formatted(searchQuery, isDesc);
+                url = DOMAIN + "v1/articles/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 break;
             case "posts":
-                url = DOMAIN + "v1/posts/search?text=%s&sort=%s".formatted(searchQuery, isDesc);
+                url = DOMAIN + "v1/posts/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 break;
             case "categories":
-                url = DOMAIN + "v1/categories/search?text=%s&sort=%s".formatted(searchQuery, isDesc);
+                url = DOMAIN + "v1/categories/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 break;
         }
         try {
@@ -44,5 +51,17 @@ public class SearchJSONLoader implements IJSONLoader {
                 ", isDesc='" + isDesc + '\'' +
                 ", jsonObject=" + jsonObject +
                 '}';
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public void setIsDesc(String isDesc) {
+        this.isDesc = isDesc;
     }
 }

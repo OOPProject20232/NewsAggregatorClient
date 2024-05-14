@@ -14,7 +14,10 @@ module org.newsaggregator.newsaggregatorclient {
     requires org.json;
     requires java.desktop;
     requires javafx.swing;
+    requires commons.io;
 
     opens org.newsaggregator.newsaggregatorclient to javafx.fxml;
     exports org.newsaggregator.newsaggregatorclient;
+    exports org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe;
+    opens org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe to javafx.fxml;
 }

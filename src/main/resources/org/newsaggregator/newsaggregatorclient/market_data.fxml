@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,53 +19,79 @@
 
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="657.0" prefWidth="1085.0" styleClass="chart-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox fx:id="marketDataArea" alignment="CENTER" layoutX="873.0" layoutY="170.0" prefHeight="200.0" prefWidth="100.0" styleClass="chart-container" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox alignment="BASELINE_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="12.0">
+      <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="200.0" prefWidth="200.0" styleClass="chart-container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="1041.0" style="-fx-border-radius: 0;">
+               <styleClass>
+                  <String fx:value="chart-container" />
+                  <String fx:value="without-radius" />
+               </styleClass>
                <children>
-                  <Label fx:id="chartTitle" styleClass="coin-title" text="\$$img$$ $$Coin name$$">
-                     <font>
-                        <Font size="48.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="coinPriceLabel" styleClass="price" text="\$$Price$$">
-                     <font>
-                        <Font size="32.0" />
-                     </font>
-                  </Label>
+                  <VBox fx:id="marketDataArea" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="chart-container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <HBox alignment="BASELINE_LEFT" prefHeight="100.0" prefWidth="1007.0" spacing="12.0">
+                           <children>
+                              <Label fx:id="chartTitle" styleClass="coin-title" text="\$$img$$ $$Coin name$$">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="coinPriceLabel" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="47.0" prefWidth="403.0" styleClass="price" text="\$$Price$$" textAlignment="RIGHT" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="32.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="priceChangeLabel" text="\$$Price Change$$">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets left="12.0" right="12.0" />
+                           </padding>
+                        </HBox>
+                        <VBox fx:id="coinPriceFrame" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <LineChart fx:id="coinPriceChart" alternativeRowFillVisible="false" createSymbols="false" prefHeight="273.0" prefWidth="1037.0" verticalGridLinesVisible="false" verticalZeroLineVisible="false" VBox.vgrow="ALWAYS">
+                                 <xAxis>
+                                    <CategoryAxis side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis minorTickVisible="false" side="LEFT" />
+                                 </yAxis>
+                              </LineChart>
+                           </children>
+                        </VBox>
+                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="1037.0" spacing="24.0">
+                           <children>
+                              <ToggleButton fx:id="oneWeekButton" mnemonicParsing="false" selected="true" text="1 week">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="period" />
+                                 </toggleGroup>
+                              </ToggleButton>
+                              <ToggleButton fx:id="oneMonthButton" mnemonicParsing="false" text="1 month" toggleGroup="$period" />
+                              <ToggleButton fx:id="sixMonthsButton" mnemonicParsing="false" text="6 months" toggleGroup="$period" />
+                              <ToggleButton fx:id="ytdButton" mnemonicParsing="false" text="YTD" toggleGroup="$period" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="coinPriceTable" prefHeight="200.0" prefWidth="200.0" scaleShape="false" styleClass="chart-container">
+                          <columns>
+                            <TableColumn fx:id="coinNameColumn" prefWidth="75.0" text="Coin" />
+                            <TableColumn fx:id="coinPriceColumn" prefWidth="75.0" text="Price" />
+                              <TableColumn fx:id="priceChangeColumn" prefWidth="75.0" text="Change" />
+                              <TableColumn fx:id="marketCapColumn" prefWidth="75.0" text="Market Cap" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </VBox>
                </children>
-            </HBox>
-            <HBox fx:id="coinPriceFrame" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <LineChart fx:id="coinPriceChart" alternativeRowFillVisible="false" createSymbols="false" prefHeight="273.0" prefWidth="1037.0" verticalGridLinesVisible="false" verticalZeroLineVisible="false" HBox.hgrow="ALWAYS">
-                     <xAxis>
-                        <CategoryAxis side="BOTTOM" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis minorTickVisible="false" side="LEFT" />
-                     </yAxis>
-                  </LineChart>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="52.0" prefWidth="1065.0" spacing="12.0">
-               <children>
-                  <ToggleButton fx:id="oneWeekButton" mnemonicParsing="false" selected="true" text="1 week">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="data_period" />
-                     </toggleGroup>
-                  </ToggleButton>
-                  <ToggleButton fx:id="oneMonthButton" mnemonicParsing="false" text="1 month" toggleGroup="$data_period" />
-                  <ToggleButton fx:id="sixMonthsButton" mnemonicParsing="false" text="6 months" toggleGroup="$data_period" />
-                  <ToggleButton fx:id="ytdButton" mnemonicParsing="false" text="YTD" toggleGroup="$data_period" />
-               </children>
-            </HBox>
-            <ScrollPane prefHeight="200.0" prefWidth="200.0" styleClass="generic-container">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="1041.0" styleClass="generic-container" />
-              </content>
-            </ScrollPane>
-         </children>
-      </VBox>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
    </children>
    <stylesheets>
       <URL value="@assets/css/chart.css" />

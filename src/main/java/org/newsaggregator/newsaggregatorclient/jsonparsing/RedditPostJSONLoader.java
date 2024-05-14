@@ -18,8 +18,9 @@ public class RedditPostJSONLoader implements IJSONLoader{
             throw new IllegalArgumentException("Page number and limit must be set before loading JSON");
         }
         String url = DOMAIN + "v1/posts?limit=" + limit + "&page=" + pageNumber;
+        String cacheFileName = "redditPosts" + pageNumber + ".json";
         try{
-            jsonObject = DataReaderFromIS.fetchJSON(url);
+            jsonObject = DataReaderFromIS.fetchJSONWithCache(url, cacheFileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -27,6 +28,15 @@ public class RedditPostJSONLoader implements IJSONLoader{
 
     public JSONObject getJsonObject() {
         return jsonObject;
+    }
+
+    public String getJSONString(){
+        try {
+            return jsonObject.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public void setPageNumber(int pageNumber) {
@@ -37,7 +47,7 @@ public class RedditPostJSONLoader implements IJSONLoader{
         this.limit = limit;
     }
 
-    public List<RedditPostData> getPostsList(){
+    public List<RedditPostData> getRedditPostsList(){
         List<RedditPostData> redditPostDataList = new ArrayList<>();
         for (int i = 0; i < jsonObject.getJSONArray("posts").length(); i++) {
             JSONObject post = jsonObject.getJSONArray("posts").getJSONObject(i);
@@ -50,6 +60,11 @@ public class RedditPostJSONLoader implements IJSONLoader{
             redditPostData.setUpvotes(post.getInt("up_votes"));
             redditPostData.setDownvotes(post.getInt("down_votes"));
             redditPostData.setPostContent(post.getString("post_content"));
+            try{
+                redditPostData.setMediaUrl(post.getString("media_url"));
+            } catch (Exception e) {
+                redditPostData.setMediaUrl("");
+            }
             redditPostDataList.add(redditPostData);
         }
         return redditPostDataList;

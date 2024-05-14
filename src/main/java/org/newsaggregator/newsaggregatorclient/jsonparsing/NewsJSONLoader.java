@@ -9,6 +9,7 @@ import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
 import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
 
 import java.io.File;
+import java.net.NoRouteToHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +29,18 @@ public class NewsJSONLoader implements IJSONLoader {
     }
 
     @Override
-    public synchronized void loadJSON(){
+    public synchronized void loadJSON() {
         String url = DOMAIN + "v1/articles?page=" + pageNumber + "&limit=" + limit;
+        String cacheFileName = "news" + pageNumber + ".json";
         try{
-            jsonObject = DataReaderFromIS.fetchJSON(url);
-        } catch (Exception e) {
+//            jsonObject = DataReaderFromIS.fetchJSON(url);
+            jsonObject = DataReaderFromIS.fetchJSONWithCache(url, cacheFileName);
+
+        }
+        catch (NoRouteToHostException e){
+
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
