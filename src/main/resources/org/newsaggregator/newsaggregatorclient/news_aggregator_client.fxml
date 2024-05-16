@@ -21,7 +21,7 @@
    <children>
       <VBox layoutX="134.0" layoutY="127.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" styleClass="background-container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" fillHeight="false" maxHeight="48.0" minHeight="48.0" prefHeight="48.0" prefWidth="933.0" style="-fx-background-color: #EBEEF3;" VBox.vgrow="NEVER" />
+            <HBox alignment="CENTER_LEFT" maxHeight="48.0" minHeight="48.0" prefHeight="48.0" prefWidth="1074.0" style="-fx-background-color: #DDE3EA;" VBox.vgrow="NEVER" />
             <TabPane fx:id="mainTabPane" accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="761.0" prefWidth="1128.0" side="LEFT" styleClass="background-container" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
                 <Tab fx:id="newsTab" closable="false" styleClass="generic-container" text="">
@@ -140,6 +140,14 @@
                    </graphic>
                     <fx:include source="market_data.fxml" />
                 </Tab>
+                  <Tab>
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
+                  </Tab>
               </tabs>
             </TabPane>
          </children>

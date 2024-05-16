@@ -20,6 +20,7 @@
 
 .root{
     -fx-font-size: 14px;
+    -fx-text-fill: black;
 }
 
 /* Main container */
@@ -95,6 +96,7 @@
 
 .button{
     -fx-background-color: -fx-primary-fixed;
+    -fx-font-weight: 800;
     -fx-text-fill: -fx-primary-color;
     -fx-margin: 0 0 0 5px;
     -fx-border-radius: 30px;

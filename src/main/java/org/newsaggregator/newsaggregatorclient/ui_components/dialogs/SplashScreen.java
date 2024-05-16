@@ -20,7 +20,6 @@ public class SplashScreen extends Dialog<Void> {
             stage.setHeight(450);
             stage.setIconified(false);
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("/assets/images/logo.png"))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -28,5 +27,6 @@ public class SplashScreen extends Dialog<Void> {
         getDialogPane().getButtonTypes().add(close);
         getDialogPane().lookupButton(close).setVisible(false);
         getDialogPane().lookupButton(close).setStyle("-fx-pref-height: 0");
+        getDialogPane().setContentText("Loading...");
     }
 }

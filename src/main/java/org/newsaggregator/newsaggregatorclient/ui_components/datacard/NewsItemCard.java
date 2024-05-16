@@ -69,6 +69,7 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         description.setGraphic(readMore);
         description.setContentDisplay(ContentDisplay.RIGHT);
         description.setAlignment(Pos.BOTTOM_RIGHT);
+        description.setMaxHeight(100);
         publishedAt = new Label();
         author = new Label();
         HBox publisherFrame = new HBox();
@@ -122,10 +123,10 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
 
     @Override
     public synchronized void setImage() {
-        System.out.println("Set image to: " + newsItemData.getTitle());
+//        System.out.println("Set image to: " + newsItemData.getTitle());
 //        final String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
         try {
-            System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
+//            System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
             String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
             String tmpCache = fileName.replace("/", "_");
             if (tmpCache.contains("?")) {
@@ -133,7 +134,7 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
             }
             final String cache = tmpCache;
 
-            System.out.println("File name: " + tmpCache);
+//            System.out.println("File name: " + tmpCache);
             Platform.runLater(()-> {
                 Image thumbnail;
                 if (fileName.endsWith(".webp")) {

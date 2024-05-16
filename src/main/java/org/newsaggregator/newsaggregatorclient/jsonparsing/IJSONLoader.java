@@ -1,5 +1,8 @@
 package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.json.JSONObject;
+
 public interface IJSONLoader {
     /**
      * Interface này chứa các hàm để load dữ liệu từ file JSON
@@ -8,5 +11,5 @@ public interface IJSONLoader {
     /**
      * Hàm loadJSON dùng để load dữ liệu từ file JSON
      */
-    void loadJSON();
+    JSONObject loadJSON();
 }

@@ -1,7 +1,11 @@
 package org.newsaggregator.newsaggregatorclient;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -29,7 +33,7 @@ public class MarketDataController {
 //    private Map<String, List<CoinPriceData>> coinPriceData;
     private CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
     private final String currency = "$";
-    private final String symbol = "BTC";
+    private String symbol = "BTC";
     private final String[] symbolList = {"BTC"};
 
     @FXML
@@ -76,6 +80,9 @@ public class MarketDataController {
     @FXML
     TableColumn<CoinData, String> marketCapColumn;
 
+    @FXML
+    TextField searchTextField;
+
     NewsAggregatorClientController mainController;
 
     public MarketDataController() {
@@ -93,6 +100,7 @@ public class MarketDataController {
         LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show();
         coinPriceJSONLoader.setLimit(100);
+//        loadMarketData(7, true, symbol);
         Platform.runLater(() -> {
             try{
                 coinPriceJSONLoader.getJSONString();
@@ -100,29 +108,29 @@ public class MarketDataController {
             catch (Exception e){
                 coinPriceJSONLoader.loadJSON();
             }
-            loadMarketData(7, true, symbolList);
+            loadMarketData(7);
             loadingDialog.close();
         });
         oneWeekButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
-            loadMarketData(7, true, symbolList);
+            loadChartData(7, true, symbol);
             loadingDialog1.close();
         });
         oneMonthButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
-            Platform.runLater(()-> loadMarketData(30, true, symbolList));
+            Platform.runLater(()-> loadChartData(30, true, symbol));
             loadingDialog1.close();
         });
         sixMonthsButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
-            Platform.runLater(()-> loadMarketData(180, true, symbolList));
+            Platform.runLater(()-> loadChartData(180, true, symbol));
             loadingDialog1.close();
         });
         ytdButton.setOnAction(event -> {
-            Platform.runLater(()-> loadMarketData(365, true, symbolList));
+            Platform.runLater(()-> loadChartData(365, true, symbol));
         });
         CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Date");
@@ -137,7 +145,7 @@ public class MarketDataController {
         HBox.setHgrow(coinPriceChart, javafx.scene.layout.Priority.ALWAYS);
     }
 
-    public void loadMarketData(int period, boolean clearSeries, String ...symbols) {
+    public void loadMarketData(int period) {
         /**
          * Tải dữ liệu thị trường từ JSON
          * @param period: số ngày cần tải dữ liệu
@@ -149,93 +157,137 @@ public class MarketDataController {
          * @param symbols: danh sách các loại tiền cần tải dữ liệu
          *
          */
-        if (clearSeries) {
-            coinPriceChart.getData().clear();
-        }
         List<CoinPriceData> coinPriceDataList = coinPriceJSONLoader.getNewestCoinPrices();
-        double priceChangeByPeriod =  coinPriceJSONLoader.getChangeInPrice(coinPriceDataList.getFirst(), symbol, period);
-        for (String symbol : symbols) {
-            Map<String, String> dataMap = coinPriceJSONLoader.getCoinPricesBySymbol(symbol, period);
-            if (dataMap == null || coinPriceDataList == null) {
-                return;
-            }
-            List<String> dates = new ArrayList<>(dataMap.keySet());
-            Collections.sort(dates);
-            CoinPriceData newestData = coinPriceDataList.getFirst();
-            String priceChanged = newestData.getPriceChange();
-            String priceChangeState = newestData.getPriceChangeState();
-            System.out.println("Price changed: " + priceChanged);
-            priceChangeLabel.getStyleClass().clear();
-            priceChangeLabel.getStyleClass().add("price__" + priceChangeState);
-            if (priceChangeState.equals("up")) {
-                priceChangeLabel.setText("▲" + priceChanged);
-            } else if (priceChangeState.equals("down")) {
-                priceChangeLabel.setText("▼" + priceChanged);
-            } else {
-                priceChangeLabel.setText("―");
-            }
-            coinPriceLabel.setText(newestData.getFormattedPrice(currency));
-            chartTitle.setText(newestData.getCoinName());
-            chartTitle.setGraphic(new ImageView(new Image(newestData.getLogoURL())));
-            CategoryAxis xAxis = new CategoryAxis();
-            xAxis.setLabel("Date");
-            NumberAxis yAxis = new NumberAxis();
-            yAxis.setLabel("Price");
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.setName(symbol);
-            for (String date : dates) {
-                System.out.println(date + ": " + dataMap.get(date));
-                series.getData().add(new XYChart.Data<>(TimeFormatter.convertISOToDate(date), Float.parseFloat(dataMap.get(date))));
-            }
-            Platform.runLater(() -> {
-                coinPriceChart.getData().add(series);
-//                series.getNode().setStyle("-fx-stroke: #000000");
-                for (XYChart.Data<String, Number> data : series.getData()) {
-                    DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
-                    float yValue = data.getYValue().floatValue();
-                    String formattedYValue = decimalFormat.format(yValue);
-                    if (yValue < .01){
-                        formattedYValue = String.format("%s%.8f", currency, yValue);
-                    }
-                    else{
-                        formattedYValue = currency + formattedYValue;
-                    }
-                    Tooltip tooltip = new Tooltip(data.getXValue() + "\n" + formattedYValue);
-                    Tooltip.install(data.getNode(), tooltip);
-                    tooltip.setShowDelay(Duration.seconds(.1));
-                    if (period > 30) {
-                        data.getNode().setStyle("-fx-background-color: transparent");
-                        data.getNode().setOnMouseEntered(event -> {
-                            data.getNode().setStyle("""
-                                    -fx-background-color: white; -fx-border-color: black;
-                                    -fx-padding: 5px; -fx-border-radius: 5px;
-                                    -fx-border-width: 1px;
-                            """);
-                        });
-                        data.getNode().setOnMouseExited(event -> {
-                            data.getNode().setStyle("-fx-background-color: transparent");
-                        });
-                    }
-//                    data.getNode().setStyle("-fx-background-color: transparent");
-                }
-            });
-        }
+//        double priceChangeByPeriod =  coinPriceJSONLoader.getChangeInPrice(coinPriceDataList.getFirst(), symbol, period);
+        loadChartData(period, true, symbol);
+//        for (String symbol : symbols) {
         coinNameColumn.setCellValueFactory(new PropertyValueFactory<>("coinName"));
         coinPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         priceChangeColumn.setCellValueFactory(new PropertyValueFactory<>("priceChange"));
         marketCapColumn.setCellValueFactory(new PropertyValueFactory<>("marketCap"));
-        Platform.runLater(() -> {
-            coinPriceTable.getItems().clear();
-            for (CoinPriceData coinPriceData : coinPriceDataList) {
+        ObservableList<CoinData> coinDataList = FXCollections.observableArrayList();
+        for (CoinPriceData coinPriceData : coinPriceDataList) {
                 CoinData coinData = new CoinData(
-                        coinPriceData.getCoinSymbol(),
+                        "%s (%s)".formatted(coinPriceData.getCoinSymbol(), coinPriceData.getCoinName()),
                         coinPriceData.getFormattedPrice(currency),
                         coinPriceData.getPriceChange(),
                         coinPriceData.getFormattedMarketCap(currency)
                 );
-                coinPriceTable.getItems().add(coinData);
+                coinDataList.add(coinData);
+            }
+        FilteredList<CoinData> filteredData = new FilteredList<>(coinDataList, p -> true);
+        coinPriceTable.setItems(filteredData);
+        searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(coinData -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (coinData.getCoinName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
+        coinPriceTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                CoinData coinData = coinPriceTable.getSelectionModel().getSelectedItem();
+                symbol = coinData.getCoinName().split(" ")[0];
+                LoadingDialog loadingDialog = new LoadingDialog();
+                loadingDialog.show();
+                Platform.runLater(() -> {
+                    loadChartData(period, true, coinData.getCoinName().split(" ")[0]);
+                    loadingDialog.close();
+                });
             }
         });
+    }
+
+    public void loadChartData(int period, boolean clearSeries, String coinSymbol) {
+        /**
+         * Tải dữ liệu thị trường từ JSON
+         * @param period: số ngày cần tải dữ liệu
+         *              7: 1 tuần
+         *              30: 1 tháng
+         *              180: 6 tháng
+         *              365: 1 năm
+         * @param clearSeries: xóa dữ liệu cũ trên biểu đồ hay không
+         * @param symbols: danh sách các loại tiền cần tải dữ liệu
+         *
+         */
+        System.out.println(coinSymbol);
+        if (clearSeries) {
+            coinPriceChart.getData().clear();
+        }
+//        List<CoinPriceData> coinPriceDataList = coinPriceJSONLoader.getNewestCoinPrices();
+        double priceChangeByPeriod = coinPriceJSONLoader.getChangeInPrice(coinSymbol, period);
+        Map<String, String> dataMap = coinPriceJSONLoader.getCoinPricesBySymbol(coinSymbol, period);
+        if (dataMap == null) {
+            return;
+        }
+        List<String> dates = new ArrayList<>(dataMap.keySet());
+        Collections.sort(dates);
+        CoinPriceData newestData = coinPriceJSONLoader.getNewestCoinPriceByCoin(coinSymbol);
+//            String priceChangeState = newestData.getPriceChangeState();
+        String priceChangeState = priceChangeByPeriod > 0 ? "up" : priceChangeByPeriod < 0 ? "down" : "same";
+        System.out.println("Price changed: " + priceChangeByPeriod);
+        priceChangeLabel.getStyleClass().clear();
+        priceChangeLabel.getStyleClass().add("price__" + priceChangeState);
+        if (priceChangeState.equals("up")) {
+            priceChangeLabel.setText("▲" + priceChangeByPeriod);
+        } else if (priceChangeState.equals("down")) {
+            priceChangeLabel.setText("▼" + priceChangeByPeriod);
+        } else {
+            priceChangeLabel.setText("―");
+        }
+        System.out.println(newestData);
+        coinPriceLabel.setText(newestData.getFormattedPrice(currency));
+        chartTitle.setText(coinSymbol);
+        chartTitle.setGraphic(new ImageView(new Image(newestData.getLogoURL())));
+        CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setLabel("Date");
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Price");
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(coinSymbol);
+        for (String date : dates) {
+            System.out.println(date + ": " + dataMap.get(date));
+            series.getData().add(new XYChart.Data<>(TimeFormatter.convertISOToDate(date), Float.parseFloat(dataMap.get(date))));
+        }
+        Platform.runLater(() -> {
+            coinPriceChart.getData().add(series);
+//                series.getNode().setStyle("-fx-stroke: #000000");
+            for (XYChart.Data<String, Number> data : series.getData()) {
+                DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
+                float yValue = data.getYValue().floatValue();
+                String formattedYValue = decimalFormat.format(yValue);
+                if (yValue < .01){
+                    formattedYValue = String.format("%s%.8f", currency, yValue);
+                }
+                else{
+                    formattedYValue = currency + formattedYValue;
+                }
+                Tooltip tooltip = new Tooltip(data.getXValue() + "\n" + formattedYValue);
+                Tooltip.install(data.getNode(), tooltip);
+                tooltip.setShowDelay(Duration.seconds(.1));
+                if (period > 30) {
+                    data.getNode().setStyle("-fx-background-color: transparent");
+                    data.getNode().setOnMouseEntered(event -> {
+                        data.getNode().setStyle("""
+                                    -fx-background-color: white; -fx-border-color: black;
+                                    -fx-padding: 5px; -fx-border-radius: 5px;
+                                    -fx-border-width: 1px;
+                            """);
+                    });
+                    data.getNode().setOnMouseExited(event -> {
+                        data.getNode().setStyle("-fx-background-color: transparent");
+                    });
+                }
+//                    data.getNode().setStyle("-fx-background-color: transparent");
+            }
+        });
+//        }
+
     }
 
     public void setMainController(NewsAggregatorClientController mainController) {

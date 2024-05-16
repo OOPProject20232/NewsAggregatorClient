@@ -24,6 +24,11 @@ public class RedditFrame extends GenericFrame {
         this.hostServices = hostServices;
         this.mainController = mainController;
         this.getItemsContainer().setAlignment(javafx.geometry.Pos.CENTER);
+        setOnScroll(event -> {
+            if (getVvalue() > 0.8) {
+                loadMoreReddit();
+            }
+        });
     }
 
     public void loadReddit(){
@@ -37,7 +42,7 @@ public class RedditFrame extends GenericFrame {
                 System.out.println("Data is empty");
             }
             else {
-                List<RedditPostData> data = redditDataLoader.get().getRedditPostsList();
+                List<RedditPostData> data = redditDataLoader.get().getRedditPostsList(20, 0, redditDataLoader.get().getJsonObject());
                 new Thread(() -> Platform.runLater(() -> {
                     RedditItemsLoader redditItemsLoader = new RedditItemsLoader(20, 0, hostServices, allReddit);
                     redditItemsLoader.loadItems(data);
@@ -56,7 +61,7 @@ public class RedditFrame extends GenericFrame {
                 System.out.println("Data is empty");
             }
             else {
-                List<RedditPostData> data = redditDataLoader.get().getRedditPostsList();
+                List<RedditPostData> data = redditDataLoader.get().getRedditPostsList(20, 0, redditDataLoader.get().getJsonObject());
                 new Thread(() -> Platform.runLater(() -> {
                     RedditItemsLoader redditItemsLoader = new RedditItemsLoader(20, 0, hostServices, allReddit);
                     redditItemsLoader.loadItems(data);

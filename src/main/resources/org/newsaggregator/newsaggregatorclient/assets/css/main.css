@@ -27,7 +27,7 @@
 
 /* Main container */
 .background-container{
-    -fx-background-color: -fx-surface-container;
+    -fx-background-color: -fx-surface-variant;
     -fx-background-radius: 24px;
 }
 .generic-container {
@@ -88,7 +88,7 @@
 }
 
 .tab-header-background{
-    -fx-background-color: -fx-surface-container;
+    -fx-background-color: -fx-surface-variant;
 }
 
 .tab{

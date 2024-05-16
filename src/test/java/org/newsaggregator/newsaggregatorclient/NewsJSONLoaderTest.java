@@ -10,7 +10,7 @@ public class NewsJSONLoaderTest {
         NewsJSONLoader newsJSONLoader = new NewsJSONLoader();
         newsJSONLoader.loadJSON();
         System.out.println(newsJSONLoader.getCount());
-        List<NewsItemData> newsItemDataList = newsJSONLoader.getNewsItemDataList(30, 0);
+        List<NewsItemData> newsItemDataList = newsJSONLoader.getNewsItemDataList(30, 0, newsJSONLoader.getJsonObject());
         for (NewsItemData newsItemData : newsItemDataList) {
             System.out.println(newsItemData);
         }

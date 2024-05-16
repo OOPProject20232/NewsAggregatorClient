@@ -23,14 +23,15 @@ public class NewsCategoryJSONLoader implements IJSONLoader{
     }
 
     @Override
-    public synchronized void loadJSON() {
+    public synchronized JSONObject loadJSON() {
         try {
             cacheFileName = "news_" + category + ".json";
-            String urlString = DOMAIN + "v1/categories/articles/search?text=" + category + "&opt=e&page=1&limit=5";
+            String urlString = DOMAIN + "v1/categories/articles/search?text=" + category + "&opt=e&page=2&limit=5";
             jsonObject = DataReaderFromIS.fetchJSONWithCache(urlString, cacheFileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return jsonObject;
     }
 
 
@@ -47,21 +48,25 @@ public class NewsCategoryJSONLoader implements IJSONLoader{
         return "";
     }
 
-    public List<NewsItemData> getNewsItemDataList(int limit, int begin) {
+    public List<NewsItemData> getNewsItemDataList(int limit, int begin, JSONObject jsonObject) {
         List<NewsItemData> newsItemDataList = new ArrayList<>();
         try {
             JSONArray categories = jsonObject.getJSONArray("categories");
-            if (begin + limit > categories.length()) {
-                limit = categories.length() - begin;
-            }
+//            if (begin + limit > categories.length()) {
+//                limit = categories.length() - begin;
+//            }
             for (int i = begin; i < limit; i++) {
-                JSONObject categoryObject = categories.getJSONObject(i);
-                JSONArray newsItems = categoryObject.getJSONArray("articles");
-                for (int j = begin; j < begin + limit; j++) {
-                    JSONObject newsItemObject = newsItems.getJSONObject(j);
-                    JSON2NewsItemData json2NewsItemData = new JSON2NewsItemData();
-                    NewsItemData newsItemData = json2NewsItemData.convert(newsItemObject);
-                    newsItemDataList.add(newsItemData);
+                try{
+                    JSONObject categoryObject = categories.getJSONObject(i);
+                    JSONArray newsItems = categoryObject.getJSONArray("articles");
+                    for (int j = 0; j < newsItems.length(); j++) {
+                        JSONObject newsItemObject = newsItems.getJSONObject(j);
+                        JSON2NewsItemData json2NewsItemData = new JSON2NewsItemData();
+                        NewsItemData newsItemData = json2NewsItemData.convert(newsItemObject);
+                        newsItemDataList.add(newsItemData);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         } catch (Exception e) {

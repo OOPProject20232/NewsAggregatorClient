@@ -63,16 +63,17 @@
                   <ToggleButton fx:id="redditToggleButton" mnemonicParsing="false" text="Reddit post" toggleGroup="$search" />
                   <ComboBox fx:id="searchOrderComboBox" prefHeight="39.0" prefWidth="142.0" promptText="Sort by" />
                   <ComboBox fx:id="searchFieldComboBox" prefWidth="150.0" promptText="Search for" />
+                  <ToggleButton fx:id="exactSearchToggleButton" mnemonicParsing="false" text="Exact search" />
                </children>
             </HBox>
-            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="200.0" prefWidth="200.0" styleClass="generic-transparent-container" VBox.vgrow="ALWAYS">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" styleClass="generic-transparent-container">
-                     <children>
-                        <VBox layoutX="358.0" layoutY="14.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-              </content>
+            <ScrollPane fx:id="searchScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="200.0" prefWidth="200.0" styleClass="generic-transparent-container" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox fx:id="searchVBox" spacing="12.0" styleClass="generic-transparent-container">
+                     <padding>
+                        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                     </padding>
+                  </VBox>
+               </content>
             </ScrollPane>
          </children>
       </VBox>

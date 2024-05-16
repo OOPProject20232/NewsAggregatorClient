@@ -13,7 +13,7 @@ public class RedditPostJSONLoader implements IJSONLoader{
     private int limit;
 
     @Override
-    public void loadJSON() {
+    public JSONObject loadJSON() {
         if (pageNumber == 0 || limit == 0) {
             throw new IllegalArgumentException("Page number and limit must be set before loading JSON");
         }
@@ -24,6 +24,7 @@ public class RedditPostJSONLoader implements IJSONLoader{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return jsonObject;
     }
 
     public JSONObject getJsonObject() {
@@ -47,9 +48,9 @@ public class RedditPostJSONLoader implements IJSONLoader{
         this.limit = limit;
     }
 
-    public List<RedditPostData> getRedditPostsList(){
+    public List<RedditPostData> getRedditPostsList(int limit, int begin, JSONObject jsonObject){
         List<RedditPostData> redditPostDataList = new ArrayList<>();
-        for (int i = 0; i < jsonObject.getJSONArray("posts").length(); i++) {
+        for (int i = begin; i < begin + limit; i++) {
             JSONObject post = jsonObject.getJSONArray("posts").getJSONObject(i);
             RedditPostData redditPostData = new RedditPostData();
             redditPostData.setTitle(post.getString("post_title"));

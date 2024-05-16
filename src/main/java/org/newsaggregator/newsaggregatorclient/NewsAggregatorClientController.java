@@ -87,6 +87,7 @@ public class NewsAggregatorClientController {
         this.hostServices = hostServices;
         this.articleScrollPane = new ArticlesFrame(hostServices, this);
         this.redditFrame = new RedditFrame(hostServices, this);
+        newsSearchController.setHostServices(hostServices);
     }
 
     @FXML
@@ -252,6 +253,6 @@ public class NewsAggregatorClientController {
     public void setSearchText(String text){
         SelectionModel<Tab> mainTabs = mainTabPane.getSelectionModel();
         mainTabs.select(searchTab);
-        newsSearchController.insertSearchText(text);
+        newsSearchController.insertSearchText(text, "articles", "Newest", "categories", "e");
     }
 }

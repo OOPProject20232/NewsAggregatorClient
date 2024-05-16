@@ -50,15 +50,16 @@
     -fx-border-color: -fx-outline-color;
     -fx-border-width: 0px 1px 1px 1px;
     -fx-background-color: white;
-    -fx-background-radius: 16px;
-    -fx-background-insets: 4px;
+    -fx-background-radius: 0 0 16px 16px;
     -fx-border-radius: 0 0 16px 16px;
-    -fx-padding: 8px;
+    -fx-padding: 4px;
 }
 
 .combo-box-popup .list-view .list-cell{
-    -fx-padding: 8px;
+    -fx-padding: 12px;
     -fx-background-radius: 16px;
+    -fx-background-color: white;
+    -fx-background-insets: 4px;
 }
 
 .combo-box-popup .list-view .list-cell:hover{

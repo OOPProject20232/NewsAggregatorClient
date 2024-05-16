@@ -21,7 +21,7 @@ public class CoinPriceJSONLoader implements IJSONLoader{
     private int limit;
     JSONObject coinPrices;
     @Override
-    public synchronized void loadJSON() {
+    public synchronized JSONObject loadJSON() {
         if (limit <= 0) {
             throw new IllegalArgumentException("Limit must be greater than 0");
         }
@@ -35,6 +35,7 @@ public class CoinPriceJSONLoader implements IJSONLoader{
             NoInternetDialog noInternetDialog = new NoInternetDialog();
             noInternetDialog.show();
         }
+        return new JSONObject();
     }
 
     public void setLimit(int limit) {
@@ -65,7 +66,7 @@ public class CoinPriceJSONLoader implements IJSONLoader{
             coinPriceData.setRank(Integer.toString(rank));
             coinPriceData.setCoinSymbol(coinSymbol);
             coinPriceData.setDate(date);
-            coinPriceData.setPriceChange(getChangeInPrice(coinPriceData, coinSymbol, 1));
+            coinPriceData.setPriceChange(getChangeInPrice(coinSymbol, 1));
             coinPriceData.setMarketCap(marketCap);
             coinPrices.add(coinPriceData);
         }
@@ -74,6 +75,16 @@ public class CoinPriceJSONLoader implements IJSONLoader{
 //            System.out.println(coinPriceData);
 //        }
         return coinPrices;
+    }
+
+    public CoinPriceData getNewestCoinPriceByCoin(String coinSymbol){
+        List<CoinPriceData> coinList = getNewestCoinPrices();
+        for (CoinPriceData coinPriceData : coinList){
+            if (coinPriceData.getCoinSymbol().equals(coinSymbol)){
+                return coinPriceData;
+            }
+        }
+        return null;
     }
 
     public Map<String, List<CoinPriceData>> getCoinPricesByPeriod(int period) throws IllegalArgumentException{
@@ -132,7 +143,7 @@ public class CoinPriceJSONLoader implements IJSONLoader{
         return coinPrices;
     }
 
-    public Float getChangeInPrice(CoinPriceData coinPriceData, String coinSymbol, int period) {
+    public Float getChangeInPrice(String coinSymbol, int period) {
         /**
          * Get the change in price compared to the previous day
          */

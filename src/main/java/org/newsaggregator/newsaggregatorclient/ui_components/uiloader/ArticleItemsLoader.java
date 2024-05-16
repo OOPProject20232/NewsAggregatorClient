@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.HorizontalDataCard;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
@@ -34,17 +35,17 @@ public class ArticleItemsLoader<T>
     Pane container;
     HostServices hostServices;
     T newsCategoryGroupTitledPane;
-    ArticlesFrame articlesFrame;
+    NewsAggregatorClientController mainController;
     boolean containingSummary = true;
     boolean containingCategories = true;
 
-    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, T newsCategoryGroupTitledPane, ArticlesFrame articlesFrame) {
+    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, T newsCategoryGroupTitledPane, NewsAggregatorClientController mainController) {
         this.limit = limit;
         this.container = container;
         this.hostServices = hostServices;
         this.newsCategoryGroupTitledPane = newsCategoryGroupTitledPane;
         this.begin = begin;
-        this.articlesFrame = articlesFrame;
+        this.mainController = mainController;
         if (limit <= 0) {
             throw new IllegalArgumentException("Limit must be greater than 0");
         }
@@ -106,7 +107,7 @@ public class ArticleItemsLoader<T>
                     );
                     for (Node tmp: newsItem.getCategories()){
                         CategoryClickable category = (CategoryClickable) tmp;
-                        category.setOnAction((event) -> articlesFrame.setSearchText(category.getText()));
+                        category.setOnAction((event) -> mainController.setSearchText(category.getText()));
                     }
                     updateProgress(count, limit + begin);
                     CategoryTitledPane<NewsItemCard,?> newsCategoryGroupTitledPane1 = (CategoryTitledPane<NewsItemCard,?>) newsCategoryGroupTitledPane;

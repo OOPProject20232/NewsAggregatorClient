@@ -15,6 +15,7 @@ module org.newsaggregator.newsaggregatorclient {
     requires java.desktop;
     requires javafx.swing;
     requires commons.io;
+    requires com.fasterxml.jackson.annotation;
 
     opens org.newsaggregator.newsaggregatorclient to javafx.fxml;
     exports org.newsaggregator.newsaggregatorclient;

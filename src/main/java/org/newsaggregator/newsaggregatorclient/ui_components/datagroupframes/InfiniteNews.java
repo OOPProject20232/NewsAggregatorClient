@@ -1,5 +1,6 @@
 package org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes;
 
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
@@ -17,6 +18,14 @@ public class InfiniteNews extends NewsCategoryGroupTitledPane {
         loadMoreButton.getStyleClass().add("load-more-button");
         outerBox.setAlignment(CENTER);
         outerBox.getChildren().addAll(getContainer(), loadMoreButton);
+    }
+
+    public void addOtherItem(Node item) {
+        getContainer().getChildren().add(item);
+    }
+
+    public void addOtherItems(Node... items) {
+        getContainer().getChildren().addAll(items);
     }
 
     public Button getLoadMoreButton() {

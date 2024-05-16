@@ -28,8 +28,12 @@ public class NewsJSONLoader implements IJSONLoader {
         this.limit = limit;
     }
 
+    public JSONObject getJsonObject(){
+        return jsonObject;
+    }
+
     @Override
-    public synchronized void loadJSON() {
+    public synchronized JSONObject loadJSON() {
         String url = DOMAIN + "v1/articles?page=" + pageNumber + "&limit=" + limit;
         String cacheFileName = "news" + pageNumber + ".json";
         try{
@@ -43,6 +47,7 @@ public class NewsJSONLoader implements IJSONLoader {
         catch (Exception e) {
             e.printStackTrace();
         }
+        return jsonObject;
     }
 
     public int getCount() {
@@ -61,7 +66,7 @@ public class NewsJSONLoader implements IJSONLoader {
         return result;
     }
 
-    public synchronized List<NewsItemData> getNewsItemDataList(int limit, int begin) {
+    public synchronized List<NewsItemData> getNewsItemDataList(int limit, int begin, JSONObject jsonObject) {
         System.out.println("\u001B[34m"+"Getting news item data list from JSON file"+ "\u001B[0m");
         JSONArray newsItems = jsonObject.getJSONArray("articles");
         List<NewsItemData> newsItemDataList = new ArrayList<>();

@@ -1,12 +1,33 @@
 package org.newsaggregator.newsaggregatorclient;
 
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import org.json.JSONObject;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.datamodel.RedditPostData;
+import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
+import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsCategoryJSONLoader;
+import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
+import org.newsaggregator.newsaggregatorclient.jsonparsing.RedditPostJSONLoader;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.SearchJSONLoader;
+import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
+import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.InfiniteNews;
+import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.NewsCategoryGroupTitledPane;
+import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.RedditGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe.ArticlesFrame;
+import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.ArticleItemsLoader;
+import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.RedditItemsLoader;
+import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.SearchItemsLoader;
+
+import java.net.MalformedURLException;
+import java.util.List;
 
 public class NewsSearchController{
     /**
@@ -19,7 +40,7 @@ public class NewsSearchController{
     private TextField searchTextField;
 
     @FXML
-    private ToggleButton articleToggleButton;
+    private ToggleButton articlesToggleButton;
 
     @FXML
     private ToggleButton redditToggleButton;
@@ -30,9 +51,25 @@ public class NewsSearchController{
     @FXML
     private ComboBox<String> searchOrderComboBox;
 
-    private String searchType;
-    private String searchOrder;
-    private String searchField;
+    @FXML
+    private VBox searchVBox;
+
+    @FXML
+    private ScrollPane searchScrollPane;
+
+    @FXML
+    private ToggleButton exactSearchToggleButton;
+
+    private String searchType = "articles";
+    private String searchOrder = "Newest";
+    private String searchField = "all";
+    private String isExactOrRegex = "r";
+    private int page = 1;
+
+    private SearchJSONLoader<NewsItemData> searchNewsJSONLoader;
+    private SearchJSONLoader<RedditPostData> searchRedditJSONLoader;
+
+    private HostServices hostServices;
 
 
     public void initialize() {
@@ -60,19 +97,136 @@ public class NewsSearchController{
         searchOrderComboBox.getItems().clear();
         searchFieldComboBox.getItems().addAll("all", "categories");
         searchOrderComboBox.getItems().addAll("Newest", "Oldest");
+        searchFieldComboBox.onActionProperty().set(event -> {
+            searchField = searchFieldComboBox.getValue();
+        });
+        searchOrderComboBox.setValue("Newest");
+        searchOrderComboBox.onActionProperty().set(event -> {
+            searchOrder = searchOrderComboBox.getValue();
+        });
+        searchFieldComboBox.setValue("all");
+        articlesToggleButton.setOnAction(event -> {
+            if (articlesToggleButton.isSelected())
+                searchType = "articles";
+            System.out.println(searchType);
+        });
+        redditToggleButton.setOnAction(event -> {
+            if (redditToggleButton.isSelected())
+                searchType = "reddit";
+            System.out.println(searchType);
+        });
+        exactSearchToggleButton.setOnAction(event -> {
+            if (exactSearchToggleButton.isSelected()){
+                isExactOrRegex = "e";
+            }
+            else isExactOrRegex = "r";
+            System.out.println(isExactOrRegex);
+        });
     }
 
     private void search() {
         // Hàm xử lý sự kiện tìm kiếm tin tức
-        System.out.println("Searching for: " + searchTextField.getText());
+        String isDesc;
+        searchVBox.getChildren().clear();
+        String searchText = searchTextField.getText();
+        System.out.println("Searching for: " + searchText);
+        System.out.println("Search field: " + searchField);
+        System.out.println("Search Order" + searchOrder);
+        System.out.println("Exact search: " + isExactOrRegex);
         LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show();
-        Platform.runLater(() -> {
-            SearchJSONLoader searchJSONLoader = new SearchJSONLoader(searchTextField.getText(), "articles", "desc", "r");
-            searchJSONLoader.loadJSON();
-            System.out.println(searchJSONLoader);
+        if (searchType == null) {
+            searchType = "articles";
+        }
+        if (searchOrder == null) {
+            searchOrder = "Newest";
+        }
+        if(searchOrder.equals("Newest")){
+            isDesc = "desc";
+        }
+        else{
+            isDesc = "asc";
+        }
+        if (searchField == null) {
+            searchField = "all";
+        }
+//        try {
+            if (searchType.equals("articles")) {
+                // Load articles
+                    InfiniteNews infiniteNews = new InfiniteNews("Search result");
+                    infiniteNews.setMaxWidth(1200);
+                    searchVBox.getChildren().add(infiniteNews);
+                    searchVBox.setAlignment(Pos.CENTER);
+                    SearchJSONLoader<NewsItemData> searchJSONLoader = new SearchJSONLoader<>(searchText, searchType, searchField, isDesc, isExactOrRegex);
+                    searchJSONLoader.setPage(page);
+                    JSONObject obj = searchJSONLoader.loadJSON();
+                    infiniteNews.addOtherItems(
+                        new Label("Search results for: " + searchText),
+                        new Label("Found " + obj.getInt("count") + " results")
+                    );
+                    loadNewsToFrame(infiniteNews, obj);
+                    infiniteNews.getLoadMoreButton().setOnAction(event -> loadMoreNews(infiniteNews));
+                    searchScrollPane.setOnScroll(event -> {
+                        if (searchScrollPane.getVvalue() > .8) {
+                            loadMoreNews(infiniteNews);
+                        }
+                    });
+
+            } else if (searchType.equals("reddit")) {
+                // Load reddit posts
+                try {
+                    JSONObject obj = DataReaderFromIS.fetchJSON("https://newsaggregator-mern.onrender.com/v1/posts/search?text=%s&sort=desc&page=%s&limit=%s&opt=%s".formatted(searchText, 1, 10, "r"));
+                    RedditGroupTitledPane redditGroupTitledPane = new RedditGroupTitledPane("Search Results");
+                    loadRedditToFrame(redditGroupTitledPane, obj);
+                    searchVBox.getChildren().add(redditGroupTitledPane);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             loadingDialog.close();
-        });
+//        }
+//        catch (Exception e){
+//            searchVBox.getChildren().clear();
+//            CategoryTitledPane categoryTitledPane = new CategoryTitledPane("No results found");
+//            searchVBox.getChildren().add(categoryTitledPane);
+//            loadingDialog.close();
+//        }
+    }
+
+    private void loadNewsToFrame(InfiniteNews infiniteNews, JSONObject obj){
+        if (searchField.equals("all")) {
+            NewsJSONLoader newsJSONLoader = new NewsJSONLoader();
+            List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(10, 0, obj);
+            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, infiniteNews, null);
+            articleItemsLoader.loadItems(list);
+        }
+        else{
+            NewsCategoryJSONLoader newsJSONLoader = new NewsCategoryJSONLoader();
+            List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(10, 0, obj);
+            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, infiniteNews, null);
+            articleItemsLoader.loadItems(list);
+        }
+    }
+
+    private void nextPage(){
+        page++;
+    }
+
+    private void loadMoreNews(InfiniteNews infiniteNews){
+        // Hàm xử lý sự kiện load thêm tin tức
+        System.out.println("Loading more news");
+        nextPage();
+        SearchJSONLoader<NewsItemData> searchJSONLoader = new SearchJSONLoader<>(searchTextField.getText(), searchType, searchField, searchOrder, isExactOrRegex);
+        searchJSONLoader.setPage(page);
+        JSONObject obj = searchJSONLoader.loadJSON();
+        loadNewsToFrame(infiniteNews, obj);
+    }
+
+    private void loadRedditToFrame(RedditGroupTitledPane redditGroupTitledPane, JSONObject obj){
+        RedditPostJSONLoader redditPostJSONLoader = new RedditPostJSONLoader();
+        List<RedditPostData> list = redditPostJSONLoader.getRedditPostsList(10, 0, obj);
+        RedditItemsLoader<RedditGroupTitledPane> redditItemsLoader = new RedditItemsLoader<>(10, 0, hostServices, redditGroupTitledPane);
+        redditItemsLoader.loadItems(list);
     }
 
     private void autocomplete() {
@@ -96,8 +250,32 @@ public class NewsSearchController{
         }
     }
 
-    public void insertSearchText(String searchKeyword){
+    public void insertSearchText(String searchKeyword, String searchType, String searchOrder, String searchField, String isExactOrRegex){
         searchTextField.setText(searchKeyword);
+        this.searchType = searchType;
+        this.isExactOrRegex = isExactOrRegex;
+        this.searchOrder = searchOrder;
+        this.searchField = searchField;
+        this.searchFieldComboBox.setValue(searchField);
+        this.searchOrderComboBox.setValue(searchOrder);
+        if (searchType.equals("articles")){
+            articlesToggleButton.setSelected(true);
+        }
+        else if (searchType.equals("reddit")){
+            redditToggleButton.setSelected(true);
+        }
+        if (isExactOrRegex.equals("e")){
+            exactSearchToggleButton.setSelected(true);
+        }
         search();
+    }
+
+
+    public HostServices getHostServices() {
+        return hostServices;
+    }
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
     }
 }

@@ -19,7 +19,7 @@ public class JSON2NewsItemData {
             categoryList.add(category.toString());
         }
         newsItemData.setCategory(categoryList);
-        newsItemData.setTitle(getSimpleField( newsItemObject,"article_title"));
+        newsItemData.setTitle(getSimpleField(newsItemObject,"article_title"));
         newsItemData.setAuthor(getSimpleField(newsItemObject, "author"));
         newsItemData.setDescription(getSimpleField(newsItemObject, "article_summary"));
         newsItemData.setArticleDetailedContent(getSimpleField(newsItemObject, "article_detailed_content"));
@@ -35,7 +35,12 @@ public class JSON2NewsItemData {
             thumbnailImage = "";
         }
         newsItemData.setUrlToImage(thumbnailImage);
-        newsItemData.setPublishedAt(newsItemObject.getString("creation_date"));
+        try{
+            newsItemData.setPublishedAt(newsItemObject.getString("creation_date"));
+        }
+        catch (Exception e) {
+            newsItemData.setPublishedAt("");
+        }
         return newsItemData;
     }
 

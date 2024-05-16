@@ -5,11 +5,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 
 public class GenericFrame extends ScrollPane {
     protected final GridPane itemsContainer = new GridPane();
     protected final String JSON_FOLDER_PATH = "src/main/resources/json/";
-    protected int currentPage = 2;
+    protected int currentPage = 1;
     protected int limit = 30;
     public GenericFrame(){
         AnchorPane container = new AnchorPane();
@@ -26,7 +27,8 @@ public class GenericFrame extends ScrollPane {
         itemsContainer.setHgap(36);
         itemsContainer.setVgap(36);
         itemsContainer.setPadding(new Insets(48, 48, 48, 48));
-        itemsContainer.setAlignment(Pos.BASELINE_CENTER);
+        itemsContainer.setAlignment(Pos.BASELINE_LEFT);
+        itemsContainer.setMaxSize(BASELINE_OFFSET_SAME_AS_HEIGHT, Region.BASELINE_OFFSET_SAME_AS_HEIGHT);
 //        itemsContainer.setGridLinesVisible(true);
         container.getStyleClass().addAll( "generic-transparent-container");
         this.getStyleClass().addAll("generic-transparent-container");
@@ -37,7 +39,7 @@ public class GenericFrame extends ScrollPane {
     }
 
     public void resetPage() {
-        currentPage = 2;
+        currentPage = 1;
     }
 
     public void nextPage() {

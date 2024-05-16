@@ -35,11 +35,11 @@ public class RedditItemsLoader<T> extends Task<Void> implements ItemsLoader<Redd
             redditCard.getTitle().setOnAction(e -> hostServices.showDocument(redditPostData.getUrl()));
             redditCard.getAuthor().setOnAction(e -> hostServices.showDocument(redditPostData.getLinkToAuthor()));
             redditCard.getSubreddit().setOnAction(e -> hostServices.showDocument(redditPostData.getLinkToSub()));
-
+            redditCard.getImageViewLink().setOnAction(e -> hostServices.showDocument(redditPostData.getUrl()));
             System.out.println(redditPostData.getTitle());
             Platform.runLater(() -> {
                 redditCard.setText();
-//                redditCard.setImage();
+                redditCard.setImage();
             });
             container.addItem(redditCard);
         }
