@@ -88,6 +88,7 @@ public class NewsAggregatorClientController {
         this.articleScrollPane = new ArticlesFrame(hostServices, this);
         this.redditFrame = new RedditFrame(hostServices, this);
         newsSearchController.setHostServices(hostServices);
+        newsSearchController.setMainController(this);
     }
 
     @FXML

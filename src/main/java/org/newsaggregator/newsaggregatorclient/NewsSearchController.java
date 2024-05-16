@@ -70,6 +70,7 @@ public class NewsSearchController{
     private SearchJSONLoader<RedditPostData> searchRedditJSONLoader;
 
     private HostServices hostServices;
+    private NewsAggregatorClientController mainController;
 
 
     public void initialize() {
@@ -197,13 +198,13 @@ public class NewsSearchController{
         if (searchField.equals("all")) {
             NewsJSONLoader newsJSONLoader = new NewsJSONLoader();
             List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(10, 0, obj);
-            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, infiniteNews, null);
+            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, infiniteNews, mainController);
             articleItemsLoader.loadItems(list);
         }
         else{
             NewsCategoryJSONLoader newsJSONLoader = new NewsCategoryJSONLoader();
             List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(10, 0, obj);
-            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, infiniteNews, null);
+            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, infiniteNews, mainController);
             articleItemsLoader.loadItems(list);
         }
     }
@@ -277,5 +278,9 @@ public class NewsSearchController{
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
+    }
+
+    public void setMainController(NewsAggregatorClientController mainController) {
+        this.mainController = mainController;
     }
 }
