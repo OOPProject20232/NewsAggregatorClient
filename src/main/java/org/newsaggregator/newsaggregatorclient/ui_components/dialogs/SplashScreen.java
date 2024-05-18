@@ -12,9 +12,9 @@ import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 import java.util.Objects;
 
 public class SplashScreen extends Alert {
-    FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("splashscreen.fxml"));
     public SplashScreen() {
         super(AlertType.NONE);
+        FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("splashscreen.fxml"));
         try {
             this.getDialogPane().setContent(fxmlLoader.load());
             Stage stage = (Stage) getDialogPane().getScene().getWindow();
