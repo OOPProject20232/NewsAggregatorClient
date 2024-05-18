@@ -56,6 +56,7 @@ public class ArticleItemsLoader<T>
     }
     @Override
     protected Void call() {
+        updateTitle("Loading...");
         updateMessage("Loading news items");
         return null;
     }

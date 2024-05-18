@@ -44,7 +44,7 @@ public class SearchJSONLoader<T extends GenericData> implements IJSONLoader {
             case "posts":
                 if (searchField.equals("all"))
                     url = DOMAIN + "v1/posts/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
-                else if (searchField.equals("cateogories")) {
+                else if (searchField.equals("categories")) {
                     url = DOMAIN + "v1/categories/posts/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 }
                 break;

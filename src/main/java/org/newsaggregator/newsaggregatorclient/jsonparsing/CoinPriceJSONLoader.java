@@ -1,6 +1,7 @@
 package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
@@ -28,13 +29,14 @@ public class CoinPriceJSONLoader implements IJSONLoader{
         String url = "https://newsaggregator-mern.onrender.com/v1/coins?limit=" + limit;
         String cacheFileName = "coinPrices.json";
         try {
-            coinPrices = DataReaderFromIS.fetchJSONWithCache(url, cacheFileName);
+            coinPrices = DataReaderFromIS.fetchJSON(url);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
-        } catch (NoRouteToHostException e) {
-            NoInternetDialog noInternetDialog = new NoInternetDialog();
-            noInternetDialog.show();
         }
+//        catch (NoRouteToHostException e) {
+//            NoInternetDialog noInternetDialog = new NoInternetDialog();
+//            noInternetDialog.show();
+//        }
         return new JSONObject();
     }
 
@@ -159,7 +161,14 @@ public class CoinPriceJSONLoader implements IJSONLoader{
                 String today = keys.get(0);
                 String past = keys.get(period);
                 float todayPrice = Float.parseFloat(prices.getString(today));
-                float yesterdayPrice = Float.parseFloat(prices.getString(past));
+                float yesterdayPrice;
+                try{
+                   yesterdayPrice = Float.parseFloat(prices.getString(past));
+                }
+                catch (JSONException e){
+                    yesterdayPrice = Float.parseFloat(prices.getJSONObject(past).toString());
+                }
+
                 return todayPrice - yesterdayPrice;
             }
         }

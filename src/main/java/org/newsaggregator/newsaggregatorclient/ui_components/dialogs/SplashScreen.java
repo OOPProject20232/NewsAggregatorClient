@@ -20,6 +20,7 @@ public class SplashScreen extends Dialog<Void> {
             stage.setHeight(450);
             stage.setIconified(false);
             stage.initStyle(StageStyle.UNDECORATED);
+            stage.setAlwaysOnTop(true);
         } catch (Exception e) {
             e.printStackTrace();
         }

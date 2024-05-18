@@ -350,3 +350,24 @@
     -fx-cursor: hand;
     -fx-padding: .5em 1em;
 }
+
+.copy-button, .bookmark-button{
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: -fx-primary-color;
+    -fx-font-size: 1em;
+    -fx-font-weight: bold;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 30px;
+    -fx-cursor: hand;
+    -fx-padding: .5em 1em;
+}
+
+.bookmark-button:selected{
+    -fx-background-color: transparent;
+}
+
+.copy-button:hover{
+    -fx-background-color: -fx-primary-fixed;
+}

@@ -4,16 +4,18 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
@@ -47,7 +49,10 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
     protected Label publisher;
     protected ImageView publisherImageView = new ImageView();
     protected FlowPane categoryFrame = new FlowPane();
-    private static final String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
+    protected Button copyButton = new Button("");
+    protected ToggleButton bookmarkButton = new ToggleButton();
+    private static final String noImageAvailablePath
+            = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
     private NewsItemData newsItemData;
     private boolean containingSummary = true;
     private boolean containingCategories = true;
@@ -87,12 +92,79 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         categoryFrame.setVgap(8);
         categoryFrame.setAlignment(Pos.CENTER_LEFT);
         newsInfo.getChildren().add(categoryFrame);
+        HBox utilityFrame = new HBox();
+        utilityFrame.setSpacing(8);
+        ImageView copyIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/link.png"));
+        copyIcon.setFitHeight(16);
+        copyIcon.setFitWidth(16);
+        copyButton.setGraphic(copyIcon);
+        copyButton.getStyleClass().add("copy-button");
+        utilityFrame.getChildren().add(copyButton);
+        bookmarkButton.getStyleClass().add("bookmark-button");
+        ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
+        bookmarkIcon.setFitHeight(16);
+        bookmarkIcon.setFitWidth(16);
+        bookmarkButton.setGraphic(bookmarkIcon);
+        utilityFrame.getChildren().add(bookmarkButton);
+        newsInfo.getChildren().add(utilityFrame);
     }
 
     public NewsItemCard(NewsItemData newsItemData) {
         this();
         this.newsItemData = newsItemData;
         this.setSpacing(10);
+        Tooltip copyTooltip = new Tooltip("Copy link");
+        copyTooltip.setShowDelay(javafx.util.Duration.millis(10));
+        copyButton.setTooltip(copyTooltip);
+        copyButton.setOnMouseClicked(event -> {
+            System.out.println("Copy button clicked");
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent clipboardContent = new ClipboardContent();
+            clipboardContent.putString(newsItemData.getUrl());
+            clipboard.setContent(clipboardContent);
+            copyTooltip.setText("Link copied!");
+            copyButton.setTooltip(copyTooltip);
+//            copyTooltip.show(copyButton, event.getScreenX() , event.getScreenY());
+            copyButton.setText("Copied!");
+            copyButton.setGraphic(null);
+        });
+        copyButton.setOnMouseExited(event -> {
+//            copyTooltip.hide();
+            copyButton.setText("");
+            ImageView copyIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/link.png"));
+            copyIcon.setFitHeight(16);
+            copyIcon.setFitWidth(16);
+            copyButton.setGraphic(copyIcon);
+            copyButton.setTooltip(new Tooltip("Copy link"));
+        });
+        Tooltip bookmarkTooltip = new Tooltip("Save this to Bookmark");
+        bookmarkTooltip.setShowDelay(Duration.millis(10));
+        bookmarkButton.setTooltip(bookmarkTooltip);
+        bookmarkButton.setOnMouseClicked(event -> {
+            System.out.println("Bookmark button clicked");
+            if (bookmarkButton.isSelected()) {
+                System.out.println("Bookmark selected");
+                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark-selected.png"));
+                bookmarkIcon.setFitHeight(16);
+                bookmarkIcon.setFitWidth(16);
+                bookmarkButton.setGraphic(bookmarkIcon);
+                bookmarkTooltip.setText("Saved to Bookmark");
+                bookmarkTooltip.show(bookmarkButton, event.getScreenX(), event.getScreenY());
+            } else {
+                System.out.println("Bookmark unselected");
+                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
+                bookmarkIcon.setFitHeight(16);
+                bookmarkIcon.setFitWidth(16);
+                bookmarkTooltip.setText("Removed from Bookmark");
+                bookmarkButton.setGraphic(bookmarkIcon);
+            }
+        });
+        bookmarkButton.setOnMouseExited(event -> {
+            bookmarkTooltip.hide();
+            if (bookmarkButton.isSelected())
+                bookmarkTooltip.setText("Saved to Bookmark");
+            else bookmarkTooltip.setText("Save to Bookmark");
+        });
     }
 
     @Override

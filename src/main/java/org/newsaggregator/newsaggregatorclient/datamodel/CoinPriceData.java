@@ -1,5 +1,7 @@
 package org.newsaggregator.newsaggregatorclient.datamodel;
 
+import org.newsaggregator.newsaggregatorclient.util.NumberFormatter;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -113,6 +115,11 @@ public class CoinPriceData extends GenericData {
         } else {
             return "- %,.2f".formatted(-priceChange);
         }
+    }
+
+    public String getPriceChangePercentage(){
+        double percentage = priceChange / (Double.parseDouble(price) - priceChange);
+        return NumberFormatter.formatPercentageValue(percentage);
     }
 
     public void setPriceChange(Float priceChange) {

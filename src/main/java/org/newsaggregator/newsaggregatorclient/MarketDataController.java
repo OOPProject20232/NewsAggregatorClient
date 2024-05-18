@@ -20,6 +20,7 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.chart.CustomCursor;
 import org.newsaggregator.newsaggregatorclient.ui_components.chart.LineChartWithCrosshair;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.util.NumberFormatter;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
 import java.text.DecimalFormat;
@@ -98,7 +99,7 @@ public class MarketDataController {
     public void initialize() {
         // Khởi tạo các giá trị mặc định
         LoadingDialog loadingDialog = new LoadingDialog();
-        loadingDialog.show();
+        loadingDialog.showAndWait();
         coinPriceJSONLoader.setLimit(100);
 //        loadMarketData(7, true, symbol);
         Platform.runLater(() -> {
@@ -114,23 +115,29 @@ public class MarketDataController {
         oneWeekButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
-            loadChartData(7, true, symbol);
+            loadMarketData(7);
             loadingDialog1.close();
         });
         oneMonthButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
-            Platform.runLater(()-> loadChartData(30, true, symbol));
+            loadMarketData(30);
+//            Platform.runLater(()-> loadChartData(30, true, symbol));
             loadingDialog1.close();
         });
         sixMonthsButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
-            Platform.runLater(()-> loadChartData(180, true, symbol));
+//            Platform.runLater(()-> loadChartData(180, true, symbol));
+            loadMarketData(180);
             loadingDialog1.close();
         });
         ytdButton.setOnAction(event -> {
-            Platform.runLater(()-> loadChartData(365, true, symbol));
+//            Platform.runLater(()-> loadChartData(365, true, symbol));
+            LoadingDialog loadingDialog1 = new LoadingDialog();
+            loadingDialog1.show();
+            loadMarketData(365);
+            loadingDialog1.close();
         });
         CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Date");
@@ -167,14 +174,17 @@ public class MarketDataController {
         marketCapColumn.setCellValueFactory(new PropertyValueFactory<>("marketCap"));
         ObservableList<CoinData> coinDataList = FXCollections.observableArrayList();
         for (CoinPriceData coinPriceData : coinPriceDataList) {
-                CoinData coinData = new CoinData(
-                        "%s (%s)".formatted(coinPriceData.getCoinSymbol(), coinPriceData.getCoinName()),
-                        coinPriceData.getFormattedPrice(currency),
-                        coinPriceData.getPriceChange(),
-                        coinPriceData.getFormattedMarketCap(currency)
-                );
-                coinDataList.add(coinData);
-            }
+            double priceChangeByPeriod = coinPriceJSONLoader.getChangeInPrice(coinPriceData.getCoinSymbol(), period);
+            double percentChange = priceChangeByPeriod / (coinPriceData.getRawPrice() - priceChangeByPeriod);
+            String formattedPercentChange = NumberFormatter.formatPercentageValue(percentChange);
+            CoinData coinData = new CoinData(
+                    "%s (%s)".formatted(coinPriceData.getCoinSymbol(), coinPriceData.getCoinName()),
+                    coinPriceData.getFormattedPrice(currency),
+                    percentChange > 0 ? "▲" + formattedPercentChange : percentChange < 0 ? "▼" + formattedPercentChange : "―",
+                    coinPriceData.getFormattedMarketCap(currency)
+            );
+            coinDataList.add(coinData);
+        }
         FilteredList<CoinData> filteredData = new FilteredList<>(coinDataList, p -> true);
         coinPriceTable.setItems(filteredData);
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -230,13 +240,13 @@ public class MarketDataController {
         CoinPriceData newestData = coinPriceJSONLoader.getNewestCoinPriceByCoin(coinSymbol);
 //            String priceChangeState = newestData.getPriceChangeState();
         String priceChangeState = priceChangeByPeriod > 0 ? "up" : priceChangeByPeriod < 0 ? "down" : "same";
-        System.out.println("Price changed: " + priceChangeByPeriod);
+        System.out.println("Price changed: " + NumberFormatter.formatPercentageValue(priceChangeByPeriod / (newestData.getRawPrice() - priceChangeByPeriod)));
         priceChangeLabel.getStyleClass().clear();
         priceChangeLabel.getStyleClass().add("price__" + priceChangeState);
         if (priceChangeState.equals("up")) {
-            priceChangeLabel.setText("▲" + priceChangeByPeriod);
+            priceChangeLabel.setText("▲" + NumberFormatter.formatPercentageValue(priceChangeByPeriod / (newestData.getRawPrice() - priceChangeByPeriod)));
         } else if (priceChangeState.equals("down")) {
-            priceChangeLabel.setText("▼" + priceChangeByPeriod);
+            priceChangeLabel.setText("▼" + NumberFormatter.formatPercentageValue(priceChangeByPeriod / (newestData.getRawPrice() - priceChangeByPeriod)));
         } else {
             priceChangeLabel.setText("―");
         }
@@ -258,15 +268,7 @@ public class MarketDataController {
             coinPriceChart.getData().add(series);
 //                series.getNode().setStyle("-fx-stroke: #000000");
             for (XYChart.Data<String, Number> data : series.getData()) {
-                DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
-                float yValue = data.getYValue().floatValue();
-                String formattedYValue = decimalFormat.format(yValue);
-                if (yValue < .01){
-                    formattedYValue = String.format("%s%.8f", currency, yValue);
-                }
-                else{
-                    formattedYValue = currency + formattedYValue;
-                }
+                String formattedYValue = NumberFormatter.formatCurrencyValue(data.getYValue().floatValue(), currency);
                 Tooltip tooltip = new Tooltip(data.getXValue() + "\n" + formattedYValue);
                 Tooltip.install(data.getNode(), tooltip);
                 tooltip.setShowDelay(Duration.seconds(.1));

@@ -55,9 +55,10 @@ public class NewsCategoryJSONLoader implements IJSONLoader{
 //            if (begin + limit > categories.length()) {
 //                limit = categories.length() - begin;
 //            }
-            for (int i = begin; i < limit; i++) {
+            for (int i = begin; i < categories.length(); i++) {
                 try{
                     JSONObject categoryObject = categories.getJSONObject(i);
+                    System.out.println(categoryObject.toMap());
                     JSONArray newsItems = categoryObject.getJSONArray("articles");
                     for (int j = 0; j < newsItems.length(); j++) {
                         JSONObject newsItemObject = newsItems.getJSONObject(j);

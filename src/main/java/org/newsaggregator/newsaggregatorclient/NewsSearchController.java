@@ -28,6 +28,7 @@ import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.SearchItem
 
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NewsSearchController{
     /**
@@ -65,12 +66,15 @@ public class NewsSearchController{
     private String searchField = "all";
     private String isExactOrRegex = "r";
     private int page = 1;
+    private int limit = 10;
 
     private SearchJSONLoader<NewsItemData> searchNewsJSONLoader;
     private SearchJSONLoader<RedditPostData> searchRedditJSONLoader;
 
     private HostServices hostServices;
     private NewsAggregatorClientController mainController;
+    private int chunkSize = 10;
+    private AtomicReference<Integer> currentChunk = new AtomicReference<>(limit/chunkSize);
 
 
     public void initialize() {
@@ -125,11 +129,21 @@ public class NewsSearchController{
         });
     }
 
+    private String getSearchQuery(){
+        String result = searchTextField.getText();
+        if (result == null){
+            return "";
+        }
+        result = result.replace(" ", "+");
+        return result;
+    }
+
     private void search() {
         // Hàm xử lý sự kiện tìm kiếm tin tức
         String isDesc;
+        resetPage();
         searchVBox.getChildren().clear();
-        String searchText = searchTextField.getText();
+        String searchText = getSearchQuery();
         System.out.println("Searching for: " + searchText);
         System.out.println("Search field: " + searchField);
         System.out.println("Search Order" + searchOrder);
@@ -151,7 +165,7 @@ public class NewsSearchController{
         if (searchField == null) {
             searchField = "all";
         }
-//        try {
+        try {
             if (searchType.equals("articles")) {
                 // Load articles
                     InfiniteNews infiniteNews = new InfiniteNews("Search result");
@@ -159,13 +173,21 @@ public class NewsSearchController{
                     searchVBox.getChildren().add(infiniteNews);
                     searchVBox.setAlignment(Pos.CENTER);
                     SearchJSONLoader<NewsItemData> searchJSONLoader = new SearchJSONLoader<>(searchText, searchType, searchField, isDesc, isExactOrRegex);
+                    searchJSONLoader.setLimit(limit);
                     searchJSONLoader.setPage(page);
                     JSONObject obj = searchJSONLoader.loadJSON();
+                    System.out.println(obj.toMap());
+                    int count;
+                    try{
+                        count = obj.getInt("count");
+                    } catch (Exception e){
+                        count = 0;
+                    }
                     infiniteNews.addOtherItems(
                         new Label("Search results for: " + searchText),
-                        new Label("Found " + obj.getInt("count") + " results")
+                        new Label("Found " + count + " results")
                     );
-                    loadNewsToFrame(infiniteNews, obj);
+                    loadNewsToFrame(infiniteNews, obj, chunkSize, 0);
                     infiniteNews.getLoadMoreButton().setOnAction(event -> loadMoreNews(infiniteNews));
                     searchScrollPane.setOnScroll(event -> {
                         if (searchScrollPane.getVvalue() > .8) {
@@ -185,27 +207,31 @@ public class NewsSearchController{
                 }
             }
             loadingDialog.close();
-//        }
-//        catch (Exception e){
-//            searchVBox.getChildren().clear();
-//            CategoryTitledPane categoryTitledPane = new CategoryTitledPane("No results found");
-//            searchVBox.getChildren().add(categoryTitledPane);
-//            loadingDialog.close();
-//        }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            searchVBox.getChildren().clear();
+            CategoryTitledPane categoryTitledPane = new CategoryTitledPane("No results found");
+            searchVBox.getChildren().add(categoryTitledPane);
+            loadingDialog.close();
+        }
     }
 
-    private void loadNewsToFrame(InfiniteNews infiniteNews, JSONObject obj){
+    private void loadNewsToFrame(InfiniteNews infiniteNews, JSONObject obj, int limit, int begin){
         if (searchField.equals("all")) {
             NewsJSONLoader newsJSONLoader = new NewsJSONLoader();
-            List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(10, 0, obj);
-            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, infiniteNews, mainController);
+            List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(limit, begin , obj);
+            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(limit, begin, hostServices, infiniteNews, mainController);
             articleItemsLoader.loadItems(list);
+            currentChunk.set(currentChunk.get() + 1);
         }
         else{
             NewsCategoryJSONLoader newsJSONLoader = new NewsCategoryJSONLoader();
-            List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(10, 0, obj);
-            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, infiniteNews, mainController);
+            List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(limit, begin, obj);
+            System.out.println(list);
+            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(limit, begin, hostServices, infiniteNews, mainController);
             articleItemsLoader.loadItems(list);
+            currentChunk.set(currentChunk.get() + 1);
         }
     }
 
@@ -216,11 +242,19 @@ public class NewsSearchController{
     private void loadMoreNews(InfiniteNews infiniteNews){
         // Hàm xử lý sự kiện load thêm tin tức
         System.out.println("Loading more news");
-        nextPage();
-        SearchJSONLoader<NewsItemData> searchJSONLoader = new SearchJSONLoader<>(searchTextField.getText(), searchType, searchField, searchOrder, isExactOrRegex);
-        searchJSONLoader.setPage(page);
-        JSONObject obj = searchJSONLoader.loadJSON();
-        loadNewsToFrame(infiniteNews, obj);
+//        nextPage();
+        if (currentChunk.get() * chunkSize >= limit){
+            nextPage();
+            currentChunk.set(0);
+        }
+        Platform.runLater(() -> {
+            SearchJSONLoader<NewsItemData> searchJSONLoader = new SearchJSONLoader<>(getSearchQuery(), searchType, searchField, searchOrder, isExactOrRegex);
+            searchJSONLoader.setPage(page);
+            JSONObject obj = searchJSONLoader.loadJSON();
+            loadNewsToFrame(infiniteNews, obj, chunkSize, currentChunk.get() * chunkSize);
+            currentChunk.set(currentChunk.get() + 1);
+        });
+
     }
 
     private void loadRedditToFrame(RedditGroupTitledPane redditGroupTitledPane, JSONObject obj){
@@ -282,5 +316,9 @@ public class NewsSearchController{
 
     public void setMainController(NewsAggregatorClientController mainController) {
         this.mainController = mainController;
+    }
+
+    public void resetPage(){
+        page = 1;
     }
 }
