@@ -9,12 +9,14 @@ import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.HorizontalDataCard;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ReadingArticle;
 import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe.ArticlesFrame;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CategoryClickable;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.NewsCategoryGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ArticleItemsLoader<T>
@@ -97,7 +99,13 @@ public class ArticleItemsLoader<T>
                     newsItem.setPublisherLogo();
                     newsItem.getArticleHyperlinkTitleObject().setOnAction(
                             event -> {
-                                hostServices.showDocument(itemData.getUrl());;
+                                ReadingArticle popup = null;
+                                try {
+                                    popup = new ReadingArticle(itemData.getUrl());
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                popup.show();
                             }
                     );
                     newsItem.getReadMore().setOnAction(

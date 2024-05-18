@@ -7,6 +7,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
+import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
 
 import java.util.Objects;
 
@@ -27,6 +28,7 @@ public class LoadingDialog extends GenericAlert {
         stage.setIconified(false);
         try{
             stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResource("refresh.png").toExternalForm())));
+//            getDialogPane().getStylesheets().add(NewsAggregatorClientController.class.getResourceAsStream("/assets/css/dialogs.css").t);
 //            getDialogPane().getStylesheets().add(this.getClass().getResource("dialogs.css").toExternalForm());
         }
         catch (NullPointerException e){

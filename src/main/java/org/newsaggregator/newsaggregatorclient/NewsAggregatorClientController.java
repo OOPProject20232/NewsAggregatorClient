@@ -2,6 +2,7 @@ package org.newsaggregator.newsaggregatorclient;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -177,16 +178,16 @@ public class NewsAggregatorClientController {
          * được gọi khi ứng dụng được khởi chạy
          * Dữ liệu tin tức sẽ được lấy từ database thông qua trung gian
          */
-        LoadingDialog loadingDialog = new LoadingDialog();
+//        LoadingDialog loadingDialog = new LoadingDialog();
         Platform.runLater(() -> {
             try {
                 articleScrollPane.loadArticles();
             } catch (NoRouteToHostException e) {
-                loadingDialog.close();
+//                loadingDialog.close();
                 NoInternetDialog noInternetDialog = new NoInternetDialog();
                 noInternetDialog.show();
             }
-            loadingDialog.close();
+//            loadingDialog.close();
 
         });
         CoinNewestPriceGroupTitledPane coinNewestPriceGroupFrame = new CoinNewestPriceGroupTitledPane();
@@ -226,29 +227,39 @@ public class NewsAggregatorClientController {
          * Được gọi khi người dùng click vào nút "tải lại" trên màn hình chính
          * @param event: Sự kiện click chuột vào nút "tải lại"
          */
-        SelectionModel newsTypeTabs = newsTypeTabPane.getSelectionModel();
+        SelectionModel<Tab> newsTypeTabs = newsTypeTabPane.getSelectionModel();
         LoadingDialog loadingDialog = new LoadingDialog();
-        loadingDialog.show();
-        // News
-        if (newsTypeTabs.getSelectedIndex() == 0) {
-            articleScrollPane.clearAllNews();
-            articleScrollPane.resetPage();
-            try {
-                articleScrollPane.loadArticles();
-            } catch (NoRouteToHostException e) {
-                NoInternetDialog noInternetDialog = new NoInternetDialog();
-                noInternetDialog.show();
-                loadingDialog.close();
+//        loadingDialog.show();
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                if (newsTypeTabs.getSelectedIndex() == 0) {
+                    articleScrollPane.clearAllNews();
+                    articleScrollPane.resetPage();
+                    try {
+                        articleScrollPane.loadArticles();
+                    } catch (NoRouteToHostException e) {
+                        NoInternetDialog noInternetDialog = new NoInternetDialog();
+                        noInternetDialog.show();
+                        loadingDialog.close();
+                    }
+                    showAllNewsCategories();
+                    loadingDialog.close();
+                }
+                else {
+                    // Reddit
+                    redditFrame.resetPage();
+                    redditFrame.loadReddit();
+                    loadingDialog.close();
+                }
+                return null;
             }
-            showAllNewsCategories();
-            loadingDialog.close();
-        }
-        else {
-            // Reddit
-            redditFrame.resetPage();
-            redditFrame.loadReddit();
-            loadingDialog.close();
-        }
+        };
+        task.setOnRunning(e -> loadingDialog.show());
+        task.setOnSucceeded(e -> loadingDialog.hide());
+        task.run();
+
+        // New
     }
 
     public void setSearchText(String text){

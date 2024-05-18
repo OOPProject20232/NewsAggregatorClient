@@ -25,7 +25,6 @@ public class NewsAggregatorClientApplication extends Application {
     public synchronized void start(final Stage stage) throws IOException {
         System.out.println("\u001B[33m"+"Starting application"+ "\u001B[0m");
         SplashScreen loadingDialog = new SplashScreen();
-        loadingDialog.show();
         FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("news_aggregator_client.fxml"));
         NewsAggregatorClientController controller = new NewsAggregatorClientController(this.getHostServices());
         fxmlLoader.setController(controller);
@@ -36,6 +35,8 @@ public class NewsAggregatorClientApplication extends Application {
                 System.out.println("Set");
                 int serverCheckResponseCode = 0;
                 Scene scene;
+                System.out.println("Hi"
+                );
                 try {
                     scene = new Scene(fxmlLoader.load());
                     serverCheckResponseCode = ConnectionChecker.checkInternetConnection();
@@ -45,6 +46,7 @@ public class NewsAggregatorClientApplication extends Application {
                 }
                 if (serverCheckResponseCode == 0) {
                     failed();
+                    loadingDialog.close();
                     NoInternetDialog dialog = new NoInternetDialog();
                     stage.initStyle(StageStyle.UNDECORATED);
                     stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/no-internet.png"))));
@@ -53,21 +55,23 @@ public class NewsAggregatorClientApplication extends Application {
                     Error500Dialog error500Dialog = new Error500Dialog();
                     error500Dialog.show();
                 } else if (serverCheckResponseCode == 200){
+                    loadingDialog.close();
                     stage.setMaximized(true);
                     stage.setTitle("Crypto News Aggregator Client");
                     stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/icon.png"))));
                     stage.setScene(scene);
-                    controller.start();
                     controller.showAllNewsCategories();
                     stage.show();
+                    controller.start();
                 } else{
                     System.out.println("???");
                 }
                 return null;
             }
         };
+            loadingDialog.show();
         task.run();
-        task.setOnSucceeded(event -> loadingDialog.close());
+        task.setOnFailed((e)->loadingDialog.close());
     }
 
     public static void main(String[] args) {

@@ -7,6 +7,8 @@ import javafx.concurrent.Task;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
@@ -53,9 +55,9 @@ public class ArticlesFrame extends GenericFrame {
         NewsCategoryGroupTitledPane defiNews = new NewsCategoryGroupTitledPane("DeFI news");
         NewsCategoryGroupTitledPane web3News = new NewsCategoryGroupTitledPane("Web3 news");
         NewsCategoryGroupTitledPane blockchainNews = new NewsCategoryGroupTitledPane("Blockchain news");
-        itemsContainer.add(latestNews, 0, 0, 3, 2);
-        itemsContainer.add(bitcoinNews, 0, 2, 1, 2);
-        itemsContainer.add(ethereumNews, 1, 2, 1, 2);
+        itemsContainer.add(latestNews, 0, 0, 3, 1);
+        itemsContainer.add(bitcoinNews, 0, 2, 1, 1);
+        itemsContainer.add(ethereumNews, 1, 2, 1, 1);
         itemsContainer.add(solanaNews, 0, 5, 1, 2);
         itemsContainer.add(defiNews, 1, 5, 1, 2);
         itemsContainer.add(web3News, 0, 8, 1, 2);
@@ -68,23 +70,48 @@ public class ArticlesFrame extends GenericFrame {
         AtomicReference<NewsCategoryJSONLoader> newsCategoryJSONLoader = new AtomicReference<>();
         Task<Void> task = new Task<>() {
             @Override
+            protected void updateProgress(long workDone, long max) {
+                super.updateProgress(workDone, max);
+                super.updateMessage("Loading %s/%s".formatted(workDone, max));
+            }
+
+            @Override
             protected Void call() throws Exception {
                 articleDataLoader.set(getNewsJSONLoader());
-                new ArticleItemsLoader<>(limit, 0, hostServices, latestNews, mainController).loadItems(articleDataLoader.get().getNewsItemDataList(limit, 0, articleDataLoader.get().loadJSON()));
-                new ArticleItemsLoader<>(limit, 0, hostServices, allNews, mainController).loadItems(articleDataLoader.get().getNewsItemDataList(limit, 0, articleDataLoader.get().loadJSON()));
-                getNewsCategory(bitcoinNews, getNewsCategoryJSONLoader("bitcoin"));
-                getNewsCategory(ethereumNews, getNewsCategoryJSONLoader("ethereum"));
-                getNewsCategory(solanaNews, getNewsCategoryJSONLoader("solana"));
+                Platform.runLater(() ->
+                        new ArticleItemsLoader<>(
+                                limit,
+                                0,
+                                hostServices,
+                                latestNews,
+                                mainController).loadItems(
+                                        new NewsJSONLoader()
+                                                .getNewsItemDataList(
+                                                        limit,
+                                                        0,
+                                                        articleDataLoader.get().loadJSON()
+                                                )
+                        )
+                );
+                updateProgress(1, 8);
+                Platform.runLater(() -> getNewsCategory(bitcoinNews, getNewsCategoryJSONLoader("bitcoin")));
+                updateProgress(2, 8);
+                Platform.runLater(() -> getNewsCategory(ethereumNews, getNewsCategoryJSONLoader("ethereum")));
+                updateProgress(3, 8);
+                Platform.runLater(() -> getNewsCategory(solanaNews, getNewsCategoryJSONLoader("solana")));
+                updateProgress(4, 8);
                 getNewsCategory(defiNews, getNewsCategoryJSONLoader("defi"));
+                updateProgress(5, 8);
                 getNewsCategory(web3News, getNewsCategoryJSONLoader("web3"));
+                updateProgress(6, 8);
                 getNewsCategory(blockchainNews, getNewsCategoryJSONLoader("blockchain"));
+                updateProgress(7, 8);
+                new ArticleItemsLoader<>(limit, 0, hostServices, allNews, mainController).loadItems(articleDataLoader.get().getNewsItemDataList(limit, 0, articleDataLoader.get().loadJSON()));
+                updateProgress(8, 8);
                 return null;
             }
         };
-//        ArticleItemsLoader<NewsCategoryGroupTitledPane> task = new ArticleItemsLoader<>(limit, 0, hostServices, latestNews, mainController);
         Alert alert = createLoadingAlert(task);
-//        articleDataLoader.set(getNewsJSONLoader());
-//        task.loadItems(articleDataLoader.get().getNewsItemDataList(limit, 0, articleDataLoader.get().loadJSON()));
         task.run();
         alert.show();
         task.setOnSucceeded(event -> alert.close());
@@ -93,36 +120,6 @@ public class ArticlesFrame extends GenericFrame {
                 loadMoreArticles();
             }
         });
-//        new Thread(() -> Platform.runLater(() -> {
-//        })).start();
-//        new Thread(() -> Platform.runLater(() -> {
-//        })).start();
-//        new Thread(() -> Platform.runLater(() -> {
-//            newsCategoryJSONLoader.set(getNewsCategoryJSONLoader("solana"));
-//            getNewsCategory(solanaNews, getNewsCategoryJSONLoader("solana"));
-//        })).start();
-//        new Thread(() -> Platform.runLater(() -> {
-//            newsCategoryJSONLoader.set(getNewsCategoryJSONLoader("defi"));
-//            getNewsCategory(defiNews, getNewsCategoryJSONLoader("defi"));
-//        })).start();
-//        new Thread(() -> Platform.runLater(() -> {
-////            newsCategoryJSONLoader.set(getNewsCategoryJSONLoader("web3"));
-//            getNewsCategory(web3News, getNewsCategoryJSONLoader("web3"));
-//        })).start();
-//        new Thread(() -> Platform.runLater(() -> {
-//            newsCategoryJSONLoader.set(getNewsCategoryJSONLoader("blockchain"));
-//            getNewsCategory(blockchainNews, getNewsCategoryJSONLoader("blockchain"));
-//        })).start();
-//        setOnScroll(event -> {
-//            if (getVvalue() > .4) {
-//                loadMoreArticles();
-//            }
-//        });
-////        setOnScrollFinished(event -> {
-//            if (getVvalue() >= .5) {
-//                loadMoreArticles();
-//            }
-//        });
     }
 
     private synchronized void getNewsCategory(NewsCategoryGroupTitledPane ethereumNews, NewsCategoryJSONLoader newsCategoryJSONLoader) {
@@ -199,16 +196,12 @@ public class ArticlesFrame extends GenericFrame {
     private Alert createLoadingAlert(Task<?> task) {
         Alert alert = new Alert(Alert.AlertType.NONE);
 //        alert.initOwner(owner);
-        alert.contentTextProperty().bind(task.messageProperty());
         alert.getDialogPane().getButtonTypes().add(ButtonType.OK);
         alert.getDialogPane().lookupButton(ButtonType.OK)
                 .disableProperty().bind(task.runningProperty());
 
-        alert.getDialogPane().cursorProperty().bind(
-                Bindings.when(task.runningProperty())
-                        .then(Cursor.WAIT)
-                        .otherwise(Cursor.DEFAULT)
-        );
+        alert.getDialogPane().setHeaderText("Loading...");
+        alert.contentTextProperty().bind(task.messageProperty());
         return alert;
 
     }

@@ -202,6 +202,11 @@ public class NewsSearchController{
                     RedditGroupTitledPane redditGroupTitledPane = new RedditGroupTitledPane("Search Results");
                     loadRedditToFrame(redditGroupTitledPane, obj);
                     searchVBox.getChildren().add(redditGroupTitledPane);
+                    searchScrollPane.setOnScroll(event -> {
+                        if (searchScrollPane.getVvalue() > .8){
+                            loadMoreReddit(redditGroupTitledPane);
+                        }
+                    });
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
@@ -247,14 +252,23 @@ public class NewsSearchController{
             nextPage();
             currentChunk.set(0);
         }
+        if (articlesToggleButton.isSelected())
+            Platform.runLater(() -> {
+                SearchJSONLoader<NewsItemData> searchJSONLoader = new SearchJSONLoader<>(getSearchQuery(), searchType, searchField, searchOrder, isExactOrRegex);
+                searchJSONLoader.setPage(page);
+                JSONObject obj = searchJSONLoader.loadJSON();
+                loadNewsToFrame(infiniteNews, obj, chunkSize, currentChunk.get() * chunkSize);
+                currentChunk.set(currentChunk.get() + 1);
+            });
+    }
+
+    private void loadMoreReddit(RedditGroupTitledPane redditGroupTitledPane){
         Platform.runLater(() -> {
-            SearchJSONLoader<NewsItemData> searchJSONLoader = new SearchJSONLoader<>(getSearchQuery(), searchType, searchField, searchOrder, isExactOrRegex);
+            SearchJSONLoader<RedditPostData> searchJSONLoader = new SearchJSONLoader<>(getSearchQuery(), searchType, searchField, searchOrder, isExactOrRegex);
             searchJSONLoader.setPage(page);
             JSONObject obj = searchJSONLoader.loadJSON();
-            loadNewsToFrame(infiniteNews, obj, chunkSize, currentChunk.get() * chunkSize);
-            currentChunk.set(currentChunk.get() + 1);
+            loadRedditToFrame(redditGroupTitledPane, obj);
         });
-
     }
 
     private void loadRedditToFrame(RedditGroupTitledPane redditGroupTitledPane, JSONObject obj){

@@ -2,17 +2,18 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="468.0" prefWidth="255.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="579.0" prefWidth="329.0" stylesheets="@assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" prefWidth="255.0">
+      <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" prefWidth="255.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="web-view-button">
                <graphic>
                   <ImageView fitHeight="16" preserveRatio="true">
                      <Image url="@assets/images/icons8-reload-30.png" />
@@ -20,9 +21,17 @@
                </graphic>
             </Button>
             <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Label" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" text="Button" />
+            <ToggleButton mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: transparent; -fx-font-weight: normal;" styleClass="web-view-button">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@assets/images/bookmark.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </ToggleButton>
          </children>
       </HBox>
-      <WebView fx:id="articleWebView" prefHeight="200.0" prefWidth="200.0" stylesheets="@assets/css/main.css" VBox.vgrow="ALWAYS" />
+      <WebView fx:id="articleWebView" prefHeight="436.0" prefWidth="343.0" stylesheets="@assets/css/main.css" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>
