@@ -99,7 +99,7 @@ public class MarketDataController {
     public void initialize() {
         // Khởi tạo các giá trị mặc định
         LoadingDialog loadingDialog = new LoadingDialog();
-        loadingDialog.showAndWait();
+        loadingDialog.show();
         coinPriceJSONLoader.setLimit(100);
 //        loadMarketData(7, true, symbol);
         Platform.runLater(() -> {
@@ -264,9 +264,7 @@ public class MarketDataController {
             System.out.println(date + ": " + dataMap.get(date));
             series.getData().add(new XYChart.Data<>(TimeFormatter.convertISOToDate(date), Float.parseFloat(dataMap.get(date))));
         }
-        Platform.runLater(() -> {
             coinPriceChart.getData().add(series);
-//                series.getNode().setStyle("-fx-stroke: #000000");
             for (XYChart.Data<String, Number> data : series.getData()) {
                 String formattedYValue = NumberFormatter.formatCurrencyValue(data.getYValue().floatValue(), currency);
                 Tooltip tooltip = new Tooltip(data.getXValue() + "\n" + formattedYValue);
@@ -285,11 +283,7 @@ public class MarketDataController {
                         data.getNode().setStyle("-fx-background-color: transparent");
                     });
                 }
-//                    data.getNode().setStyle("-fx-background-color: transparent");
             }
-        });
-//        }
-
     }
 
     public void setMainController(NewsAggregatorClientController mainController) {

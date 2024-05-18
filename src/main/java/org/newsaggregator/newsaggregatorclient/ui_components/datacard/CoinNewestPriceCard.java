@@ -40,7 +40,7 @@ public class CoinNewestPriceCard extends HorizontalDataCard<CoinPriceData>{
         rank = new Label(coinPriceData.getRank());
         coinSymbol = new Label(coinPriceData.getCoinSymbol());
         String changeState = coinPriceData.getPriceChangeState();
-        coinPriceChange = new Label(coinPriceData.getPriceChange());
+        coinPriceChange = new Label(coinPriceData.getPriceChangePercentage());
         coinPriceChange.getStyleClass().add("price__" + changeState);
         if (changeState.equals("up")) {
             coinPriceChange.setText("▲ " + coinPriceChange.getText());

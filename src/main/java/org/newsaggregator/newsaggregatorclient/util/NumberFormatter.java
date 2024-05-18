@@ -14,7 +14,7 @@ public class NumberFormatter {
     
     public static String formatPercentageValue(double number) {
         number = number * 100;
-        if (number < .01){
+        if (Math.abs(number) < .01){
             DecimalFormat formatter = new DecimalFormat("0.########");
             return formatter.format(number) + "%";
         } else {

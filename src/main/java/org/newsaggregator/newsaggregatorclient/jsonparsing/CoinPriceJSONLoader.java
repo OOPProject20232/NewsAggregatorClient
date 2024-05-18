@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static java.util.Collections.emptyNavigableMap;
 import static java.util.Collections.max;
 
 public class CoinPriceJSONLoader implements IJSONLoader{
@@ -137,7 +138,13 @@ public class CoinPriceJSONLoader implements IJSONLoader{
                 keys.sort(Comparator.reverseOrder());
                 for (int j = 0; j < period; j++){
                     String key = keys.get(j);
-                    String price = prices.getString(key);
+                    String price;
+                    try {
+                        price = prices.getString(key);
+                    }
+                    catch (JSONException e){
+                        price = "0";
+                    }
                     coinPrices.put(key, price);
                 }
             }
@@ -160,13 +167,16 @@ public class CoinPriceJSONLoader implements IJSONLoader{
                 keys.sort(Comparator.reverseOrder());
                 String today = keys.get(0);
                 String past = keys.get(period);
+                System.out.println("\u001B[34mCoin name: " + coinName + "\u001B[0m");
+                System.out.println("Date: %s - %s%n".formatted(today, past));
+                System.out.println(prices.toMap());
                 float todayPrice = Float.parseFloat(prices.getString(today));
                 float yesterdayPrice;
                 try{
                    yesterdayPrice = Float.parseFloat(prices.getString(past));
                 }
                 catch (JSONException e){
-                    yesterdayPrice = Float.parseFloat(prices.getJSONObject(past).toString());
+                    yesterdayPrice = 0;
                 }
 
                 return todayPrice - yesterdayPrice;
