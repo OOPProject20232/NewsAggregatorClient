@@ -19,7 +19,24 @@ public class test {
         item1.setPublisher("publisher1");
         item1.setPublisherLogoURL("publisherLogoUrl1");
         item1.setCategory(List.of("category1", "category2"));
-        db.insert(item1);
-        db.select();
+
+        NewsItemData item2 = new NewsItemData();
+        item2.setGuid("guid2");
+        item2.setTitle("title1");
+        item2.setAuthor("author1");
+        item2.setDescription("description1");
+        item2.setArticleDetailedContent("content1");
+        item2.setUrl("url1");
+        item2.setUrlToImage("urlToImage1");
+        item2.setPublishedAt("publishedAt1");
+        item2.setPublisher("publisher1");
+        item2.setPublisherLogoURL("publisherLogoUrl1");
+        item2.setCategory(List.of("category3", "category4"));
+
+//        db.insert(item1);
+//        db.insert(item2);
+        db.delete("guid1");
+        List<NewsItemData> data = db.select();
+        data.forEach(NewsItemData::printNewsData);
     }
 }
