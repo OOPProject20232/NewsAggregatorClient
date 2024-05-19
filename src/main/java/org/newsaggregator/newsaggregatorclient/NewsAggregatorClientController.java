@@ -72,6 +72,8 @@ public class NewsAggregatorClientController {
     @FXML
     private TabPane mainTabPane;
 
+    private ImageView loadingIcon;
+
     private final HostServices hostServices;
 
     private int currentArticlePage = 1;
@@ -266,5 +268,18 @@ public class NewsAggregatorClientController {
         SelectionModel<Tab> mainTabs = mainTabPane.getSelectionModel();
         mainTabs.select(searchTab);
         newsSearchController.insertSearchText(text, "articles", "Newest", "categories", "e");
+    }
+
+    public void loadingIconOn(){
+        loadingIcon = new ImageView();
+        loadingIcon.setFitHeight(24);
+        loadingIcon.setFitWidth(24);
+        Image loadingImage = new Image(NewsAggregatorClientController.class.getResourceAsStream("assets/images/Circles-menu-3.gif"));
+        loadingIcon.setImage(loadingImage);
+        newsDivider.getChildren().add(loadingIcon);
+    }
+
+    public void loadingIconOff(){
+        newsDivider.getChildren().remove(loadingIcon);
     }
 }

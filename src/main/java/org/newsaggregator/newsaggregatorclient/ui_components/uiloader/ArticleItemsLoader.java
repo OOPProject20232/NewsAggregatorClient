@@ -3,8 +3,10 @@ package org.newsaggregator.newsaggregatorclient.ui_components.uiloader;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.HorizontalDataCard;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
@@ -99,13 +101,14 @@ public class ArticleItemsLoader<T>
                     newsItem.setPublisherLogo();
                     newsItem.getArticleHyperlinkTitleObject().setOnAction(
                             event -> {
-                                ReadingArticle popup = null;
+                                FXMLLoader loader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("web_view_with_controllers.fxml"));
                                 try {
-                                    popup = new ReadingArticle(itemData.getUrl());
+                                    ReadingArticle popup = new ReadingArticle(itemData.getUrl());
+                                    popup.initialize();
+                                    popup.showAndWait();
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
-                                popup.show();
                             }
                     );
                     newsItem.getReadMore().setOnAction(

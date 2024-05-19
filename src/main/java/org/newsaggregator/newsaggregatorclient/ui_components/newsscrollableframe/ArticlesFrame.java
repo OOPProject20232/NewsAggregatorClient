@@ -112,8 +112,8 @@ public class ArticlesFrame extends GenericFrame {
             }
         };
         Alert alert = createLoadingAlert(task);
-        task.run();
         alert.show();
+        task.run();
         task.setOnSucceeded(event -> alert.close());
         setOnScroll(event -> {
             if (getVvalue() > .8) {
@@ -158,6 +158,7 @@ public class ArticlesFrame extends GenericFrame {
     }
 
     private synchronized void loadMoreArticles(){
+        mainController.loadingIconOn();
         if (currentChunk.get() * chunkSize >= limit) {
             nextPage();
             currentChunk.set(0);
@@ -187,6 +188,7 @@ public class ArticlesFrame extends GenericFrame {
             e.printStackTrace();
             previousPage();
         }
+        mainController.loadingIconOff();
     }
 
     public void setSearchText(String text){
