@@ -306,11 +306,6 @@
     -fx-text-fill: -fx-text-norm;
 }
 
-/* Dialogs */
-.dialog-pane .label {
-    -fx-text-fill: white;
-}
-
 /* Coin price*/
 
 .price{
@@ -353,8 +348,8 @@
 
 .util-button{
     -fx-background-color: transparent;
-    -fx-border-width: 0;
-    -fx-border-color: transparent;
+    -fx-border-width: 0px;
+    -fx-border-color: black;
     -fx-text-fill: -fx-primary-color;
     -fx-font-size: 1em;
     -fx-font-weight: bold;
@@ -362,6 +357,8 @@
     -fx-background-radius: 30px;
     -fx-cursor: hand;
     -fx-padding: .5em 1em;
+    -fx-max-height: 32px;
+    -fx-min-height: 32px;
 }
 
 .util-button:selected{
