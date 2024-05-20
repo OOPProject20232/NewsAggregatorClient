@@ -26,7 +26,7 @@ public class NewsCategoryJSONLoader implements IJSONLoader{
     public synchronized JSONObject loadJSON() {
         try {
             cacheFileName = "news_" + category + ".json";
-            String urlString = DOMAIN + "v1/categories/articles/search?text=" + category + "&opt=e&page=2&limit=5";
+            String urlString = DOMAIN + "v1/articles/categories/" + category + "?page=1&limit=5";
             jsonObject = DataReaderFromIS.fetchJSONWithCache(urlString, cacheFileName);
         } catch (Exception e) {
             e.printStackTrace();

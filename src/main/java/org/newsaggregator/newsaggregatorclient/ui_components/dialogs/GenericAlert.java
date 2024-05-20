@@ -1,6 +1,7 @@
 package org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
 
 import javafx.scene.control.Alert;
+import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 
 public class GenericAlert extends Alert {
     public GenericAlert(AlertType alertType, String title, String headerText, String contentText) {
@@ -8,9 +9,9 @@ public class GenericAlert extends Alert {
         this.setTitle(title);
         this.setHeaderText(headerText);
         this.setContentText(contentText);
-//        getDialogPane().getStylesheets().add(
-//                "src/main/resources/org/newsaggregator/newsaggregatorclient/assets/css/dialogs.css"
-//        );
+        getDialogPane().getStylesheets().add(
+                NewsAggregatorClientApplication.class.getResource("assets/css/main.css").toExternalForm()
+        );
         getDialogPane().getStyleClass().addAll("dialog", "generic-container");
     }
 }

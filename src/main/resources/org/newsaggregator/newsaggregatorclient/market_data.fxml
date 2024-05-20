@@ -78,7 +78,6 @@
                                   <TableColumn fx:id="coinPriceColumn" editable="false" prefWidth="75.0" sortable="false" text="Price" />
                                     <TableColumn fx:id="priceChangeColumn" editable="false" prefWidth="75.0" sortable="false" text="Change" />
                                     <TableColumn fx:id="marketCapColumn" editable="false" prefWidth="75.0" sortable="false" text="Market Cap" />
-                                    <TableColumn fx:id="detailsColumn" prefWidth="75.0" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

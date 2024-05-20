@@ -27,17 +27,15 @@ public class CoinPriceJSONLoader implements IJSONLoader{
         if (limit <= 0) {
             throw new IllegalArgumentException("Limit must be greater than 0");
         }
-        String url = "https://newsaggregator-mern.onrender.com/v1/coins?limit=" + limit;
+        String url = DOMAIN + "v1/coins?limit=" + limit;
         String cacheFileName = "coinPrices.json";
         try {
             coinPrices = DataReaderFromIS.fetchJSON(url);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-//        catch (NoRouteToHostException e) {
-//            NoInternetDialog noInternetDialog = new NoInternetDialog();
-//            noInternetDialog.show();
-//        }
         return new JSONObject();
     }
 

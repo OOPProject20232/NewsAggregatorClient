@@ -11,7 +11,7 @@ public class ConnectionChecker {
 
     public static int checkInternetConnection() throws IOException{
         try {
-            URL testAddress = URI.create("https://newsaggregator-mern.onrender.com/v1/articles?page=1&limit=1").toURL();
+            URL testAddress = URI.create("https://newsaggregator-mern.onrender.com/api/v1/articles?page=1&limit=1").toURL();
             HttpURLConnection connection = (HttpURLConnection) testAddress.openConnection();
             connection.connect();
             return connection.getResponseCode();

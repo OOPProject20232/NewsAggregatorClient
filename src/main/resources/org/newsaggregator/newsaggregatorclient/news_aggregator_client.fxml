@@ -140,12 +140,15 @@
                    </graphic>
                     <fx:include source="market_data.fxml" />
                 </Tab>
-                  <Tab>
+                  <Tab fx:id="bookmarkTab">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                     </content>
                      <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/images/bookmark-large.png" />
+                           </image></ImageView>
                      </graphic>
                   </Tab>
               </tabs>

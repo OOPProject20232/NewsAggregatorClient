@@ -18,7 +18,7 @@ import javafx.scene.shape.Rectangle;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-public class NoInternetDialog extends Dialog<Integer> {
+public class NoInternetDialog extends Dialog<Void> {
     public NoInternetDialog(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("no_internet.fxml"));
@@ -28,6 +28,7 @@ public class NoInternetDialog extends Dialog<Integer> {
             Stage stage = (Stage) getDialogPane().getScene().getWindow();
             stage.initStyle(StageStyle.TRANSPARENT);
             getDialogPane().getScene().setFill(Color.TRANSPARENT);
+            stage.setAlwaysOnTop(true);
 //            DropShadow shadow = new DropShadow();
 //            shadow.setColor(Color.BLACK);
 //            shadow.setRadius(3);

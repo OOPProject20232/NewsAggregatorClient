@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
@@ -51,6 +52,7 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
     protected FlowPane categoryFrame = new FlowPane();
     protected Button copyButton = new Button("");
     protected ToggleButton bookmarkButton = new ToggleButton();
+    protected Button externalLink = new Button();
     private static final String noImageAvailablePath
             = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
     private NewsItemData newsItemData;
@@ -98,14 +100,20 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         copyIcon.setFitHeight(16);
         copyIcon.setFitWidth(16);
         copyButton.setGraphic(copyIcon);
-        copyButton.getStyleClass().add("copy-button");
+        copyButton.getStyleClass().add("util-button");
         utilityFrame.getChildren().add(copyButton);
-        bookmarkButton.getStyleClass().add("bookmark-button");
+        bookmarkButton.getStyleClass().add("util-button");
         ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
         bookmarkIcon.setFitHeight(16);
         bookmarkIcon.setFitWidth(16);
         bookmarkButton.setGraphic(bookmarkIcon);
         utilityFrame.getChildren().add(bookmarkButton);
+        externalLink.getStyleClass().add("util-button");
+        ImageView externalIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/external-link.png");
+        externalIcon.setFitWidth(16);
+        externalIcon.setFitHeight(16);
+        externalLink.setGraphic(externalIcon);
+        utilityFrame.getChildren().add(externalLink);
         newsInfo.getChildren().add(utilityFrame);
     }
 
@@ -165,13 +173,15 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
                 bookmarkTooltip.setText("Saved to Bookmark");
             else bookmarkTooltip.setText("Save to Bookmark");
         });
+        Tooltip externalTooltip = new Tooltip("Open in external browser");
+        externalTooltip.setShowDelay(Duration.millis(10));
+        externalLink.setTooltip(externalTooltip);
     }
 
     @Override
     public void setCardStyle() {
-        this.getStylesheets().add("file:org/newsaggregator/newsaggregatorclient/ui_components/datacard/datacard.css");
-        this.getStyleClass().add("datacard");
-        this.getStyleClass().add("horizontal");
+//        this.getStyleClass().add("datacard");
+//        this.getStyleClass().add("horizontal");
     }
 
     @Override
@@ -356,6 +366,11 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
 
     public Hyperlink getThumbnailHyperlink() {
         return thumbnailHyperlink;
+    }
+
+
+    public Button getExternalLink() {
+        return externalLink;
     }
 
 }

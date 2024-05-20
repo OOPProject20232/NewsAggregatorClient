@@ -20,7 +20,7 @@
 
 .root{
     -fx-font-size: 14px;
-    -fx-text-fill: black;
+    -fx-text-fill: -fx-text-norm
 }
 
 /* Main container */

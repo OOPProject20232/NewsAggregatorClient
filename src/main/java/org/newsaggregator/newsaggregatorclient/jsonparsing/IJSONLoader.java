@@ -7,9 +7,13 @@ public interface IJSONLoader {
     /**
      * Interface này chứa các hàm để load dữ liệu từ file JSON
      */
-    String DOMAIN = "https://newsaggregator-mern.onrender.com/";
+    String DOMAIN = "https://newsaggregator-mern.onrender.com/api/";
     /**
      * Hàm loadJSON dùng để load dữ liệu từ file JSON
      */
     JSONObject loadJSON();
+
+    default int getTotalPages(){
+        return loadJSON().getInt("totalPages");
+    }
 }

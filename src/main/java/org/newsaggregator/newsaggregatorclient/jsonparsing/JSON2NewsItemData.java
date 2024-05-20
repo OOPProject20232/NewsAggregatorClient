@@ -18,6 +18,7 @@ public class JSON2NewsItemData {
         for (Object category : categoryListObj) {
             categoryList.add(category.toString());
         }
+        newsItemData.setGuid(getSimpleField(newsItemObject, "guid"));
         newsItemData.setCategory(categoryList);
         newsItemData.setTitle(getSimpleField(newsItemObject,"article_title"));
         newsItemData.setAuthor(getSimpleField(newsItemObject, "author"));

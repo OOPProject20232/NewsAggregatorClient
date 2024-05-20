@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
@@ -22,6 +23,8 @@ public class SplashScreen extends Alert {
             stage.setHeight(450);
             stage.setIconified(false);
             stage.initStyle(StageStyle.UNDECORATED);
+            getDialogPane().getScene().setFill(Color.TRANSPARENT);
+            getDialogPane().setStyle("-fx-background-radius: 30px; -fx-border-width: 0;");
             stage.setAlwaysOnTop(true);
         } catch (Exception e) {
             e.printStackTrace();

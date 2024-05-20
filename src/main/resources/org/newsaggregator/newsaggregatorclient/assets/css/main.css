@@ -306,11 +306,6 @@
     -fx-text-fill: -fx-text-norm;
 }
 
-/* Dialogs */
-.dialog-pane .label {
-    -fx-text-fill: white;
-}
-
 /* Coin price*/
 
 .price{
@@ -351,10 +346,10 @@
     -fx-padding: .5em 1em;
 }
 
-.copy-button, .bookmark-button{
+.util-button{
     -fx-background-color: transparent;
-    -fx-border-width: 0;
-    -fx-border-color: transparent;
+    -fx-border-width: 0px;
+    -fx-border-color: black;
     -fx-text-fill: -fx-primary-color;
     -fx-font-size: 1em;
     -fx-font-weight: bold;
@@ -362,12 +357,14 @@
     -fx-background-radius: 30px;
     -fx-cursor: hand;
     -fx-padding: .5em 1em;
+    -fx-max-height: 32px;
+    -fx-min-height: 32px;
 }
 
-.bookmark-button:selected{
+.util-button:selected{
     -fx-background-color: transparent;
 }
 
-.copy-button:hover{
+.util-button:hover{
     -fx-background-color: -fx-primary-fixed;
 }

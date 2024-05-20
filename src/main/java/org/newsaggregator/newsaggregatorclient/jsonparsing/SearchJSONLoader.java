@@ -32,18 +32,18 @@ public class SearchJSONLoader<T extends GenericData> implements IJSONLoader {
 
     @Override
     public JSONObject loadJSON() {
-        String url = DOMAIN + "v1/articles/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
+        String url = DOMAIN + "v1/articles/search/%s?sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
         switch (searchType){
             case "articles":
                 if (searchField.equals("all"))
-                    url = DOMAIN + "v1/articles/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
+                    url = DOMAIN + "v1/articles/search/%s?sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 else if (searchField.equals("categories")) {
                     url = DOMAIN + "v1/categories/articles/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 }
                 break;
             case "posts":
                 if (searchField.equals("all"))
-                    url = DOMAIN + "v1/posts/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
+                    url = DOMAIN + "v1/reddit/search/%s?sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 else if (searchField.equals("categories")) {
                     url = DOMAIN + "v1/categories/posts/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 }

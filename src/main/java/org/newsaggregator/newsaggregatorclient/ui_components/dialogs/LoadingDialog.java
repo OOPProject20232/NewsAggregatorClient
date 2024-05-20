@@ -19,13 +19,8 @@ public class LoadingDialog extends GenericAlert {
     public LoadingDialog() {
         super(AlertType.NONE, "Đang tải dữ liệu", "Vui lòng chờ trong giây lát", "Đang tải dữ liệu từ máy chủ...");
         this.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-//        this.getDialogPane().getStyleClass().clear();
-//        this.getDialogPane().getStyleClass().add("undecorated-dialog");
-//        this.initModality(Modality.NONE);
-//        this.setTitle("Đang tải dữ liệu");
-//        this.setHeaderText("Vui lòng chờ trong giây lát");
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
-        stage.setIconified(false);
+        stage.initStyle(StageStyle.UTILITY);
         try{
             stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResource("refresh.png").toExternalForm())));
 //            getDialogPane().getStylesheets().add(NewsAggregatorClientController.class.getResourceAsStream("/assets/css/dialogs.css").t);

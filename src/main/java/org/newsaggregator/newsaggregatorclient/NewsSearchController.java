@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import org.json.JSONObject;
+import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.datamodel.RedditPostData;
 import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
@@ -123,8 +124,12 @@ public class NewsSearchController{
         exactSearchToggleButton.setOnAction(event -> {
             if (exactSearchToggleButton.isSelected()){
                 isExactOrRegex = "e";
+                exactSearchToggleButton.setText("✓ Exact search");
             }
-            else isExactOrRegex = "r";
+            else{
+                isExactOrRegex = "r";
+                exactSearchToggleButton.setText("Exact search");
+            }
             System.out.println(isExactOrRegex);
         });
     }
@@ -191,7 +196,8 @@ public class NewsSearchController{
                     infiniteNews.getLoadMoreButton().setOnAction(event -> loadMoreNews(infiniteNews));
                     searchScrollPane.setOnScroll(event -> {
                         if (searchScrollPane.getVvalue() > .8) {
-                            loadMoreNews(infiniteNews);
+//                            loadMoreNews(infiniteNews);
+                            loadMore(infiniteNews);
                         }
                     });
 
@@ -204,7 +210,8 @@ public class NewsSearchController{
                     searchVBox.getChildren().add(redditGroupTitledPane);
                     searchScrollPane.setOnScroll(event -> {
                         if (searchScrollPane.getVvalue() > .8){
-                            loadMoreReddit(redditGroupTitledPane);
+//                            loadMoreReddit(redditGroupTitledPane);
+                            loadMore(redditGroupTitledPane);
                         }
                     });
                 } catch (MalformedURLException e) {
@@ -244,6 +251,7 @@ public class NewsSearchController{
         page++;
     }
 
+
     private void loadMoreNews(InfiniteNews infiniteNews){
         // Hàm xử lý sự kiện load thêm tin tức
         System.out.println("Loading more news");
@@ -264,7 +272,7 @@ public class NewsSearchController{
 
     private void loadMoreReddit(RedditGroupTitledPane redditGroupTitledPane){
         Platform.runLater(() -> {
-            SearchJSONLoader<RedditPostData> searchJSONLoader = new SearchJSONLoader<>(getSearchQuery(), searchType, searchField, searchOrder, isExactOrRegex);
+            SearchJSONLoader<RedditPostData> searchJSONLoader = new SearchJSONLoader<>(getSearchQuery(), "posts", searchField, searchOrder, isExactOrRegex);
             searchJSONLoader.setPage(page);
             JSONObject obj = searchJSONLoader.loadJSON();
             loadRedditToFrame(redditGroupTitledPane, obj);
@@ -276,6 +284,15 @@ public class NewsSearchController{
         List<RedditPostData> list = redditPostJSONLoader.getRedditPostsList(10, 0, obj);
         RedditItemsLoader<RedditGroupTitledPane> redditItemsLoader = new RedditItemsLoader<>(10, 0, hostServices, redditGroupTitledPane);
         redditItemsLoader.loadItems(list);
+    }
+
+    private<T extends CategoryTitledPane> void loadMore(T frame){
+        if (frame instanceof InfiniteNews){
+            loadMoreNews((InfiniteNews) frame);
+        } else if (frame instanceof RedditGroupTitledPane) {
+            loadMoreReddit((RedditGroupTitledPane) frame);
+
+        }
     }
 
     private void autocomplete() {

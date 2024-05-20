@@ -10,7 +10,16 @@ import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Utility class to fetch JSON data from the internet
+ * with or without caching
+ */
 public class DataReaderFromIS {
+    /**
+     * Using HttpURLConnection to fetch JSON data from the internet
+     * @param urlString: The URL of the JSON data
+     *
+     */
     public static JSONObject fetchJSON(String urlString) throws MalformedURLException {
         System.out.println("Sending request to: " + urlString);
         URL url = URI.create(urlString).toURL();
@@ -38,6 +47,10 @@ public class DataReaderFromIS {
         return null;
     }
 
+    /**
+     * Fetch JSON data from the internet and cache it
+     * @param urlString: The URL of the JSON data
+     */
     public static JSONObject fetchJSONWithCache(String urlString, String fileName) throws MalformedURLException, NoRouteToHostException {
         //If folder not exists, create it
         Path folderPath = Path.of("src/main/resources/json/");
