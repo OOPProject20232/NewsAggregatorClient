@@ -243,6 +243,7 @@ public class NewsAggregatorClientController {
                     } catch (NoRouteToHostException e) {
                         NoInternetDialog noInternetDialog = new NoInternetDialog();
                         noInternetDialog.show();
+                        cancel();
                         loadingDialog.close();
                     }
                     showAllNewsCategories();
@@ -259,6 +260,7 @@ public class NewsAggregatorClientController {
         };
         task.setOnRunning(e -> loadingDialog.show());
         task.setOnSucceeded(e -> loadingDialog.hide());
+        task.setOnFailed(e-> loadingDialog.hide());
         task.run();
 
         // New
@@ -270,16 +272,16 @@ public class NewsAggregatorClientController {
         newsSearchController.insertSearchText(text, "articles", "Newest", "categories", "e");
     }
 
-    public void loadingIconOn(){
-        loadingIcon = new ImageView();
-        loadingIcon.setFitHeight(24);
-        loadingIcon.setFitWidth(24);
-        Image loadingImage = new Image(NewsAggregatorClientController.class.getResourceAsStream("assets/images/Circles-menu-3.gif"));
-        loadingIcon.setImage(loadingImage);
-        newsDivider.getChildren().add(loadingIcon);
-    }
-
-    public void loadingIconOff(){
-        newsDivider.getChildren().remove(loadingIcon);
-    }
+//    public void loadingIconOn(){
+//        loadingIcon = new ImageView();
+//        loadingIcon.setFitHeight(24);
+//        loadingIcon.setFitWidth(24);
+//        Image loadingImage = new Image(NewsAggregatorClientController.class.getResourceAsStream("assets/images/Circles-menu-3.gif"));
+//        loadingIcon.setImage(loadingImage);
+//        newsDivider.getChildren().add(loadingIcon);
+//    }
+//
+//    public void loadingIconOff(){
+//        newsDivider.getChildren().remove(loadingIcon);
+//    }
 }

@@ -17,9 +17,12 @@ module org.newsaggregator.newsaggregatorclient {
     requires commons.io;
     requires com.fasterxml.jackson.annotation;
     requires java.sql;
+    requires org.jsoup;
 
     opens org.newsaggregator.newsaggregatorclient to javafx.fxml;
     exports org.newsaggregator.newsaggregatorclient;
     exports org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe;
     opens org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe to javafx.fxml;
+    opens org.newsaggregator.newsaggregatorclient.ui_components.dialogs to javafx.fxml;
+    exports org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
 }

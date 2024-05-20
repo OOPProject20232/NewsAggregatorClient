@@ -17,7 +17,7 @@ public class RedditPostJSONLoader implements IJSONLoader{
         if (pageNumber == 0 || limit == 0) {
             throw new IllegalArgumentException("Page number and limit must be set before loading JSON");
         }
-        String url = DOMAIN + "v1/posts?limit=" + limit + "&page=" + pageNumber;
+        String url = DOMAIN + "v1/reddit?limit=" + limit + "&page=" + pageNumber;
         String cacheFileName = "redditPosts" + pageNumber + ".json";
         try{
             jsonObject = DataReaderFromIS.fetchJSONWithCache(url, cacheFileName);
@@ -70,6 +70,10 @@ public class RedditPostJSONLoader implements IJSONLoader{
         }
         return redditPostDataList;
     }
+
+//    public int getTotalPages(){
+//        return jsonObject.getInt("totalPages");
+//    }
 
     //
 //    public List<RedditPostData> getPostsList(){

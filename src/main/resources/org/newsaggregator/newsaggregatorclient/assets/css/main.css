@@ -351,7 +351,7 @@
     -fx-padding: .5em 1em;
 }
 
-.copy-button, .bookmark-button{
+.util-button{
     -fx-background-color: transparent;
     -fx-border-width: 0;
     -fx-border-color: transparent;
@@ -364,10 +364,10 @@
     -fx-padding: .5em 1em;
 }
 
-.bookmark-button:selected{
+.util-button:selected{
     -fx-background-color: transparent;
 }
 
-.copy-button:hover{
+.util-button:hover{
     -fx-background-color: -fx-primary-fixed;
 }

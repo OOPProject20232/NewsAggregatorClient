@@ -13,7 +13,7 @@
    <children>
       <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" prefWidth="255.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="web-view-button">
+            <Button fx:id="reloadButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="web-view-button">
                <graphic>
                   <ImageView fitHeight="16" preserveRatio="true">
                      <Image url="@assets/images/icons8-reload-30.png" />

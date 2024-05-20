@@ -45,7 +45,6 @@ public class NewsAggregatorClientApplication extends Application {
                     throw new RuntimeException(e);
                 }
                 if (serverCheckResponseCode == 0) {
-                    failed();
                     loadingDialog.close();
                     NoInternetDialog dialog = new NoInternetDialog();
                     stage.initStyle(StageStyle.UNDECORATED);

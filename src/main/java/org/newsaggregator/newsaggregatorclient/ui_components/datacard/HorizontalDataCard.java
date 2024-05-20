@@ -3,6 +3,7 @@ package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 
 /**
@@ -13,9 +14,10 @@ import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
  * @see GenericData
  */
 public abstract class HorizontalDataCard<T extends GenericData> extends HBox {
-    public static String STYLESHEET = "org/newsaggregator/newsaggregatorclient/assets/css/datacard.css";
+    public static String STYLESHEET = "/assets/css/datacard.css";
     public static int SPACING = 12;
     public void setCardStyle(){
+        this.getStylesheets().add(NewsAggregatorClientApplication.class.getResourceAsStream(STYLESHEET).toString());
         this.getStyleClass().add("datacard");
         VBox.setVgrow(this, Priority.ALWAYS);
         setMinHeight(800);

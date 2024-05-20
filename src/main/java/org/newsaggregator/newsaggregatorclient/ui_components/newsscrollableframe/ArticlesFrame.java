@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.jetbrains.annotations.NotNull;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
@@ -33,6 +34,7 @@ public class ArticlesFrame extends GenericFrame {
     private NewsAggregatorClientController mainController;
     private final int limit = 30;
     private final int chunkSize = 10;
+    private int totalPages;
     private AtomicReference<Integer> currentChunk = new AtomicReference<>(0);
 
 //    private final GridPane newsContainer = new GridPane();
@@ -107,6 +109,7 @@ public class ArticlesFrame extends GenericFrame {
                 getNewsCategory(blockchainNews, getNewsCategoryJSONLoader("blockchain"));
                 updateProgress(7, 8);
                 new ArticleItemsLoader<>(limit, 0, hostServices, allNews, mainController).loadItems(articleDataLoader.get().getNewsItemDataList(limit, 0, articleDataLoader.get().loadJSON()));
+                totalPages = articleDataLoader.get().getTotalPages();
                 updateProgress(8, 8);
                 return null;
             }
@@ -158,10 +161,14 @@ public class ArticlesFrame extends GenericFrame {
     }
 
     private synchronized void loadMoreArticles(){
-        mainController.loadingIconOn();
+//        mainController.loadingIconOn();
         if (currentChunk.get() * chunkSize >= limit) {
             nextPage();
             currentChunk.set(0);
+            if (currentPage > totalPages) {
+                previousPage();
+                return;
+            }
         }
         System.out.println("Current article page: " + currentPage);
         System.out.println("Current chunk: " + currentChunk);
@@ -188,7 +195,7 @@ public class ArticlesFrame extends GenericFrame {
             e.printStackTrace();
             previousPage();
         }
-        mainController.loadingIconOff();
+//        mainController.loadingIconOff();
     }
 
     public void setSearchText(String text){
@@ -198,6 +205,8 @@ public class ArticlesFrame extends GenericFrame {
     private Alert createLoadingAlert(Task<?> task) {
         Alert alert = new Alert(Alert.AlertType.NONE);
 //        alert.initOwner(owner);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.initStyle(StageStyle.UTILITY);
         alert.getDialogPane().getButtonTypes().add(ButtonType.OK);
         alert.getDialogPane().lookupButton(ButtonType.OK)
                 .disableProperty().bind(task.runningProperty());
