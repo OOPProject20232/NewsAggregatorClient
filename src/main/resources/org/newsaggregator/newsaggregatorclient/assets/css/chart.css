@@ -10,7 +10,7 @@
 }
 
 .chart-container{
-    -fx-background-color: -fx-generic-background-color;
+    -fx-background-color: -fx-surface-container-low;
     -fx-border-radius: 24px;
     -fx-border-style: none;
     -fx-width: 100%;

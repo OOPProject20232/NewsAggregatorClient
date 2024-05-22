@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="579.0" prefWidth="329.0" stylesheets="@assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="697.0" prefWidth="833.0" stylesheets="@assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" prefWidth="255.0">
          <children>
@@ -20,7 +20,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Label" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+            <Label fx:id="addressBar" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
             <ToggleButton mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: transparent; -fx-font-weight: normal;" styleClass="web-view-button">
                <graphic>
                   <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -30,8 +30,26 @@
                   </ImageView>
                </graphic>
             </ToggleButton>
+            <Button fx:id="copyLinkButton" mnemonicParsing="false" styleClass="util-button">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@assets/images/link.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="externalButton" mnemonicParsing="false" styleClass="util-button">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@assets/images/external-link.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
       </HBox>
-      <WebView fx:id="articleWebView" prefHeight="436.0" prefWidth="343.0" stylesheets="@assets/css/main.css" VBox.vgrow="ALWAYS" />
+      <WebView fx:id="articleWebView" prefHeight="547.0" prefWidth="624.0" stylesheets="@assets/css/main.css" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>

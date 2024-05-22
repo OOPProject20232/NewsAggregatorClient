@@ -1,24 +1,19 @@
 package org.newsaggregator.newsaggregatorclient;
 
-import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.application.HostServices;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
-import org.newsaggregator.newsaggregatorclient.checkers.ConnectionChecker;
+import org.newsaggregator.newsaggregatorclient.util.ConnectionChecker;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.Error500Dialog;
-import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.SplashScreen;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.concurrent.FutureTask;
 
 public class NewsAggregatorClientApplication extends Application {
     @Override
@@ -35,8 +30,7 @@ public class NewsAggregatorClientApplication extends Application {
                 System.out.println("Set");
                 int serverCheckResponseCode = 0;
                 Scene scene;
-                System.out.println("Hi"
-                );
+                System.out.println("Hi");
                 try {
                     scene = new Scene(fxmlLoader.load());
                     serverCheckResponseCode = ConnectionChecker.checkInternetConnection();
@@ -68,7 +62,7 @@ public class NewsAggregatorClientApplication extends Application {
                 return null;
             }
         };
-            loadingDialog.show();
+        loadingDialog.show();
         task.run();
         task.setOnFailed((e)->loadingDialog.close());
     }

@@ -17,11 +17,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="1074.0" stylesheets="@assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="1074.0" style="-fx-background-radius: 0;" stylesheets="@assets/css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutX="134.0" layoutY="127.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" styleClass="background-container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" maxHeight="48.0" minHeight="48.0" prefHeight="48.0" prefWidth="1074.0" style="-fx-background-color: #DDE3EA;" VBox.vgrow="NEVER" />
             <TabPane fx:id="mainTabPane" accessibleRole="PAGE_ITEM" focusTraversable="false" prefHeight="761.0" prefWidth="1128.0" side="LEFT" styleClass="background-container" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
                 <Tab fx:id="newsTab" closable="false" styleClass="generic-container" text="">
@@ -33,9 +32,9 @@
                         </ImageView>
                      </graphic>
                      <content>
-                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="generic-transparent-container">
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="generic-container">
                            <children>
-                              <Button fx:id="reloadNews" alignment="CENTER" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-background-radius: 24;" text="Reload">
+                              <Button fx:id="reloadNews" defaultButton="true" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-background-radius: 24;" text="Reload" VBox.vgrow="NEVER">
                                  <graphic>
                                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -49,27 +48,42 @@
                                  <cursor>
                                     <Cursor fx:constant="OPEN_HAND" />
                                  </cursor>
+                                 <VBox.margin>
+                                    <Insets left="48.0" top="12.0" />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets left="-1.0" right="-1.0" />
+                                 </padding>
                               </Button>
                               <HBox fx:id="newsDivider" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="566.0" prefWidth="905.0" style="-fx-background-radius: 20px 0;" styleClass="generic-transparent-container" HBox.hgrow="ALWAYS">
+                                    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="566.0" prefWidth="905.0" styleClass="generic-transparent-container" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent;" styleClass="page-title" text="CryptoAggregator" textAlignment="CENTER" wrapText="true">
                                              <font>
                                                 <Font name="System Bold" size="31.0" />
                                              </font>
-                                             <padding>
-                                                <Insets left="12.0" />
-                                             </padding>
+                                             <VBox.margin>
+                                                <Insets left="48.0" />
+                                             </VBox.margin>
                                           </Label>
                                           <StackPane alignment="TOP_CENTER" prefHeight="62.0" prefWidth="699.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <TabPane fx:id="newsTypeTabPane" prefHeight="200.0" prefWidth="200.0" stylesheets="@assets/css/new-tab-pane.css" tabClosingPolicy="UNAVAILABLE">
                                                   <tabs>
                                                     <Tab text="News Article">
-                                                      <content>
-                                                        <AnchorPane fx:id="newsArticlesPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                                      </content>
+                                                         <content>
+                                                            <HBox prefHeight="100.0" prefWidth="200.0">
+                                                               <children>
+                                                              <AnchorPane fx:id="newsArticlesPane" minHeight="0.0" minWidth="0.0" prefHeight="416.0" prefWidth="413.0" HBox.hgrow="ALWAYS" />
+                                                                  <VBox fx:id="additionalInfoContainer" alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="566.0" prefWidth="464.0" style="-fx-padding: 0 5px;" styleClass="generic-container">
+                                                                     <padding>
+                                                                        <Insets top="60.0" />
+                                                                     </padding>
+                                                                  </VBox>
+                                                               </children>
+                                                            </HBox>
+                                                         </content>
                                                     </Tab>
                                                     <Tab text="Reddit">
                                                       <content>
@@ -103,8 +117,11 @@
                                                       </ToggleButton>
                                                    </children>
                                                    <padding>
-                                                      <Insets left="10.0" right="10.0" />
+                                                      <Insets right="10.0" />
                                                    </padding>
+                                                   <StackPane.margin>
+                                                      <Insets left="48.0" />
+                                                   </StackPane.margin>
                                                 </FlowPane>
                                              </children>
                                           </StackPane>
@@ -113,7 +130,6 @@
                                           <Insets bottom="12.0" />
                                        </padding>
                                     </VBox>
-                                    <VBox fx:id="additionalInfoContainer" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="566.0" prefWidth="464.0" style="-fx-padding: 0 5px;" styleClass="generic-container" />
                                  </children>
                               </HBox>
                            </children>
@@ -140,18 +156,19 @@
                    </graphic>
                     <fx:include source="market_data.fxml" />
                 </Tab>
-                  <Tab fx:id="bookmarkTab">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
+                  <Tab fx:id="bookmarkTab" closable="false">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@assets/images/bookmark-large.png" />
                            </image></ImageView>
                      </graphic>
+                     <fx:include source="bookmark.fxml" />
                   </Tab>
               </tabs>
+               <VBox.margin>
+                  <Insets bottom="36.0" right="36.0" top="36.0" />
+               </VBox.margin>
             </TabPane>
          </children>
       </VBox>

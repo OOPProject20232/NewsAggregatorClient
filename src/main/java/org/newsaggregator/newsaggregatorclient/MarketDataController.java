@@ -145,7 +145,7 @@ public class MarketDataController {
         yAxis.setLabel("Price");
         coinPriceChart = new LineChartWithCrosshair<>(xAxis, yAxis, new CustomCursor(new Line(), new Line(), true));
         coinPriceChart.setCreateSymbols(true);
-        coinPriceChart.setAnimated(false);
+        coinPriceChart.setAnimated(true);
         VBox.setVgrow(coinPriceChart, javafx.scene.layout.Priority.ALWAYS);
         coinPriceFrame.getChildren().clear();
         coinPriceFrame.getChildren().add(coinPriceChart);

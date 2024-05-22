@@ -15,7 +15,7 @@ import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
-import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CoinNewestPriceGroupTitledPane;
+import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CoinNewestPriceTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe.ArticlesFrame;
@@ -58,6 +58,9 @@ public class NewsAggregatorClientController {
     private Tab marketDataTab;
 
     @FXML
+    private Tab bookmarkTab;
+
+    @FXML
     private ToggleButton articleTabButton;
 
     @FXML
@@ -78,7 +81,7 @@ public class NewsAggregatorClientController {
 
     private int currentArticlePage = 1;
     private int currentRedditPage = 1;
-    private final static int coinLimit = 20;
+    private final static int coinLimit = 10;
 
     private final String JSON_FOLDER_PATH = "src/main/resources/json/";
     private CoinPriceJSONLoader coinPriceJSONLoader;
@@ -172,6 +175,19 @@ public class NewsAggregatorClientController {
         marketDataTab.setTooltip(marketTooltip);
         newsArticlesPane.getChildren().add(articleScrollPane);
         redditAnchorPane.getChildren().add(redditFrame);
+        bookmarkTab.setOnSelectionChanged(event -> {
+            if (bookmarkTab.isSelected()) {
+                BookmarkController bookmarkController = new BookmarkController(hostServices, this);
+                FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("bookmark.fxml"));
+                fxmlLoader.setController(bookmarkController);
+                try {
+                    bookmarkTab.setContent(fxmlLoader.load());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                bookmarkController.initialize();
+            }
+        });
     }
 
     protected synchronized void showAllNewsCategories() {
@@ -192,31 +208,29 @@ public class NewsAggregatorClientController {
 //            loadingDialog.close();
 
         });
-        CoinNewestPriceGroupTitledPane coinNewestPriceGroupFrame = new CoinNewestPriceGroupTitledPane();
+        CoinNewestPriceTitledPane coinNewestPriceGroupFrame = new CoinNewestPriceTitledPane(hostServices);
         coinNewestPriceGroupFrame.getStylesheets().add(NewsAggregatorClientController.class.getResource("assets/css/main.css").toExternalForm());
 
-        coinPriceJSONLoader = getCoinPriceJSONLoader();
-
-        if (coinPriceJSONLoader.getJSONString().isEmpty()) {
-            System.out.println("Data is empty");
-        }
-        else {
-            additionalInfoContainer.getChildren().clear();
+        Platform.runLater(() -> {
+            coinPriceJSONLoader = getCoinPriceJSONLoader();
+            if (coinPriceJSONLoader.getJSONString().isEmpty()) {
+                System.out.println("Data is empty");
+            }
+            else {
+                additionalInfoContainer.getChildren().clear();
 //            coinNewestPriceGroupFrame.addAllCoins(coinPriceJSONLoader);
-            additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
-            List<CoinPriceData> coinData = coinPriceJSONLoader.getNewestCoinPrices();
-            new Thread(() -> Platform.runLater(() -> {
+                additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
+                List<CoinPriceData> coinData = coinPriceJSONLoader.getNewestCoinPrices();
                 System.out.println("\u001B[35m" + "Loading coin items" + "\u001B[0m");
                 CoinNewestPriceItemsLoader coinNewestPriceItemsLoader = new CoinNewestPriceItemsLoader(coinNewestPriceGroupFrame, hostServices);
                 coinNewestPriceItemsLoader.loadItems(coinData);
-//                additionalInfoContainer.getChildren().add(coins);
                 System.out.println(coinNewestPriceItemsLoader.getItems());
-            })).start();
-        }
+            }
+        });
 
     }
 
-    private synchronized CoinPriceJSONLoader getCoinPriceJSONLoader() {
+    private static synchronized CoinPriceJSONLoader getCoinPriceJSONLoader() {
         CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
         coinPriceJSONLoader.setLimit(coinLimit);
         coinPriceJSONLoader.loadJSON();
@@ -271,17 +285,4 @@ public class NewsAggregatorClientController {
         mainTabs.select(searchTab);
         newsSearchController.insertSearchText(text, "articles", "Newest", "categories", "e");
     }
-
-//    public void loadingIconOn(){
-//        loadingIcon = new ImageView();
-//        loadingIcon.setFitHeight(24);
-//        loadingIcon.setFitWidth(24);
-//        Image loadingImage = new Image(NewsAggregatorClientController.class.getResourceAsStream("assets/images/Circles-menu-3.gif"));
-//        loadingIcon.setImage(loadingImage);
-//        newsDivider.getChildren().add(loadingIcon);
-//    }
-//
-//    public void loadingIconOff(){
-//        newsDivider.getChildren().remove(loadingIcon);
-//    }
 }

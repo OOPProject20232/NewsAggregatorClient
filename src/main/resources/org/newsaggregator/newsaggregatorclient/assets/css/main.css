@@ -28,7 +28,6 @@
 /* Main container */
 .background-container{
     -fx-background-color: -fx-surface-variant;
-    -fx-background-radius: 24px;
 }
 .generic-container {
     -fx-background-color: -fx-generic-background-color;
@@ -75,7 +74,7 @@
 }
 
 .corner {
-    -fx-background-color: none;
+    -fx-background-color: -fx-surface-variant;
     -fx-padding: 0;
 }
 

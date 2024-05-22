@@ -1,16 +1,15 @@
 package org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes;
 
-import javafx.geometry.Orientation;
+import javafx.application.HostServices;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import org.controlsfx.control.cell.ImageGridCell;
+import org.controlsfx.control.HyperlinkLabel;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
-import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CoinNewestPriceCard;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ReadingArticle;
 
-public class CoinNewestPriceGroupTitledPane extends CategoryTitledPane<CoinNewestPriceCard, CoinPriceData> {
+import java.io.IOException;
+
+public class CoinNewestPriceTitledPane extends CategoryTitledPane<CoinNewestPriceCard, CoinPriceData> {
     /**
      * TitledPane chứa giá mới nhất của các loại coin, được tạo bới controller khi nhập dữ liệu từ database
      * Bao gồm
@@ -18,12 +17,15 @@ public class CoinNewestPriceGroupTitledPane extends CategoryTitledPane<CoinNewes
      * - Giá coin
      */
     Label updatedTime = new Label();
+    HyperlinkLabel source = new HyperlinkLabel("Data source: [Coinranking API on RapidAPI.com]");
+    HostServices hostServices;
 //    FlowPane itemsGroupLayout = new FlowPane();
-    public CoinNewestPriceGroupTitledPane() {
+    public CoinNewestPriceTitledPane(HostServices hostServices) {
         this.setText("Daily Price");
 //        itemsGroupLayout.setPrefWrapLength(400);
 //        itemsGroupLayout.setOrientation(Orientation.VERTICAL);
 //        itemsGroupLayout.setMinWidth(300);
+        this.hostServices = hostServices;
         itemsGroupLayout.setMaxWidth(400);
         this.setMaxWidth(400);
     }
@@ -31,6 +33,10 @@ public class CoinNewestPriceGroupTitledPane extends CategoryTitledPane<CoinNewes
     public void addUpdatedTime(String time) {
         updatedTime.setText("Updated at: " + time);
         this.itemsGroupLayout.getChildren().add(updatedTime);
+        this.itemsGroupLayout.getChildren().add(source);
+        source.setOnAction(e -> {
+            hostServices.showDocument("https://rapidapi.com/Coinranking/api/coinranking1");
+        });
     }
 
 //    @Override

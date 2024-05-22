@@ -5,8 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
-import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
-import org.newsaggregator.newsaggregatorclient.util.CreateJSONCache;
 
 import java.net.MalformedURLException;
 import java.net.NoRouteToHostException;
@@ -24,13 +22,14 @@ public class CoinPriceJSONLoader implements IJSONLoader{
     JSONObject coinPrices;
     @Override
     public synchronized JSONObject loadJSON() {
+
         if (limit <= 0) {
             throw new IllegalArgumentException("Limit must be greater than 0");
         }
         String url = DOMAIN + "v1/coins?limit=" + limit;
-        String cacheFileName = "coinPrices.json";
+        String cacheFileName = "coinPrices%s.json".formatted(limit);
         try {
-            coinPrices = DataReaderFromIS.fetchJSON(url);
+            coinPrices = DataReaderFromIS.fetchJSONWithCache(url, cacheFileName);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {

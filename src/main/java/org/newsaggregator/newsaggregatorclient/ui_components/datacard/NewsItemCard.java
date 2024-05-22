@@ -15,9 +15,12 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import org.controlsfx.control.HyperlinkLabel;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
+import org.newsaggregator.newsaggregatorclient.ui_components.buttons.BookmarkToggleButton;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
 import javax.imageio.ImageIO;
@@ -51,7 +54,7 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
     protected ImageView publisherImageView = new ImageView();
     protected FlowPane categoryFrame = new FlowPane();
     protected Button copyButton = new Button("");
-    protected ToggleButton bookmarkButton = new ToggleButton();
+    protected BookmarkToggleButton bookmarkButton = new BookmarkToggleButton();
     protected Button externalLink = new Button();
     private static final String noImageAvailablePath
             = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
@@ -59,12 +62,15 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
     private boolean containingSummary = true;
     private boolean containingCategories = true;
     private double parentWidth;
+    private final int IMAGE_HEIGHT = 135;
+    private final int IMAGE_WIDTH = 240;
 
     public NewsItemCard() {
         this.setAlignment(Pos.CENTER_LEFT);
+//        this.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: -fx-outline-color-variant; -fx-padding: 0 0 12px 0");
         articleHyperlinkTitleObject.getStyleClass().add("article-title");
-        thumbnailImageView.setFitHeight(90);
-        thumbnailImageView.setFitWidth(160);
+        thumbnailImageView.setFitHeight(IMAGE_HEIGHT);
+        thumbnailImageView.setFitWidth(IMAGE_WIDTH);
         thumbnailHyperlink.setGraphic(thumbnailImageView);
         this.getChildren().add(thumbnailHyperlink);
         VBox newsInfo = new VBox();
@@ -75,6 +81,7 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         readMore = new Hyperlink("Read more");
         description.setGraphic(readMore);
         description.setContentDisplay(ContentDisplay.RIGHT);
+        description.setTextAlignment(TextAlignment.LEFT);
         description.setAlignment(Pos.BOTTOM_RIGHT);
         description.setMaxHeight(100);
         publishedAt = new Label();
@@ -102,11 +109,11 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         copyButton.setGraphic(copyIcon);
         copyButton.getStyleClass().add("util-button");
         utilityFrame.getChildren().add(copyButton);
-        bookmarkButton.getStyleClass().add("util-button");
-        ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
-        bookmarkIcon.setFitHeight(16);
-        bookmarkIcon.setFitWidth(16);
-        bookmarkButton.setGraphic(bookmarkIcon);
+//        bookmarkButton.getStyleClass().add("util-button");
+//        ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
+//        bookmarkIcon.setFitHeight(16);
+//        bookmarkIcon.setFitWidth(16);
+//        bookmarkButton.setGraphic(bookmarkIcon);
         utilityFrame.getChildren().add(bookmarkButton);
         externalLink.getStyleClass().add("util-button");
         ImageView externalIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/external-link.png");
@@ -148,31 +155,31 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         Tooltip bookmarkTooltip = new Tooltip("Save this to Bookmark");
         bookmarkTooltip.setShowDelay(Duration.millis(10));
         bookmarkButton.setTooltip(bookmarkTooltip);
-        bookmarkButton.setOnMouseClicked(event -> {
-            System.out.println("Bookmark button clicked");
-            if (bookmarkButton.isSelected()) {
-                System.out.println("Bookmark selected");
-                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark-selected.png"));
-                bookmarkIcon.setFitHeight(16);
-                bookmarkIcon.setFitWidth(16);
-                bookmarkButton.setGraphic(bookmarkIcon);
-                bookmarkTooltip.setText("Saved to Bookmark");
-                bookmarkTooltip.show(bookmarkButton, event.getScreenX(), event.getScreenY());
-            } else {
-                System.out.println("Bookmark unselected");
-                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
-                bookmarkIcon.setFitHeight(16);
-                bookmarkIcon.setFitWidth(16);
-                bookmarkTooltip.setText("Removed from Bookmark");
-                bookmarkButton.setGraphic(bookmarkIcon);
-            }
-        });
-        bookmarkButton.setOnMouseExited(event -> {
-            bookmarkTooltip.hide();
-            if (bookmarkButton.isSelected())
-                bookmarkTooltip.setText("Saved to Bookmark");
-            else bookmarkTooltip.setText("Save to Bookmark");
-        });
+//        bookmarkButton.setOnMouseClicked(event -> {
+//            System.out.println("Bookmark button clicked");
+//            if (bookmarkButton.isSelected()) {
+//                System.out.println("Bookmark selected");
+//                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark-selected.png"));
+//                bookmarkIcon.setFitHeight(16);
+//                bookmarkIcon.setFitWidth(16);
+//                bookmarkButton.setGraphic(bookmarkIcon);
+////                bookmarkTooltip.setText("Saved to Bookmark");
+////                bookmarkTooltip.show(bookmarkButton, event.getScreenX(), event.getScreenY());
+//            } else {
+//                System.out.println("Bookmark unselected");
+//                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
+//                bookmarkIcon.setFitHeight(16);
+//                bookmarkIcon.setFitWidth(16);
+//                bookmarkTooltip.setText("Removed from Bookmark");
+//                bookmarkButton.setGraphic(bookmarkIcon);
+//            }
+//        });
+//        bookmarkButton.setOnMouseExited(event -> {
+//            bookmarkTooltip.hide();
+//            if (bookmarkButton.isSelected())
+//                bookmarkTooltip.setText("Saved to Bookmark");
+//            else bookmarkTooltip.setText("Save to Bookmark");
+//        });
         Tooltip externalTooltip = new Tooltip("Open in external browser");
         externalTooltip.setShowDelay(Duration.millis(10));
         externalLink.setTooltip(externalTooltip);
@@ -185,7 +192,7 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
     }
 
     @Override
-    public synchronized void setText() {
+    public void setText() {
         articleHyperlinkTitleObject.maxWidthProperty().bind(this.widthProperty().subtract(160));
         articleHyperlinkTitleObject.setWrapText(true);
         articleHyperlinkTitleObject.setText(newsItemData.getTitle());
@@ -258,11 +265,11 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
                 if (newsItemData.getUrlToImage().isBlank() || newsItemData.getUrlToImage().isEmpty()) {
                     thumbnail = new Image(noImageAvailablePath, true);
                 }
-                int thumbnailHeight = 90;
-                int thumbnailWidth = 160;
-                Rectangle clip = new Rectangle(thumbnailWidth, thumbnailHeight);
-                clip.setArcHeight(10);
-                clip.setArcWidth(10);
+//                int thumbnailHeight = 180;
+//                int thumbnailWidth = 320;
+                Rectangle clip = new Rectangle(IMAGE_WIDTH, IMAGE_HEIGHT);
+                clip.setArcHeight(24);
+                clip.setArcWidth(24);
                 thumbnailImageView.setImage(thumbnail);
                 thumbnailImageView.setClip(clip);
             });
@@ -373,4 +380,7 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         return externalLink;
     }
 
+    public BookmarkToggleButton getBookmarkButton() {
+        return bookmarkButton;
+    }
 }

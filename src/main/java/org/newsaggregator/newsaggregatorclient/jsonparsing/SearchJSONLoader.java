@@ -41,11 +41,11 @@ public class SearchJSONLoader<T extends GenericData> implements IJSONLoader {
                     url = DOMAIN + "v1/categories/articles/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 }
                 break;
-            case "posts":
+            case "reddit":
                 if (searchField.equals("all"))
                     url = DOMAIN + "v1/reddit/search/%s?sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 else if (searchField.equals("categories")) {
-                    url = DOMAIN + "v1/categories/posts/search?text=%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
+                    url = DOMAIN + "v1/reddit/categories/%s&sort=%s&page=%s&limit=%s&opt=%s".formatted(searchQuery, isDesc, page, limit, isExactOrRegex);
                 }
                 break;
         }

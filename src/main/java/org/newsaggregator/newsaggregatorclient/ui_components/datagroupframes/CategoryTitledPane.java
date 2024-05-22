@@ -23,7 +23,7 @@ public class CategoryTitledPane<T, D extends GenericData> extends TitledPane {
         AnchorPane.setTopAnchor(itemsGroupLayout, 0.0);
         AnchorPane.setLeftAnchor(itemsGroupLayout, 0.0);
         AnchorPane.setRightAnchor(itemsGroupLayout, 0.0);
-        itemsGroupLayout.setSpacing(12);
+        itemsGroupLayout.setSpacing(24);
     }
 
     public CategoryTitledPane(String title){

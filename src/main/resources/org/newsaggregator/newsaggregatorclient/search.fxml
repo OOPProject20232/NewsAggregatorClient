@@ -16,9 +16,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="395.0" prefWidth="889.0" styleClass="generic-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="395.0" prefWidth="889.0" style="-fx-background-color: nl;" styleClass="generic-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox styleClass="generic-container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox fillHeight="false" prefHeight="48.0" prefWidth="600.0" spacing="30.0" styleClass="generic-container">
                <children>
@@ -51,7 +51,7 @@
                   </StackPane>
                </children>
                <padding>
-                  <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
+                  <Insets bottom="15.0" left="48.0" right="48.0" top="16.0" />
                </padding>
             </HBox>
             <HBox alignment="CENTER" prefHeight="2.0" prefWidth="889.0" spacing="10.0">
@@ -66,14 +66,17 @@
                   <ToggleButton fx:id="exactSearchToggleButton" mnemonicParsing="false" text="Exact search" />
                </children>
             </HBox>
-            <ScrollPane fx:id="searchScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="200.0" prefWidth="200.0" styleClass="generic-transparent-container" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+            <ScrollPane fx:id="searchScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="200.0" prefWidth="200.0" styleClass="generic-container" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox fx:id="searchVBox" spacing="12.0" styleClass="generic-transparent-container">
+                  <VBox fx:id="searchVBox" spacing="12.0" styleClass="generic-container">
                      <padding>
                         <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
                      </padding>
                   </VBox>
                </content>
+               <VBox.margin>
+                  <Insets bottom="24.0" left="24.0" right="24.0" />
+               </VBox.margin>
             </ScrollPane>
          </children>
       </VBox>
