@@ -1,5 +1,6 @@
 package org.newsaggregator.newsaggregatorclient.database;
 
+import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 
 import java.sql.*;
@@ -10,6 +11,7 @@ import java.util.List;
 public class SQLiteJDBC {
     private static final String DB_URL = "jdbc:sqlite:src/main/resources/sqlite/bookmarks.db";
     private static final String SQL_SELECT = "SELECT * FROM BOOKMARKS";
+    private static final String SQL_SELECT_BY_GUID = "SELECT EXISTS(SELECT * FROM BOOKMARKS WHERE guid = ?)";
     private static final String SQL_INSERT_BOOKMARK = "INSERT INTO BOOKMARKS (guid, title, author, description, content, url, url_to_image, published_at, publisher, publisher_logo_url, categories) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_DELETE_BOOKMARK = "DELETE FROM BOOKMARKS WHERE guid = ?";
     private static final String SQL_CREATE_BOOKMARK = "CREATE TABLE BOOKMARKS " +
@@ -202,6 +204,36 @@ public class SQLiteJDBC {
             try {
                 if (stmt != null) {
                     stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public boolean isBookmarked(NewsItemData itemData){
+        String guid = itemData.getGuid();
+        Connection conn = null;
+        ResultSet rs = null;
+        try {
+            conn = DriverManager.getConnection(DB_URL);
+            PreparedStatement preparedStatement = conn.prepareStatement(SQL_SELECT_BY_GUID);
+            preparedStatement.setString(1, guid);
+            rs = preparedStatement.executeQuery();
+            rs = preparedStatement.executeQuery();
+            boolean result = rs.getBoolean(1);
+            System.out.println("Checking bookmarked from guid " + guid + ": " + result);
+            preparedStatement.close();
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
                 }
                 if (conn != null) {
                     conn.close();

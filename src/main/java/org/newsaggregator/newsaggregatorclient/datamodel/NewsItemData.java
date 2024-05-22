@@ -49,7 +49,9 @@ public class NewsItemData extends GenericData{
                 ",\nurlToImage='" + urlToImage + '\'' +
                 ",\npublishedAt='" + publishedAt + '\'' +
                 ",\ncontent='" + content + '\'' +
-                ",\npublisher='" + publisher + '\'';
+                ",\npublisher='" + publisher + '\'' +
+                ",\npublisherLogoURL='" + publisherLogoURL + '\'' +
+                ",\nguid='" + guid + '\'';
     }
 
     public String getGuid() {

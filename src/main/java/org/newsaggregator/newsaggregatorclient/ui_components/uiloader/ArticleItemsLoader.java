@@ -3,20 +3,15 @@ package org.newsaggregator.newsaggregatorclient.ui_components.uiloader;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
-import org.newsaggregator.newsaggregatorclient.ui_components.datacard.HorizontalDataCard;
+import org.newsaggregator.newsaggregatorclient.database.SQLiteJDBC;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ImageViewDialog;
-import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ReadingArticle;
-import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe.ArticlesFrame;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CategoryClickable;
-import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.NewsCategoryGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
 import java.io.IOException;
@@ -89,18 +84,19 @@ public class ArticleItemsLoader<T>
         if (begin + limit > data.size()) {
             limit = data.size() - begin;
         }
-        Thread textThread = new Thread(() -> {
             for (int countItem = begin; countItem < limit + begin; countItem++) {
                 final int count = countItem;
                 NewsItemData itemData = data.get(countItem);
-                Platform.runLater(() -> {
+
                     NewsItemCard newsItem = new NewsItemCard(itemData);
                     newsItem.setContainingSummary(containingSummary);
                     newsItem.setContainingCategories(containingCategories);
                     newsItem.setParentWidth(((CategoryTitledPane<?, ?>) newsCategoryGroupTitledPane).getWidth() - 20);
                     newsItem.setText();
-                    Platform.runLater(newsItem::setImage);
-                    newsItem.setPublisherLogo();
+                    Platform.runLater(() -> {
+                        newsItem.setImage();
+                        newsItem.setPublisherLogo();
+                    });
                     newsItem.getArticleHyperlinkTitleObject().setOnAction(
                             event -> this.showArticlePopup(itemData)
                     );
@@ -113,17 +109,27 @@ public class ArticleItemsLoader<T>
                     newsItem.getExternalLink().setOnAction(
                             event -> hostServices.showDocument(itemData.getUrl())
                     );
+                    if (this.checkBookmark(itemData)){
+                        newsItem.getBookmarkButton().setSelected();
+                    }
+                    newsItem.getBookmarkButton().setOnAction((e) -> {
+                        if (newsItem.getBookmarkButton().isSelected()){
+                            newsItem.getBookmarkButton().setSelected();
+                            this.addBookmark(itemData);
+                        }
+                        else {
+                            newsItem.getBookmarkButton().setUnselected();
+                            this.removeBookmark(itemData);
+                        }
+                    });
                     for (Node tmp: newsItem.getCategories()){
                         CategoryClickable category = (CategoryClickable) tmp;
-                        category.setOnAction((event) -> mainController.setSearchText(category.getText()));
+                        category.setOnAction((event) -> mainController.setSearchText(category.getText().replace("#", "")));
                     }
                     updateProgress(count, limit + begin);
                     CategoryTitledPane<NewsItemCard,?> newsCategoryGroupTitledPane1 = (CategoryTitledPane<NewsItemCard,?>) newsCategoryGroupTitledPane;
                     newsCategoryGroupTitledPane1.addItem(newsItem);
-                });
             }
-        });
-        textThread.start();
     }
 
     public void setContainingSummary(boolean containingSummary) {
@@ -136,7 +142,7 @@ public class ArticleItemsLoader<T>
 
     private void showArticlePopup(NewsItemData itemData){
         try {
-            ReadingArticle popup = new ReadingArticle(itemData.getUrl());
+            ReadingArticle popup = new ReadingArticle(itemData.getUrl(), hostServices);
             popup.initialize();
             popup.showAndWait();
         } catch (IOException e) {
@@ -152,5 +158,20 @@ public class ArticleItemsLoader<T>
             throw new RuntimeException(e);
         }
         popup.showAndWait();
+    }
+
+    private void addBookmark(NewsItemData itemData){
+        SQLiteJDBC db = new SQLiteJDBC();
+        db.insert(itemData);
+    }
+
+    private void removeBookmark(NewsItemData itemData){
+        SQLiteJDBC db = new SQLiteJDBC();
+        db.delete(itemData.getGuid());
+    }
+
+    private boolean checkBookmark(NewsItemData itemData){
+        SQLiteJDBC db = new SQLiteJDBC();
+        return db.isBookmarked(itemData);
     }
 }

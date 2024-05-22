@@ -11,6 +11,7 @@ public class RedditPostJSONLoader implements IJSONLoader{
     private JSONObject jsonObject;
     private int pageNumber;
     private int limit;
+    List<RedditPostData> redditPostDataList = new ArrayList<>();
 
     @Override
     public JSONObject loadJSON() {
@@ -49,7 +50,6 @@ public class RedditPostJSONLoader implements IJSONLoader{
     }
 
     public List<RedditPostData> getRedditPostsList(int limit, int begin, JSONObject jsonObject){
-        List<RedditPostData> redditPostDataList = new ArrayList<>();
         for (int i = begin; i < begin + limit; i++) {
             JSONObject post = jsonObject.getJSONArray("posts").getJSONObject(i);
             RedditPostData redditPostData = new RedditPostData();

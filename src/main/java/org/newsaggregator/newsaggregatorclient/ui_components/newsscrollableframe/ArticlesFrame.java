@@ -2,13 +2,9 @@ package org.newsaggregator.newsaggregatorclient.ui_components.newsscrollablefram
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
-import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.jetbrains.annotations.NotNull;
@@ -19,23 +15,19 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.InfiniteNews;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.NewsCategoryGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
-import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.ArticleItemsLoader;
 
 import java.net.NoRouteToHostException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ArticlesFrame extends GenericFrame {
     private HostServices hostServices;
     private NewsAggregatorClientController mainController;
-    private final int limit = 30;
-    private final int chunkSize = 10;
-    private int totalPages;
-    private AtomicReference<Integer> currentChunk = new AtomicReference<>(0);
+    private final int limit = 15;
+    private final int chunkSize = 5;
+    private static int totalPages;
+    private AtomicReference<Integer> currentChunk = new AtomicReference<>(limit / chunkSize + limit % chunkSize);
 
 //    private final GridPane newsContainer = new GridPane();
     InfiniteNews allNews;
@@ -80,37 +72,61 @@ public class ArticlesFrame extends GenericFrame {
             @Override
             protected Void call() throws Exception {
                 articleDataLoader.set(getNewsJSONLoader());
-                Platform.runLater(() ->
-                        new ArticleItemsLoader<>(
-                                limit,
-                                0,
-                                hostServices,
-                                latestNews,
-                                mainController).loadItems(
-                                        new NewsJSONLoader()
-                                                .getNewsItemDataList(
-                                                        limit,
-                                                        0,
-                                                        articleDataLoader.get().loadJSON()
-                                                )
-                        )
-                );
-                updateProgress(1, 8);
-                Platform.runLater(() -> getNewsCategory(bitcoinNews, getNewsCategoryJSONLoader("bitcoin")));
-                updateProgress(2, 8);
-                Platform.runLater(() -> getNewsCategory(ethereumNews, getNewsCategoryJSONLoader("ethereum")));
-                updateProgress(3, 8);
+                new Thread(() ->
+                Platform.runLater(() -> {
+                            new ArticleItemsLoader<>(
+                                    limit,
+                                    0,
+                                    hostServices,
+                                    latestNews,
+                                    mainController).loadItems(
+                                    new NewsJSONLoader()
+                                            .getNewsItemDataList(
+                                                    limit,
+                                                    0,
+                                                    articleDataLoader.get().loadJSON()
+                                            )
+                            );
+                            updateProgress(1, 8);
+                        }
+                )).start();
+                new Thread(() -> {
+                    Platform.runLater(() -> getNewsCategory(bitcoinNews, getNewsCategoryJSONLoader("bitcoin")));
+                    updateProgress(2, 8);
+                }).start();
+                new Thread(() ->
+                {
+                    Platform.runLater(() -> getNewsCategory(ethereumNews, getNewsCategoryJSONLoader("ethereum")));
+                    updateProgress(3, 8);
+                }).start();
+                new Thread(() -> {
                 Platform.runLater(() -> getNewsCategory(solanaNews, getNewsCategoryJSONLoader("solana")));
                 updateProgress(4, 8);
-                getNewsCategory(defiNews, getNewsCategoryJSONLoader("defi"));
-                updateProgress(5, 8);
-                getNewsCategory(web3News, getNewsCategoryJSONLoader("web3"));
-                updateProgress(6, 8);
-                getNewsCategory(blockchainNews, getNewsCategoryJSONLoader("blockchain"));
-                updateProgress(7, 8);
-                new ArticleItemsLoader<>(limit, 0, hostServices, allNews, mainController).loadItems(articleDataLoader.get().getNewsItemDataList(limit, 0, articleDataLoader.get().loadJSON()));
+                }).start();
+                new Thread(() -> {
+                    getNewsCategory(defiNews, getNewsCategoryJSONLoader("defi"));
+                    updateProgress(5, 8);
+                }).start();
+                new Thread(() -> {
+                    getNewsCategory(web3News, getNewsCategoryJSONLoader("web3"));
+                    updateProgress(6, 8);
+                }).start();
+                new Thread(() -> {
+                    getNewsCategory(blockchainNews, getNewsCategoryJSONLoader("blockchain"));
+                    updateProgress(7, 8);
+                }).start();
+                new Thread(() -> {
+                    new ArticleItemsLoader<>(limit, 0, hostServices, allNews, mainController).loadItems(articleDataLoader.get().getNewsItemDataList(limit, 0, articleDataLoader.get().loadJSON()));
+                    updateProgress(8, 8);
+                }).start();
                 totalPages = articleDataLoader.get().getTotalPages();
-                updateProgress(8, 8);
+//                getNewsCategory(web3News, getNewsCategoryJSONLoader("web3"));
+//                updateProgress(6, 8);
+//                getNewsCategory(blockchainNews, getNewsCategoryJSONLoader("blockchain"));
+//                updateProgress(7, 8);
+//                new ArticleItemsLoader<>(limit, 0, hostServices, allNews, mainController).loadItems(articleDataLoader.get().getNewsItemDataList(limit, 0, articleDataLoader.get().loadJSON()));
+//                totalPages = articleDataLoader.get().getTotalPages();
+//                updateProgress(8, 8);
                 return null;
             }
         };
@@ -162,6 +178,7 @@ public class ArticlesFrame extends GenericFrame {
 
     private synchronized void loadMoreArticles(){
 //        mainController.loadingIconOn();
+//        LoadingDialog dialog = new LoadingDialog();
         if (currentChunk.get() * chunkSize >= limit) {
             nextPage();
             currentChunk.set(0);
@@ -173,8 +190,8 @@ public class ArticlesFrame extends GenericFrame {
         System.out.println("Current article page: " + currentPage);
         System.out.println("Current chunk: " + currentChunk);
         System.out.println("Current chunk size: " + chunkSize);
-//        LoadingDialog loadingDialog = new LoadingDialog();
-//        loadingDialog.show();
+        LoadingDialog loadingDialog = new LoadingDialog();
+        loadingDialog.show();
         System.out.println("Loading more articles");
         try {
             System.out.println("Current article page: " + currentPage);
@@ -185,7 +202,7 @@ public class ArticlesFrame extends GenericFrame {
                 articleItemsLoader.loadItems(data);
             });
             currentChunk.set(currentChunk.get() + 1);
-//            loadingDialog.close();
+            loadingDialog.close();
         }
         catch (NoRouteToHostException e){
 

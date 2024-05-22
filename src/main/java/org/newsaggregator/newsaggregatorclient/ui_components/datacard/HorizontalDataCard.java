@@ -15,12 +15,12 @@ import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
  */
 public abstract class HorizontalDataCard<T extends GenericData> extends HBox {
     public static String STYLESHEET = "/assets/css/datacard.css";
-    public static int SPACING = 12;
     public void setCardStyle(){
         this.getStylesheets().add(NewsAggregatorClientApplication.class.getResourceAsStream(STYLESHEET).toString());
         this.getStyleClass().add("datacard");
         VBox.setVgrow(this, Priority.ALWAYS);
         setMinHeight(800);
+        setSpacing(24);
     }
     public abstract void setText();
 

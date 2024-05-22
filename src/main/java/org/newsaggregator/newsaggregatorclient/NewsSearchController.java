@@ -9,7 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import org.json.JSONObject;
-import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.datamodel.RedditPostData;
 import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
@@ -19,13 +18,10 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.RedditPostJSONLoader;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.SearchJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.InfiniteNews;
-import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.NewsCategoryGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.RedditGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
-import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe.ArticlesFrame;
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.ArticleItemsLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.RedditItemsLoader;
-import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.SearchItemsLoader;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -85,8 +81,6 @@ public class NewsSearchController{
          * - Xử lý sự kiện tìm kiếm khi nhấn Enter hoặc click vào nút tìm kiếm
          * - Focus vào ô tìm kiếm
          */
-        SearchService searchService = new SearchService();
-        searchService.restart();
         searchButton.setDisable(true);
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             searchButton.setDisable(newValue.trim().isEmpty());
@@ -139,7 +133,40 @@ public class NewsSearchController{
         if (result == null){
             return "";
         }
-        result = result.replace(" ", "+");
+        result = result.replace("?", "+%3F+")
+                .replace("\\", "+%5C+")
+                .replace("/", "+%2F+")
+                .replace("=", "+%3D+")
+                .replace("&", "+%26+")
+                .replace(":", "+%3A+")
+                .replace(";", "+%3B+")
+                .replace("#", "+%23+")
+                .replace("%", "+%25+")
+                .replace("+", "%2B+")
+                .replace("!", "+%21+")
+                .replace("@", "+%40+")
+                .replace("$", "+%24+")
+                .replace("^", "+%5E+")
+                .replace("*", "+%2A+")
+                .replace("(", "+%28+")
+                .replace(")", "+%29+")
+                .replace("[", "+%5B+")
+                .replace("]", "+%5D+")
+                .replace("{", "+%7B+")
+                .replace("}", "+%7D+")
+                .replace("|", "+%7C+")
+                .replace("'", "+%27+")
+                .replace("\"", "+%22+")
+                .replace("`", "+%60+")
+                .replace("~", "+%7E+")
+                .replace("<", "+%3C+")
+                .replace(">", "+%3E+")
+                .replace(",", "+%2C+")
+                .replace(".", "+%2E+")
+                .replace("_", "+%5F+")
+                .replace("-", "+%2D+")
+                .replace(" ", "+%20+");
+
         return result;
     }
 
@@ -189,7 +216,7 @@ public class NewsSearchController{
                         count = 0;
                     }
                     infiniteNews.addOtherItems(
-                        new Label("Search results for: " + searchText),
+                        new Label("Search results for: " + searchTextField.getText()),
                         new Label("Found " + count + " results")
                     );
                     loadNewsToFrame(infiniteNews, obj, chunkSize, 0);
@@ -204,7 +231,8 @@ public class NewsSearchController{
             } else if (searchType.equals("reddit")) {
                 // Load reddit posts
                 try {
-                    JSONObject obj = DataReaderFromIS.fetchJSON("https://newsaggregator-mern.onrender.com/v1/posts/search?text=%s&sort=desc&page=%s&limit=%s&opt=%s".formatted(searchText, 1, 10, "r"));
+                    SearchJSONLoader<RedditPostData> searchJSONLoader = new SearchJSONLoader<>(searchText, "reddit", searchField, isDesc, isExactOrRegex);
+                    JSONObject obj = searchJSONLoader.loadJSON();
                     RedditGroupTitledPane redditGroupTitledPane = new RedditGroupTitledPane("Search Results");
                     loadRedditToFrame(redditGroupTitledPane, obj);
                     searchVBox.getChildren().add(redditGroupTitledPane);
@@ -214,7 +242,7 @@ public class NewsSearchController{
                             loadMore(redditGroupTitledPane);
                         }
                     });
-                } catch (MalformedURLException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -298,22 +326,6 @@ public class NewsSearchController{
     private void autocomplete() {
         // Hàm xử lý sự kiện autocomplete
         System.out.println("Autocompleting for: " + searchTextField.getText());
-    }
-
-    private static class SearchService extends Service<Void> {
-        /**
-         * Service xử lý tìm kiếm tin tức
-         */
-        @Override
-        protected Task<Void> createTask() {
-            return new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    // Xử lý tìm kiếm tin tức
-                    return null;
-                }
-            };
-        }
     }
 
     public void insertSearchText(String searchKeyword, String searchType, String searchOrder, String searchField, String isExactOrRegex){

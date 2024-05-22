@@ -26,7 +26,7 @@ public class GenericFrame extends ScrollPane {
         itemsContainer.getStyleClass().addAll("generic-transparent-container");
         itemsContainer.setHgap(36);
         itemsContainer.setVgap(36);
-        itemsContainer.setPadding(new Insets(48, 48, 48, 48));
+        itemsContainer.setPadding(new Insets(12, 48, 48, 48));
         itemsContainer.setAlignment(Pos.BASELINE_LEFT);
         itemsContainer.setMaxSize(BASELINE_OFFSET_SAME_AS_HEIGHT, Region.BASELINE_OFFSET_SAME_AS_HEIGHT);
 //        itemsContainer.setGridLinesVisible(true);

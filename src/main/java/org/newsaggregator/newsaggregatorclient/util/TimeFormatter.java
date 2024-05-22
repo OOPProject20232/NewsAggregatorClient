@@ -67,7 +67,8 @@ public class TimeFormatter {
         DateTimeFormatter out = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         try {
             LocalDateTime tmpDate = LocalDateTime.parse(dateTime, inp);
-            OffsetDateTime date = tmpDate.atOffset(ZoneOffset.of("+07:00"));
+            OffsetDateTime date = tmpDate.atOffset(ZoneOffset.of("+00:00"));
+            date.atZoneSimilarLocal(ZoneOffset.of("+07:00"));
             return date.format(out);
         }
         catch (Exception e){
