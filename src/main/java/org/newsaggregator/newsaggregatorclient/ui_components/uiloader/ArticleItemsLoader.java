@@ -11,7 +11,7 @@ import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.Cat
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ImageViewDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ReadingArticle;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
-import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CategoryClickable;
+import org.newsaggregator.newsaggregatorclient.ui_components.buttons.CategoryClickable;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
 import java.io.IOException;

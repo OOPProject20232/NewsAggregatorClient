@@ -36,7 +36,7 @@ public class NewsAggregatorClientApplication extends Application {
                     serverCheckResponseCode = ConnectionChecker.checkInternetConnection();
                     System.out.println(serverCheckResponseCode);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new Exception(e);
                 }
                 if (serverCheckResponseCode == 0) {
                     loadingDialog.close();

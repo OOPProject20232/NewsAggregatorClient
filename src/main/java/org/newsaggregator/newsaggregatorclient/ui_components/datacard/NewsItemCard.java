@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -17,10 +16,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import org.controlsfx.control.HyperlinkLabel;
-import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_components.buttons.BookmarkToggleButton;
+import org.newsaggregator.newsaggregatorclient.ui_components.buttons.CategoryClickable;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
 import javax.imageio.ImageIO;
@@ -199,8 +197,13 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         if (containingSummary) {
             description.setText(newsItemData.getDescription());
         }
-        publishedAt.setText(TimeFormatter.processDateTime(newsItemData.getPublishedAt()));
-        author.setText(newsItemData.getAuthor().toString());
+        try {
+            description.setText(TimeFormatter.processDateTime(newsItemData.getPublishedAt()));
+        }
+        catch (Exception e) {
+            System.out.println("Error processing date time: " + e.getMessage());
+        }
+        author.setText(newsItemData.getAuthor());
         publisher.setText(newsItemData.getPublisher());
         if (containingCategories) {
             for (String category : newsItemData.getCategory()) {

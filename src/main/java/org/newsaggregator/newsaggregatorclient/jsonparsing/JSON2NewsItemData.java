@@ -20,7 +20,11 @@ public class JSON2NewsItemData {
         }
         newsItemData.setGuid(getSimpleField(newsItemObject, "guid"));
         newsItemData.setCategory(categoryList);
-        newsItemData.setTitle(getSimpleField(newsItemObject,"article_title"));
+        try {
+            newsItemData.setTitle(getSimpleField(newsItemObject,"article_title"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         newsItemData.setAuthor(getSimpleField(newsItemObject, "author"));
         newsItemData.setDescription(getSimpleField(newsItemObject, "article_summary"));
         newsItemData.setArticleDetailedContent(getSimpleField(newsItemObject, "article_detailed_content"));
