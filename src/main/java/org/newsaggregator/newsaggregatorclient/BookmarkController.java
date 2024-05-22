@@ -3,6 +3,7 @@ package org.newsaggregator.newsaggregatorclient;
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import org.newsaggregator.newsaggregatorclient.database.SQLiteJDBC;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class BookmarkController {
     @FXML
-    GridPane bookmarkedGridPane;
+    VBox bookmarkedGridPane;
 
     HostServices hostServices;
     NewsAggregatorClientController mainController;

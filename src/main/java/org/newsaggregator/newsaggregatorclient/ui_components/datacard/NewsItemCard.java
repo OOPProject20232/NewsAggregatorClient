@@ -153,31 +153,6 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         Tooltip bookmarkTooltip = new Tooltip("Save this to Bookmark");
         bookmarkTooltip.setShowDelay(Duration.millis(10));
         bookmarkButton.setTooltip(bookmarkTooltip);
-//        bookmarkButton.setOnMouseClicked(event -> {
-//            System.out.println("Bookmark button clicked");
-//            if (bookmarkButton.isSelected()) {
-//                System.out.println("Bookmark selected");
-//                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark-selected.png"));
-//                bookmarkIcon.setFitHeight(16);
-//                bookmarkIcon.setFitWidth(16);
-//                bookmarkButton.setGraphic(bookmarkIcon);
-////                bookmarkTooltip.setText("Saved to Bookmark");
-////                bookmarkTooltip.show(bookmarkButton, event.getScreenX(), event.getScreenY());
-//            } else {
-//                System.out.println("Bookmark unselected");
-//                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
-//                bookmarkIcon.setFitHeight(16);
-//                bookmarkIcon.setFitWidth(16);
-//                bookmarkTooltip.setText("Removed from Bookmark");
-//                bookmarkButton.setGraphic(bookmarkIcon);
-//            }
-//        });
-//        bookmarkButton.setOnMouseExited(event -> {
-//            bookmarkTooltip.hide();
-//            if (bookmarkButton.isSelected())
-//                bookmarkTooltip.setText("Saved to Bookmark");
-//            else bookmarkTooltip.setText("Save to Bookmark");
-//        });
         Tooltip externalTooltip = new Tooltip("Open in external browser");
         externalTooltip.setShowDelay(Duration.millis(10));
         externalLink.setTooltip(externalTooltip);
@@ -185,8 +160,8 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
 
     @Override
     public void setCardStyle() {
-//        this.getStyleClass().add("datacard");
-//        this.getStyleClass().add("horizontal");
+        this.getStyleClass().add("datacard");
+        this.getStyleClass().add("horizontal");
     }
 
     @Override
