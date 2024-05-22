@@ -17,9 +17,11 @@ public class BookmarkController {
     GridPane bookmarkedGridPane;
 
     HostServices hostServices;
+    NewsAggregatorClientController mainController;
 
-    public BookmarkController(HostServices hostServices) {
-
+    public BookmarkController(HostServices hostServices, NewsAggregatorClientController mainController) {
+        this.hostServices = hostServices;
+        this.mainController = mainController;
     }
 
     @FXML
@@ -28,7 +30,7 @@ public class BookmarkController {
         bookmarkedGridPane.getChildren().add(newsCategoryGroupTitledPane);
         newsCategoryGroupTitledPane.setPrefWidth(1000);
         List<NewsItemData> data = getBookmarkedNews();
-        ArticleItemsLoader<CategoryTitledPane> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, newsCategoryGroupTitledPane, null);
+        ArticleItemsLoader<CategoryTitledPane> articleItemsLoader = new ArticleItemsLoader<>(10, 0, hostServices, newsCategoryGroupTitledPane, mainController);
         articleItemsLoader.loadItems(data);
     }
 

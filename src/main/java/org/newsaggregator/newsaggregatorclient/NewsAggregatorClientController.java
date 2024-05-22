@@ -177,7 +177,7 @@ public class NewsAggregatorClientController {
         redditAnchorPane.getChildren().add(redditFrame);
         bookmarkTab.setOnSelectionChanged(event -> {
             if (bookmarkTab.isSelected()) {
-                BookmarkController bookmarkController = new BookmarkController(hostServices);
+                BookmarkController bookmarkController = new BookmarkController(hostServices, this);
                 FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("bookmark.fxml"));
                 fxmlLoader.setController(bookmarkController);
                 try {
