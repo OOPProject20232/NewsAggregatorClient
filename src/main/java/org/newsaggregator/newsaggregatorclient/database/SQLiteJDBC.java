@@ -25,6 +25,7 @@ public class SQLiteJDBC {
             "published_at TEXT NOT NULL," +
             "publisher TEXT NOT NULL," +
             "publisher_logo_url TEXT NOT NULL)";
+    private static final String SQL_SEARCH_BOOKMARK = "SELECT * FROM BOOKMARKS WHERE title LIKE ? OR description LIKE ?";
 
     public SQLiteJDBC() {
 
@@ -223,7 +224,6 @@ public class SQLiteJDBC {
             PreparedStatement preparedStatement = conn.prepareStatement(SQL_SELECT_BY_GUID);
             preparedStatement.setString(1, guid);
             rs = preparedStatement.executeQuery();
-            rs = preparedStatement.executeQuery();
             boolean result = rs.getBoolean(1);
             System.out.println("Checking bookmarked from guid " + guid + ": " + result);
             preparedStatement.close();
@@ -241,6 +241,45 @@ public class SQLiteJDBC {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+
+    public List<NewsItemData> search(String searchText){
+        searchText = searchText
+                .replace("!", "!!")
+                .replace("%", "!%")
+                .replace("_", "!_")
+                .replace("[", "![");
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        List<NewsItemData> data = new ArrayList<>();
+        try{
+            conn = DriverManager.getConnection(DB_URL);
+            statement = conn.prepareStatement(SQL_SEARCH_BOOKMARK);
+            statement.setString(1, "%" + searchText + "%");
+            statement.setString(2, "%" + searchText + "%");
+            System.out.println("Statement: " + statement);
+            rs = statement.executeQuery();
+            while (rs.next()) {
+                NewsItemData newsItemData = new NewsItemData();
+                newsItemData.setGuid(rs.getString("guid"));
+                newsItemData.setTitle(rs.getString("title"));
+                newsItemData.setAuthor(rs.getString("author"));
+                newsItemData.setDescription(rs.getString("description"));
+                newsItemData.setContent(rs.getString("content"));
+                newsItemData.setUrl(rs.getString("url"));
+                newsItemData.setUrlToImage(rs.getString("url_to_image"));
+                newsItemData.setPublishedAt(rs.getString("published_at"));
+                newsItemData.setPublisher(rs.getString("publisher"));
+                newsItemData.setPublisherLogoURL(rs.getString("publisher_logo_url"));
+                String categories = rs.getString("categories");
+                newsItemData.setCategory(Arrays.asList(categories.split("-")));
+                data.add(newsItemData);
+            };
+            return data;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

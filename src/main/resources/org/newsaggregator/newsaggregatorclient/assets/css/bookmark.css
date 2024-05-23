@@ -1,0 +1,10 @@
+.search-bar{
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 36;
+    -fx-border-width: 0;
+    -fx-border-color: #000;
+    -fx-border-radius: 36;
+    -fx-width: 80%;
+    /*-fx-max-width: 600px;*/
+    -fx-padding: 12px;
+}

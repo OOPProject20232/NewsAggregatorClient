@@ -40,7 +40,7 @@ public class TimeFormatter {
             return diff/3600 + " hours ago";
         }
         else if (diff < 172800){
-            return "1 day ago";
+            return "Yesterday";
         }
         else if (diff < 604800){
             return diff/86400 + " days ago";

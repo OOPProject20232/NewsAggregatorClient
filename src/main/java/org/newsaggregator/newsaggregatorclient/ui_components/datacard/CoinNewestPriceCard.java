@@ -26,7 +26,7 @@ public class CoinNewestPriceCard extends HorizontalDataCard<CoinPriceData>{
     @Override
     public void setCardStyle() {
 //        this.setSpacing(SPACING);
-        this.getStylesheets().add(STYLESHEET);
+//        this.getStylesheets().add(STYLESHEET);
 //        this.setMaxWidth(100);
 //        this.getStylesheets().add(this.getClass().getResourceAsStream("assets/css/coin-newest-price-frame.css").toString());
     }

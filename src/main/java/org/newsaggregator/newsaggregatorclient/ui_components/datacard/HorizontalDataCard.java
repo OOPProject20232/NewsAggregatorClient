@@ -14,7 +14,7 @@ import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
  * @see GenericData
  */
 public abstract class HorizontalDataCard<T extends GenericData> extends HBox {
-    public static String STYLESHEET = "/assets/css/datacard.css";
+    private static String STYLESHEET = "/assets/css/datacard.css";
     public void setCardStyle(){
         this.getStylesheets().add(NewsAggregatorClientApplication.class.getResourceAsStream(STYLESHEET).toString());
         this.getStyleClass().add("datacard");

@@ -33,12 +33,12 @@
     -fx-background-color: -fx-generic-background-color;
     /*-fx-background-color: blue;*/
     /*-fx-background-color: white;*/
-    -fx-background-radius: 24px;
+    -fx-background-radius: 48px;
 }
 
 .generic-transparent-container{
-    -fx-background-color: -fx-generic-background-color;
-    -fx-background-radius: 24px;
+    -fx-background-color: transparent;
+    /*-fx-background-radius: 48px;*/
     /*-fx-background-color: blue;*/
 }
 
@@ -328,7 +328,7 @@
 .category-label{
     -fx-text-fill: -fx-primary-color;
     -fx-background-color: -fx-inverse-primary;
-    -fx-underline: false;
+    /*-fx-underline: false;*/
     -fx-cursor: hand;
     -fx-padding: 4px 8px;
     -fx-background-radius: 16px;

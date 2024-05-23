@@ -92,7 +92,9 @@ public class ReadingArticle extends GenericDialog {
     private void loadArticle(){
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).get();
+            doc = Jsoup.connect(url)
+                       .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0")
+                       .get();
             doc.select("a").attr("href", "#");
             String title = doc.select("title").getFirst().text();
             Stage stage = (Stage) getDialogPane().getScene().getWindow();
@@ -103,7 +105,6 @@ public class ReadingArticle extends GenericDialog {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // Block all redirections
         articleWebView.getEngine().loadContent(doc.toString());
         System.out.println(articleWebView.getEngine().getUserAgent());
     }

@@ -2,10 +2,11 @@ package org.newsaggregator.newsaggregatorclient;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.newsaggregator.newsaggregatorclient.database.SQLiteJDBC;
@@ -28,6 +29,9 @@ public class BookmarkController {
     @FXML
     ScrollPane bookmarkScrollPane;
 
+    @FXML
+    TextField searchBar;
+
     HostServices hostServices;
     NewsAggregatorClientController mainController;
     int currentPage = 0;
@@ -40,6 +44,8 @@ public class BookmarkController {
 
     @FXML
     public void initialize() {
+        SearchService searchService = new SearchService();
+        searchService.reset();
         bookmarkedGridPane.getChildren().clear();
         InfiniteNews newsCategoryGroupTitledPane = new InfiniteNews("");
         bookmarkedGridPane.getChildren().add(newsCategoryGroupTitledPane);
@@ -68,6 +74,7 @@ public class BookmarkController {
                 articleItemsLoader.loadItems(data);
             });
         });
+        searchBar.setOnKeyPressed(e -> Platform.runLater(searchService::search));
     }
 
     private List<NewsItemData> getBookmarkedNews(){
@@ -78,5 +85,40 @@ public class BookmarkController {
 
     private void handle(ActionEvent e) {
         initialize();
+    }
+
+    private class SearchService extends Service<Void>{
+
+        @Override
+        protected Task<Void> createTask() {
+            return new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    search();
+                    return null;
+                }
+            };
+        }
+
+        private void search(){
+            String searchText = searchBar.getText();
+            if (!searchText.equals("")) {
+                SQLiteJDBC db = new SQLiteJDBC();
+                List<NewsItemData> resultList = db.search(searchText);
+                bookmarkedGridPane.getChildren().clear();
+                InfiniteNews pane = new InfiniteNews("Search: ");
+                bookmarkedGridPane.getChildren().add(pane);
+                currentPage = 0;
+                ArticleItemsLoader<InfiniteNews> itemsLoader = new ArticleItemsLoader<>(
+                        limit, currentPage * limit, hostServices, pane, mainController
+                );
+                itemsLoader.loadItems(resultList);
+                bookmarkScrollPane.setOnScroll(e -> {
+                    ArticleItemsLoader<CategoryTitledPane> articleItemsLoader = new ArticleItemsLoader<>(10, currentPage * limit, hostServices, pane, mainController);
+                    articleItemsLoader.loadItems(resultList);
+                });
+            }
+            else initialize();
+        }
     }
 }

@@ -15,7 +15,7 @@ public class GenericDialog extends Dialog<Void> {
      * Class cha của tất cả các dialog trong project
      */
     public GenericDialog() {
-        getDialogPane().getStyleClass().addAll("dialog", "generic-container");
+        getDialogPane().getStyleClass().addAll("dialog", "generic-transparent-container");
 //
         getDialogPane().getStylesheets().add(
                 NewsAggregatorClientApplication.class.getResourceAsStream("assets/css/dialogs.css").toString()

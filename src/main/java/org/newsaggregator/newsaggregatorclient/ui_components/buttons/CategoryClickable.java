@@ -10,5 +10,6 @@ public class CategoryClickable extends Button {
     public CategoryClickable(String categoryString){
         this();
         this.setText("#"+categoryString);
+        this.setUnderline(true);
     }
 }

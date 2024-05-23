@@ -24,6 +24,7 @@ import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.ArticleIte
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.RedditItemsLoader;
 
 import java.net.MalformedURLException;
+import java.net.NoRouteToHostException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -89,7 +90,8 @@ public class NewsSearchController{
             autocomplete();
         });
         searchTextField.setOnAction(event -> {
-            search();
+            if (!searchTextField.getText().isEmpty())
+                search();
         });
         searchButton.setOnAction(event -> search());
         searchTextField.requestFocus();
@@ -326,6 +328,19 @@ public class NewsSearchController{
     private void autocomplete() {
         // Hàm xử lý sự kiện autocomplete
         System.out.println("Autocompleting for: " + searchTextField.getText());
+//        if (!searchTextField.getText().isEmpty()){
+//            try {
+//                JSONObject obj = DataReaderFromIS.fetchJSONWithCache(
+//                        "https://newsaggregator-mern.onrender.com/api/v1/articles/autocomplete/" + searchTextField.getText(),
+//                        "%s.json".formatted(searchTextField.getText())
+//                );
+//
+//            } catch (MalformedURLException e) {
+//                throw new RuntimeException(e);
+//            } catch (NoRouteToHostException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
     }
 
     public void insertSearchText(String searchKeyword, String searchType, String searchOrder, String searchField, String isExactOrRegex){

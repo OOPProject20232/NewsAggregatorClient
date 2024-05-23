@@ -6,8 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.FlowPane;
@@ -27,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.Buffer;
 import java.util.List;
 
 public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
@@ -60,15 +60,15 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
     private boolean containingSummary = true;
     private boolean containingCategories = true;
     private double parentWidth;
-    private final int IMAGE_HEIGHT = 135;
-    private final int IMAGE_WIDTH = 240;
+    private final int IMAGE_HEIGHT = 108;
+    private final int IMAGE_WIDTH = 192;
 
     public NewsItemCard() {
-        this.setAlignment(Pos.CENTER_LEFT);
+        this.setAlignment(Pos.TOP_LEFT);
 //        this.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: -fx-outline-color-variant; -fx-padding: 0 0 12px 0");
         articleHyperlinkTitleObject.getStyleClass().add("article-title");
-        thumbnailImageView.setFitHeight(IMAGE_HEIGHT);
         thumbnailImageView.setFitWidth(IMAGE_WIDTH);
+        thumbnailImageView.setFitHeight(IMAGE_HEIGHT);
         thumbnailHyperlink.setGraphic(thumbnailImageView);
         this.getChildren().add(thumbnailHyperlink);
         VBox newsInfo = new VBox();
@@ -107,11 +107,6 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         copyButton.setGraphic(copyIcon);
         copyButton.getStyleClass().add("util-button");
         utilityFrame.getChildren().add(copyButton);
-//        bookmarkButton.getStyleClass().add("util-button");
-//        ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
-//        bookmarkIcon.setFitHeight(16);
-//        bookmarkIcon.setFitWidth(16);
-//        bookmarkButton.setGraphic(bookmarkIcon);
         utilityFrame.getChildren().add(bookmarkButton);
         externalLink.getStyleClass().add("util-button");
         ImageView externalIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/external-link.png");
@@ -173,7 +168,7 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
             description.setText(newsItemData.getDescription());
         }
         try {
-            description.setText(TimeFormatter.processDateTime(newsItemData.getPublishedAt()));
+            publishedAt.setText(TimeFormatter.processDateTime(newsItemData.getPublishedAt()));
         }
         catch (Exception e) {
             System.out.println("Error processing date time: " + e.getMessage());
@@ -246,6 +241,24 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
 //                int thumbnailHeight = 180;
 //                int thumbnailWidth = 320;
                 Rectangle clip = new Rectangle(IMAGE_WIDTH, IMAGE_HEIGHT);
+                PixelReader reader = thumbnail.getPixelReader();
+//                WritableImage newImage;
+//                try {
+//                    newImage = new WritableImage(
+//                            reader,
+//                            (int) Math.abs(thumbnail.getWidth() / 2 - IMAGE_WIDTH / 2),
+//                            (int) Math.abs(thumbnail.getHeight() / 2 - IMAGE_HEIGHT / 2),
+//                            IMAGE_WIDTH,
+//                            IMAGE_HEIGHT);
+//                }
+//                catch (NullPointerException e){
+//                    newImage = new WritableImage(
+//                            new Image(noImageAvailablePath).getPixelReader(),
+//                            (int) Math.abs(thumbnail.getWidth() / 2 - IMAGE_WIDTH / 2),
+//                            (int) Math.abs(thumbnail.getHeight() / 2 - IMAGE_HEIGHT / 2),
+//                            IMAGE_WIDTH,
+//                            IMAGE_HEIGHT);
+//                }
                 clip.setArcHeight(24);
                 clip.setArcWidth(24);
                 thumbnailImageView.setImage(thumbnail);

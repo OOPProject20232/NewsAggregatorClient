@@ -75,7 +75,7 @@
                                                          <content>
                                                             <HBox prefHeight="100.0" prefWidth="200.0">
                                                                <children>
-                                                              <AnchorPane fx:id="newsArticlesPane" minHeight="0.0" minWidth="0.0" prefHeight="416.0" prefWidth="413.0" HBox.hgrow="ALWAYS" />
+                                                              <AnchorPane fx:id="newsArticlesPane" minHeight="0.0" minWidth="0.0" prefHeight="416.0" prefWidth="340.0" styleClass="generic-container" HBox.hgrow="ALWAYS" />
                                                                   <VBox fx:id="additionalInfoContainer" alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="566.0" prefWidth="464.0" style="-fx-padding: 0 5px;" styleClass="generic-container">
                                                                      <padding>
                                                                         <Insets top="60.0" />

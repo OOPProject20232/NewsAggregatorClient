@@ -102,7 +102,7 @@ public class NewsAggregatorClientController {
         reloadNews.setOnAction(event -> reloadNews());
         AnchorPane.setBottomAnchor(articleScrollPane, 0.0);
         AnchorPane.setTopAnchor(articleScrollPane, 0.0);
-        AnchorPane.setLeftAnchor(articleScrollPane, 0.0);
+        AnchorPane.setLeftAnchor(articleScrollPane, 48.0);
         AnchorPane.setRightAnchor(articleScrollPane, 0.0);
         AnchorPane.setBottomAnchor(redditFrame, 0.0);
         AnchorPane.setTopAnchor(redditFrame, 0.0);
