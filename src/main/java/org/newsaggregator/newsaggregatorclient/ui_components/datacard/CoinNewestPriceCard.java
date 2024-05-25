@@ -8,14 +8,26 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 
+/**
+ * Thẻ thông tin về 1 đồng coin hiện trên bảng giá mới nhất ở trang chính
+ * Kế thừa từ HorizontalDataCard
+ * @see HorizontalDataCard
+ * Sử dụng 1 lớp mở rộng của CoinPriceData để lấy thông tin của đồng coin
+ * @see CoinPriceData
+ * Bao gồm các thành phần:
+ * - Hình ảnh của đồng coin
+ * - Tên đồng coin
+ * - Giá của đồng coin
+ * - Biến động giá của đồng coin
+ */
 public class CoinNewestPriceCard extends HorizontalDataCard<CoinPriceData>{
-    private CoinPriceData coinPriceData;
-    Label rank;
-    Label coinName;
-    Label coinSymbol;
-    Label coinPrice;
-    Label coinPriceChange;
-    ImageView coinImage = new ImageView();
+    private final CoinPriceData coinPriceData;
+    private Label rank;
+    private Label coinName;
+    private Label coinSymbol;
+    private Label coinPrice;
+    private Label coinPriceChange;
+    private ImageView coinImage = new ImageView();
 
 
     public CoinNewestPriceCard(CoinPriceData coinPriceData) {
@@ -25,10 +37,7 @@ public class CoinNewestPriceCard extends HorizontalDataCard<CoinPriceData>{
 
     @Override
     public void setCardStyle() {
-//        this.setSpacing(SPACING);
-//        this.getStylesheets().add(STYLESHEET);
-//        this.setMaxWidth(100);
-//        this.getStylesheets().add(this.getClass().getResourceAsStream("assets/css/coin-newest-price-frame.css").toString());
+
     }
 
     @Override

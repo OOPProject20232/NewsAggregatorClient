@@ -4,12 +4,11 @@ import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
 import org.newsaggregator.newsaggregatorclient.database.SQLiteJDBC;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ImageViewDialog;
-import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ReadingArticle;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ArticleReader;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_components.buttons.CategoryClickable;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
@@ -33,7 +32,6 @@ public class ArticleItemsLoader<T>
      */
     int begin;
     int limit;
-    Pane container;
     HostServices hostServices;
     T newsCategoryGroupTitledPane;
     NewsAggregatorClientController mainController;
@@ -42,7 +40,6 @@ public class ArticleItemsLoader<T>
 
     public ArticleItemsLoader(int limit, int begin, HostServices hostServices, T newsCategoryGroupTitledPane, NewsAggregatorClientController mainController) {
         this.limit = limit;
-        this.container = container;
         this.hostServices = hostServices;
         this.newsCategoryGroupTitledPane = newsCategoryGroupTitledPane;
         this.begin = begin;
@@ -85,19 +82,17 @@ public class ArticleItemsLoader<T>
             limit = data.size() - begin;
         }
             for (int countItem = begin; countItem < limit + begin; countItem++) {
-                final int count = countItem;
                 NewsItemData itemData = data.get(countItem);
 
                     NewsItemCard newsItem = new NewsItemCard(itemData);
                     newsItem.setContainingSummary(containingSummary);
                     newsItem.setContainingCategories(containingCategories);
-                    newsItem.setParentWidth(((CategoryTitledPane<?, ?>) newsCategoryGroupTitledPane).getWidth() - 20);
                     newsItem.setText();
                     Platform.runLater(() -> {
                         newsItem.setImage();
                         newsItem.setPublisherLogo();
                     });
-                    newsItem.getArticleHyperlinkTitleObject().setOnAction(
+                    newsItem.getArticleHyperlinkTitle().setOnAction(
                             event -> this.showArticlePopup(itemData)
                     );
                     newsItem.getReadMore().setOnAction(
@@ -126,7 +121,7 @@ public class ArticleItemsLoader<T>
                         CategoryClickable category = (CategoryClickable) tmp;
                         category.setOnAction((event) -> mainController.setSearchText(category.getText().replace("#", "")));
                     }
-                    updateProgress(count, limit + begin);
+                    updateProgress(countItem, limit + begin);
                     CategoryTitledPane<NewsItemCard,?> newsCategoryGroupTitledPane1 = (CategoryTitledPane<NewsItemCard,?>) newsCategoryGroupTitledPane;
                     newsCategoryGroupTitledPane1.addItem(newsItem);
             }
@@ -142,7 +137,7 @@ public class ArticleItemsLoader<T>
 
     private void showArticlePopup(NewsItemData itemData){
         try {
-            ReadingArticle popup = new ReadingArticle(itemData.getUrl(), hostServices);
+            ArticleReader popup = new ArticleReader(itemData, hostServices);
             popup.initialize();
             popup.showAndWait();
         } catch (IOException e) {

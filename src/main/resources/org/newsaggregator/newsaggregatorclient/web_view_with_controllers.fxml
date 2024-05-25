@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleButton?>
@@ -21,7 +22,7 @@
                </graphic>
             </Button>
             <Label fx:id="addressBar" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-            <ToggleButton mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: transparent; -fx-font-weight: normal;" styleClass="web-view-button">
+            <ToggleButton fx:id="bookmarkButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: transparent; -fx-font-weight: normal;">
                <graphic>
                   <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -29,6 +30,10 @@
                      </image>
                   </ImageView>
                </graphic>
+               <styleClass>
+                  <String fx:value="web-view-button" />
+                  <String fx:value="util-button" />
+               </styleClass>
             </ToggleButton>
             <Button fx:id="copyLinkButton" mnemonicParsing="false" styleClass="util-button">
                <graphic>

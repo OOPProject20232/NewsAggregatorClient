@@ -28,7 +28,7 @@ public class NewsAggregatorClientApplication extends Application {
             protected Void call() throws Exception {
                 System.out.println("Called");
                 System.out.println("Set");
-                int serverCheckResponseCode = 0;
+                int serverCheckResponseCode;
                 Scene scene;
                 System.out.println("Hi");
                 try {
@@ -58,6 +58,12 @@ public class NewsAggregatorClientApplication extends Application {
                     stage.show();
                 } else{
                     System.out.println("???");
+                    loadingDialog.close();
+                    NoInternetDialog dialog = new NoInternetDialog();
+                    stage.initStyle(StageStyle.UNDECORATED);
+                    stage.getIcons().add(new Image(String.valueOf(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResource
+                            ("assets/images/no-internet.png")))));
+                    dialog.showAndWait();
                 }
                 return null;
             }

@@ -4,10 +4,7 @@ import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -19,11 +16,13 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
+import org.newsaggregator.newsaggregatorclient.database.SQLiteJDBC;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 
 import java.io.IOException;
 import java.net.*;
 
-public class ReadingArticle extends GenericDialog {
+public class ArticleReader extends GenericDialog {
     FXMLLoader loader;
     String url;
     HostServices hostServices;
@@ -43,7 +42,12 @@ public class ReadingArticle extends GenericDialog {
     @FXML
     Button externalButton;
 
-    public ReadingArticle(String url, HostServices hostServices) throws IOException {
+    @FXML
+    ToggleButton bookmarkButton;
+
+    NewsItemData newsItemData;
+
+    public ArticleReader(String url, HostServices hostServices) throws IOException {
         super();
         this.url = url;
         this.hostServices = hostServices;
@@ -54,6 +58,11 @@ public class ReadingArticle extends GenericDialog {
         loader.load();
         getDialogPane().setContent(loader.getRoot());
         reloadButton.setOnAction(e -> reload());
+    }
+
+    public ArticleReader(NewsItemData newsItemData, HostServices hostServices) throws IOException {
+        this(newsItemData.getUrl(), hostServices);
+        this.newsItemData = newsItemData;
     }
 
     @FXML
@@ -87,6 +96,14 @@ public class ReadingArticle extends GenericDialog {
         externalButton.setOnAction(e -> {
             hostServices.showDocument(url);
         });
+        bookmarkButton.setOnAction(e -> {
+            if (bookmarkButton.isSelected()){
+                bookmark();
+            }
+            else {
+                removeBookmark();
+            }
+        });
     }
 
     private void loadArticle(){
@@ -115,5 +132,27 @@ public class ReadingArticle extends GenericDialog {
         dialog.show();
         loadArticle();
         dialog.close();
+    }
+
+    private void bookmark(){
+        SQLiteJDBC db = new SQLiteJDBC();
+        db.insert(newsItemData);
+        ImageView bookmarkedIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark-selected.png");
+        bookmarkedIcon.setFitHeight(16);
+        bookmarkedIcon.setFitWidth(16);
+        bookmarkButton.setGraphic(bookmarkedIcon);
+    }
+
+    private void removeBookmark(){
+        SQLiteJDBC db = new SQLiteJDBC();
+        db.delete(newsItemData.getGuid());
+        ImageView bookmarkIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png");
+        bookmarkIcon.setFitHeight(16);
+        bookmarkIcon.setFitWidth(16);
+        bookmarkButton.setGraphic(bookmarkIcon);
+    }
+
+    public void setNewsItemData(NewsItemData newsItemData) {
+        this.newsItemData = newsItemData;
     }
 }

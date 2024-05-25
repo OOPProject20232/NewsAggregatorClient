@@ -54,6 +54,11 @@ public class CoinPriceData extends GenericData {
         return Float.parseFloat(price);
     }
 
+    /**
+     * Lấy giá của coin đã được format theo định dạng tiền tệ
+     * @param currency String: Tiền tệ muốn format, ví dụ: "$", "€"
+     * @return String: Giá đã được format
+     */
     public String getFormattedPrice(String currency) {
         if (Double.parseDouble(price) > .01) {
             DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);

@@ -1,5 +1,6 @@
 package org.newsaggregator.newsaggregatorclient;
 
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,58 +37,60 @@ public class MarketDataController {
     private final String[] symbolList = {"BTC"};
 
     @FXML
-    Label chartTitle;
+    private Label chartTitle;
 
     @FXML
-    Label coinPriceLabel;
+    private Label coinPriceLabel;
 
-    LineChartWithCrosshair<String, Number> coinPriceChart;
-
-    @FXML
-    ToggleButton oneWeekButton;
+    private LineChartWithCrosshair<String, Number> coinPriceChart;
 
     @FXML
-    ToggleButton oneMonthButton;
+    private ToggleButton oneWeekButton;
 
     @FXML
-    ToggleButton sixMonthsButton;
+    private ToggleButton oneMonthButton;
 
     @FXML
-    ToggleButton ytdButton;
+    private ToggleButton sixMonthsButton;
 
     @FXML
-    VBox marketDataArea;
+    private ToggleButton ytdButton;
 
     @FXML
-    VBox coinPriceFrame;
+    private VBox coinPriceFrame;
 
     @FXML
-    Label priceChangeLabel;
+    private Label priceChangeLabel;
 
     @FXML
-    TableView<CoinData> coinPriceTable;
+    private TableView<CoinData> coinPriceTable;
 
     @FXML
-    TableColumn<CoinData, Hyperlink> coinNameColumn;
+    private TableColumn<CoinData, Hyperlink> coinNameColumn;
 
     @FXML
-    TableColumn<CoinData, String> coinPriceColumn;
+    private TableColumn<CoinData, String> coinPriceColumn;
 
     @FXML
-    TableColumn<CoinData, String> priceChangeColumn;
+    private TableColumn<CoinData, String> priceChangeColumn;
 
     @FXML
-    TableColumn<CoinData, String> marketCapColumn;
+    private TableColumn<CoinData, String> marketCapColumn;
 
     @FXML
-    TextField searchTextField;
+    private TextField searchTextField;
 
-    NewsAggregatorClientController mainController;
+    @FXML
+    private Hyperlink sourceLink;
+
+    private NewsAggregatorClientController mainController;
+
+    private HostServices hostServices;
 
     public MarketDataController() {
     }
 
-    public MarketDataController(CoinPriceJSONLoader coinPriceJSONLoader, NewsAggregatorClientController mainController) {
+    public MarketDataController(CoinPriceJSONLoader coinPriceJSONLoader, NewsAggregatorClientController mainController){
 //        this.coinPriceData = data;
         this.coinPriceJSONLoader = coinPriceJSONLoader;
         this.mainController = mainController;
@@ -148,6 +151,8 @@ public class MarketDataController {
         coinPriceFrame.getChildren().clear();
         coinPriceFrame.getChildren().add(coinPriceChart);
         HBox.setHgrow(coinPriceChart, javafx.scene.layout.Priority.ALWAYS);
+        sourceLink.setOnAction(event ->
+                hostServices.showDocument("https://rapidapi.com/Coinranking/api/coinranking1"));
     }
 
     public void loadMarketData(int period) {
@@ -284,8 +289,8 @@ public class MarketDataController {
             }
     }
 
-    public void setMainController(NewsAggregatorClientController mainController) {
-        this.mainController = mainController;
+    public void setHostServices(HostServices hostServices){
+        this.hostServices = hostServices;
     }
 
     public static class CoinData{
@@ -304,10 +309,6 @@ public class MarketDataController {
 
         public String getCoinName() {
             return coinName;
-        }
-
-        public void setCoinName(String coinName) {
-            this.coinName = coinName;
         }
 
         public String getPrice() {

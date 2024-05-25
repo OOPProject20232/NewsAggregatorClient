@@ -20,6 +20,8 @@ public class GenericDialog extends Dialog<Void> {
         getDialogPane().getStylesheets().add(
                 NewsAggregatorClientApplication.class.getResourceAsStream("assets/css/dialogs.css").toString()
         );
+        getDialogPane().getStylesheets().add(
+                NewsAggregatorClientApplication.class.getResource("assets/css/main.css").toExternalForm());
     }
 
 }

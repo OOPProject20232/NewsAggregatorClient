@@ -85,7 +85,7 @@ public class BookmarkController {
     private List<NewsItemData> getBookmarkedNews(){
         SQLiteJDBC db = new SQLiteJDBC();
         List<NewsItemData> data = db.select();
-        return data;
+        return data.reversed();
     }
 
     private void handle(ActionEvent e) {

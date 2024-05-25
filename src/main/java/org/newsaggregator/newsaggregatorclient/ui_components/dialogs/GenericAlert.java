@@ -12,6 +12,8 @@ public class GenericAlert extends Alert {
         getDialogPane().getStylesheets().add(
                 NewsAggregatorClientApplication.class.getResource("assets/css/main.css").toExternalForm()
         );
+        getDialogPane().getStylesheets().add(
+                NewsAggregatorClientApplication.class.getResource("assets/css/dialogs.css").toExternalForm());
         getDialogPane().getStyleClass().addAll("dialog", "generic-transparent-container");
     }
 }
