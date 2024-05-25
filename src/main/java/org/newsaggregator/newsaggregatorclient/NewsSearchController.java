@@ -2,8 +2,6 @@ package org.newsaggregator.newsaggregatorclient;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -11,7 +9,6 @@ import javafx.scene.layout.VBox;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.datamodel.RedditPostData;
-import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsCategoryJSONLoader;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
 import org.newsaggregator.newsaggregatorclient.jsonparsing.RedditPostJSONLoader;
@@ -23,8 +20,6 @@ import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDial
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.ArticleItemsLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.RedditItemsLoader;
 
-import java.net.MalformedURLException;
-import java.net.NoRouteToHostException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -262,14 +257,16 @@ public class NewsSearchController{
     private void loadNewsToFrame(InfiniteNews infiniteNews, JSONObject obj, int limit, int begin){
         if (searchField.equals("all")) {
             NewsJSONLoader newsJSONLoader = new NewsJSONLoader();
-            List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(limit, begin , obj);
+            newsJSONLoader.setJSONObj(obj);
+            List<NewsItemData> list = newsJSONLoader.getDataList(limit, begin);
             ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(limit, begin, hostServices, infiniteNews, mainController);
             articleItemsLoader.loadItems(list);
             currentChunk.set(currentChunk.get() + 1);
         }
         else{
             NewsCategoryJSONLoader newsJSONLoader = new NewsCategoryJSONLoader();
-            List<NewsItemData> list = newsJSONLoader.getNewsItemDataList(limit, begin, obj);
+            newsJSONLoader.setJSONObj(obj);
+            List<NewsItemData> list = newsJSONLoader.getDataList(limit, begin);
             System.out.println(list);
             ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(limit, begin, hostServices, infiniteNews, mainController);
             articleItemsLoader.loadItems(list);
@@ -311,7 +308,7 @@ public class NewsSearchController{
 
     private void loadRedditToFrame(RedditGroupTitledPane redditGroupTitledPane, JSONObject obj){
         RedditPostJSONLoader redditPostJSONLoader = new RedditPostJSONLoader();
-        List<RedditPostData> list = redditPostJSONLoader.getRedditPostsList(10, 0, obj);
+        List<RedditPostData> list = redditPostJSONLoader.getDataList(10, 0);
         RedditItemsLoader<RedditGroupTitledPane> redditItemsLoader = new RedditItemsLoader<>(10, 0, hostServices, redditGroupTitledPane);
         redditItemsLoader.loadItems(list);
     }

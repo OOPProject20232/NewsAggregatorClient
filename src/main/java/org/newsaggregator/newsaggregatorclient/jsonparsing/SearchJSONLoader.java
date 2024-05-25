@@ -58,29 +58,23 @@ public class SearchJSONLoader<T extends GenericData> implements IJSONLoader {
     }
 
     @Override
+    public void setJSONObj(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
+
+    @Override
     public String toString() {
         return jsonObject.toString();
     }
 
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public void setIsDesc(String isDesc) {
-        this.isDesc = isDesc;
-    }
-
-    public <D extends GenericData> List<D> getNewsItemDataList(int begin, int limit) {
+    @Override
+    public List<T> getDataList(int begin, int limit) {
         if (searchType.equals("articles")) {
             System.out.println("\u001B[34m"+"Getting news item data list from JSON file"+ "\u001B[0m");
             JSONArray newsItems = jsonObject.getJSONArray("articles");
             List<NewsItemData> newsItemDataList = new ArrayList<>();
             if (begin >= newsItems.length()) {
-                return (List<D>) newsItemDataList;
+                return (List<T>) newsItemDataList;
             }
             if (begin + limit > newsItems.length()) {
                 limit = newsItems.length() - begin;
@@ -96,7 +90,7 @@ public class SearchJSONLoader<T extends GenericData> implements IJSONLoader {
                 NewsItemData newsItemData = json2NewsItemData.convert(newsItemObject);
                 newsItemDataList.add(newsItemData);
             }
-            return (List<D>) newsItemDataList;
+            return (List<T>) newsItemDataList;
         }
         return null;
     }
@@ -108,5 +102,17 @@ public class SearchJSONLoader<T extends GenericData> implements IJSONLoader {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public void setIsDesc(String isDesc) {
+        this.isDesc = isDesc;
     }
 }

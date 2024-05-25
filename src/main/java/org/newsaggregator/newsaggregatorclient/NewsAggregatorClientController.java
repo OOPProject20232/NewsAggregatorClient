@@ -98,7 +98,7 @@ public class NewsAggregatorClientController {
     }
 
     @FXML
-    public synchronized void start(){
+    public void start(){
         reloadNews.setOnAction(event -> reloadNews());
         AnchorPane.setBottomAnchor(articleScrollPane, 0.0);
         AnchorPane.setTopAnchor(articleScrollPane, 0.0);
@@ -220,7 +220,7 @@ public class NewsAggregatorClientController {
                 additionalInfoContainer.getChildren().clear();
 //            coinNewestPriceGroupFrame.addAllCoins(coinPriceJSONLoader);
                 additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
-                List<CoinPriceData> coinData = coinPriceJSONLoader.getNewestCoinPrices();
+                List<CoinPriceData> coinData = coinPriceJSONLoader.getDataList();
                 System.out.println("\u001B[35m" + "Loading coin items" + "\u001B[0m");
                 CoinNewestPriceItemsLoader coinNewestPriceItemsLoader = new CoinNewestPriceItemsLoader(coinNewestPriceGroupFrame, hostServices);
                 coinNewestPriceItemsLoader.loadItems(coinData);

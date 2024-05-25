@@ -10,6 +10,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -41,6 +42,11 @@
                </font>
             </Label>
             <TextField fx:id="searchBar" promptText="Search here..." styleClass="search-bar" />
+            <HBox prefHeight="45.0" prefWidth="741.0">
+               <padding>
+                  <Insets bottom="12.0" top="12.0" />
+               </padding>
+            </HBox>
             <ScrollPane fx:id="bookmarkScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="200.0" prefWidth="200.0" styleClass="generic-container" VBox.vgrow="ALWAYS">
                <content>
                   <VBox fx:id="bookmarkedGridPane" styleClass="generic-container" />

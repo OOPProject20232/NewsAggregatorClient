@@ -7,9 +7,14 @@ import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class này là 1 tiện ích chuyển đổi từ 1 JSONObject có định dạng 1 article (không phải post) sang NewsItemData
+ */
 public class JSON2NewsItemData {
     /**
-     * Class này là 1 tiện ích chuyển đổi từ 1 JSONObject có định dạng 1 article (không phải post) sang NewsItemData
+     * Chuyển đổi từ JSONObject sang NewsItemData
+     * @param newsItemObject: JSONObject cần chuyển đổi
+     * @return NewsItemData: NewsItemData sau khi chuyển đổi
      */
     public NewsItemData convert( JSONObject newsItemObject) {
         NewsItemData newsItemData = new NewsItemData();
@@ -49,6 +54,12 @@ public class JSON2NewsItemData {
         return newsItemData;
     }
 
+    /**
+     * Lấy giá trị của 1 field trong JSONObject
+     * @param jsonObject: JSONObject cần lấy giá trị
+     * @param field: Tên field cần lấy giá trị
+     * @return String: Giá trị của field
+     */
     private String getSimpleField(JSONObject jsonObject, String field) {
         try {
             return jsonObject.getString(field);
@@ -58,6 +69,12 @@ public class JSON2NewsItemData {
         }
     }
 
+    /**
+     * Lấy giá trị của 1 nested field trong JSONObject
+     * @param jsonObject: JSONObject cần lấy giá trị
+     * @param field: Tên nested field cần lấy giá trị
+     * @return JSONObject: Giá trị của nested field
+     */
     private JSONObject getComplexField(JSONObject jsonObject, String field) {
         try {
             return jsonObject.getJSONObject(field);

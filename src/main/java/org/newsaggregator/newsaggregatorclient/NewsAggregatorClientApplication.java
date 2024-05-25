@@ -53,9 +53,9 @@ public class NewsAggregatorClientApplication extends Application {
                     stage.setTitle("Crypto News Aggregator Client");
                     stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/icon.png"))));
                     stage.setScene(scene);
+                    controller.start();
                     controller.showAllNewsCategories();
                     stage.show();
-                    controller.start();
                 } else{
                     System.out.println("???");
                 }

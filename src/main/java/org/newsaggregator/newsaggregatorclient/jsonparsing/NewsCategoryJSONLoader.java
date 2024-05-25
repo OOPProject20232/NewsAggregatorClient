@@ -8,50 +8,45 @@ import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsCategoryJSONLoader implements IJSONLoader{
-    private JSONObject jsonObject;
-    private String jsonString;
-    private String cacheFileName;
+public class NewsCategoryJSONLoader implements IJSONLoader<NewsItemData>{
+    private JSONObject newsCategoryJsonObject;
     private String category;
-
-    public void setCacheFileName(String cacheFileName) {
-        this.cacheFileName = cacheFileName;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
 
     @Override
     public synchronized JSONObject loadJSON() {
         try {
-            cacheFileName = "news_" + category + ".json";
+            String cacheFileName = "news_" + category + ".json";
             String urlString = DOMAIN + "v1/articles/categories/" + category + "?page=1&limit=5";
-            jsonObject = DataReaderFromIS.fetchJSONWithCache(urlString, cacheFileName);
+            newsCategoryJsonObject = DataReaderFromIS.fetchJSONWithCache(urlString, cacheFileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return jsonObject;
+        return newsCategoryJsonObject;
+    }
+
+    @Override
+    public void setJSONObj(JSONObject jsonObject) {
+        this.newsCategoryJsonObject = jsonObject;
     }
 
 
     public JSONObject getJSONObject() {
-        return jsonObject;
+        return newsCategoryJsonObject;
     }
 
     public String getJSONString() {
         try {
-            return jsonObject.toString();
+            return newsCategoryJsonObject.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
     }
 
-    public List<NewsItemData> getNewsItemDataList(int limit, int begin, JSONObject jsonObject) {
+    public List<NewsItemData> getDataList(int limit, int begin) {
         List<NewsItemData> newsItemDataList = new ArrayList<>();
         try {
-            JSONArray categories = jsonObject.getJSONArray("categories");
+            JSONArray categories = newsCategoryJsonObject.getJSONArray("categories");
 //            if (begin + limit > categories.length()) {
 //                limit = categories.length() - begin;
 //            }
@@ -75,4 +70,9 @@ public class NewsCategoryJSONLoader implements IJSONLoader{
         }
         return newsItemDataList;
     }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
 }

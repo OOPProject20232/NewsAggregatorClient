@@ -2,8 +2,11 @@ package org.newsaggregator.newsaggregatorclient.jsonparsing;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.json.JSONObject;
+import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 
-public interface IJSONLoader{
+import java.util.List;
+
+public interface IJSONLoader<T extends GenericData>{
     /**
      * Interface này chứa các hàm để load dữ liệu từ file JSON
      */
@@ -13,7 +16,11 @@ public interface IJSONLoader{
      */
     JSONObject loadJSON();
 
+    void setJSONObj(JSONObject jsonObject);
+
     default int getTotalPages(){
         return loadJSON().getInt("totalPages");
     }
+
+    List<T> getDataList(int limit, int begin);
 }

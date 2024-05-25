@@ -8,7 +8,7 @@ public class CoinPriceLoaderTest {
         CoinPriceData coinPriceData = new CoinPriceData();
         CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
         coinPriceJSONLoader.loadJSON();
-        coinPriceData = coinPriceJSONLoader.getNewestCoinPrices().get(0);
+        coinPriceData = coinPriceJSONLoader.getDataList().get(0);
         System.out.println(coinPriceData);
     }
 }

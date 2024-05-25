@@ -27,6 +27,7 @@ public class DataReaderFromIS {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/json");
+            connection.setConnectTimeout(5000);
             connection.connect();
             int responseCode = connection.getResponseCode();
             if (responseCode != 200) {
@@ -108,6 +109,7 @@ public class DataReaderFromIS {
             HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "image");
+            connection.setConnectTimeout(5000);
             connection.connect();
             int responseCode = connection.getResponseCode();
             if (responseCode != 200) {
@@ -130,6 +132,7 @@ public class DataReaderFromIS {
             connection.setRequestMethod("HEAD");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("If-Modified-Since", Files.getLastModifiedTime(cachePath).toString());
+            connection.setConnectTimeout(5000);
             connection.connect();
             int responseCode = connection.getResponseCode();
             return responseCode;

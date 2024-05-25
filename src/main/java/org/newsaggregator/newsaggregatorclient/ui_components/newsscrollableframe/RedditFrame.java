@@ -42,7 +42,7 @@ public class RedditFrame extends GenericFrame {
                 System.out.println("Data is empty");
             }
             else {
-                List<RedditPostData> data = redditDataLoader.get().getRedditPostsList(20, 0, redditDataLoader.get().getJsonObject());
+                List<RedditPostData> data = redditDataLoader.get().getDataList(20, 0);
                 new Thread(() -> Platform.runLater(() -> {
                     RedditItemsLoader redditItemsLoader = new RedditItemsLoader(20, 0, hostServices, allReddit);
                     redditItemsLoader.loadItems(data);
@@ -61,7 +61,7 @@ public class RedditFrame extends GenericFrame {
                 System.out.println("Data is empty");
             }
             else {
-                List<RedditPostData> data = redditDataLoader.get().getRedditPostsList(20, 0, redditDataLoader.get().getJsonObject());
+                List<RedditPostData> data = redditDataLoader.get().getDataList(20, 0);
                 new Thread(() -> Platform.runLater(() -> {
                     RedditItemsLoader redditItemsLoader = new RedditItemsLoader(20, 0, hostServices, allReddit);
                     redditItemsLoader.loadItems(data);

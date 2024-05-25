@@ -7,19 +7,16 @@ import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
 
 import java.net.MalformedURLException;
-import java.net.NoRouteToHostException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static java.util.Collections.emptyNavigableMap;
 import static java.util.Collections.max;
 
-public class CoinPriceJSONLoader implements IJSONLoader{
-    private String filePath;
+public class CoinPriceJSONLoader implements IJSONLoader<CoinPriceData>{
     private int limit;
-    JSONObject coinPrices;
+    private JSONObject coinPrices;
     @Override
     public synchronized JSONObject loadJSON() {
 
@@ -38,11 +35,16 @@ public class CoinPriceJSONLoader implements IJSONLoader{
         return new JSONObject();
     }
 
+    @Override
+    public void setJSONObj(JSONObject jsonObject) {
+        this.coinPrices = jsonObject;
+    }
+
     public void setLimit(int limit) {
         this.limit = limit;
     }
 
-    public synchronized List<CoinPriceData> getNewestCoinPrices() throws IllegalArgumentException{
+    public synchronized List<CoinPriceData> getDataList() throws IllegalArgumentException{
         List<CoinPriceData> coinPrices = new ArrayList<>();
         JSONArray coinPricesArray = this.coinPrices.getJSONArray("coins");
         for (int i = 0; i < coinPricesArray.length(); i++) {
@@ -77,8 +79,58 @@ public class CoinPriceJSONLoader implements IJSONLoader{
         return coinPrices;
     }
 
+    public synchronized List<CoinPriceData> getDataList(int limit, int begin){
+        if (limit <= 0) {
+            throw new IllegalArgumentException("Limit must be greater than 0");
+        }
+        if (begin < 0) {
+            throw new IllegalArgumentException("Begin must be greater than or equal to 0");
+        }
+        if (begin >= limit) {
+            throw new IllegalArgumentException("Begin must be less than limit");
+        }
+        List<CoinPriceData> coinPrices = new ArrayList<>();
+        JSONArray coinPricesArray = this.coinPrices.getJSONArray("coins");
+        if (begin >= coinPricesArray.length()) {
+            return coinPrices;
+        }
+        if (begin + limit > coinPricesArray.length()) {
+            limit = coinPricesArray.length() - begin;
+        }
+        for (int i = begin; i < limit; i++) {
+            JSONObject coin = coinPricesArray.getJSONObject(i);
+            String coinName = coin.getString("name");
+            JSONObject prices = coin.getJSONObject("prices");
+            int rank = coin.getInt("rank");
+            String coinSymbol = coin.getString("symbol");
+            long marketCap = coin.getLong("market_cap");
+            String date = max(prices.toMap().keySet());
+            LocalDate today = LocalDate.now();
+            LocalDateTime todayAt7AM = today.atTime(7, 0, 0);
+            todayAt7AM.format(DateTimeFormatter.ISO_DATE_TIME);
+            System.out.println("Newest price date: " + todayAt7AM);
+            String price = prices.getString(date);
+//            Float priceFloat = Float.parseFloat(price);
+//            price = String.format("%.2f", priceFloat);
+            CoinPriceData coinPriceData = new CoinPriceData();
+            coinPriceData.setCoinName(coinName);
+            coinPriceData.setPrice(price);
+            coinPriceData.setRank(Integer.toString(rank));
+            coinPriceData.setCoinSymbol(coinSymbol);
+            coinPriceData.setDate(date);
+            coinPriceData.setPriceChange(getChangeInPrice(coinSymbol, 1));
+            coinPriceData.setMarketCap(marketCap);
+            coinPrices.add(coinPriceData);
+        }
+//        // Print all values in coinPrices
+//        for (CoinPriceData coinPriceData : coinPrices) {
+//            System.out.println(coinPriceData);
+//        }
+        return coinPrices;
+    }
+
     public CoinPriceData getNewestCoinPriceByCoin(String coinSymbol){
-        List<CoinPriceData> coinList = getNewestCoinPrices();
+        List<CoinPriceData> coinList = getDataList();
         for (CoinPriceData coinPriceData : coinList){
             if (coinPriceData.getCoinSymbol().equals(coinSymbol)){
                 return coinPriceData;

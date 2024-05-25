@@ -24,7 +24,7 @@ public class SplashScreen extends Alert {
             stage.setIconified(false);
             stage.initStyle(StageStyle.UNDECORATED);
             getDialogPane().getScene().setFill(Color.TRANSPARENT);
-            getDialogPane().setStyle("-fx-background-radius: 30px; -fx-border-width: 0;");
+            getDialogPane().setStyle("-fx-background-radius: 30px; -fx-border-width: 0; -fx-background-color: white");
             stage.setAlwaysOnTop(true);
         } catch (Exception e) {
             e.printStackTrace();

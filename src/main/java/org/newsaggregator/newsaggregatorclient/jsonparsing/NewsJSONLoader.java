@@ -10,13 +10,11 @@ import java.net.NoRouteToHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsJSONLoader implements IJSONLoader {
-    private JSONObject jsonObject;
-    private String jsonString;
-    private String cacheFileName;
-    int pageNumber;
-    int limit;
-    List<NewsItemData> newsItemDataList = new ArrayList<>();
+public class NewsJSONLoader implements IJSONLoader<NewsItemData> {
+    private JSONObject newsJsonObject;
+    private int pageNumber;
+    private int limit;
+    private final List<NewsItemData> newsItemDataList = new ArrayList<>();
 
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber;
@@ -26,8 +24,8 @@ public class NewsJSONLoader implements IJSONLoader {
         this.limit = limit;
     }
 
-    public JSONObject getJsonObject(){
-        return jsonObject;
+    public JSONObject getNewsJsonObject(){
+        return newsJsonObject;
     }
 
     /**
@@ -39,8 +37,8 @@ public class NewsJSONLoader implements IJSONLoader {
         String url = DOMAIN + "v1/articles?page=" + pageNumber + "&limit=" + limit;
         String cacheFileName = "news" + pageNumber + ".json";
         try{
-//            jsonObject = DataReaderFromIS.fetchJSON(url);
-            jsonObject = DataReaderFromIS.fetchJSONWithCache(url, cacheFileName);
+//            newsJsonObject = DataReaderFromIS.fetchJSON(url);
+            newsJsonObject = DataReaderFromIS.fetchJSONWithCache(url, cacheFileName);
 
         }
         catch (NoRouteToHostException e){
@@ -49,7 +47,12 @@ public class NewsJSONLoader implements IJSONLoader {
         catch (Exception e) {
             e.printStackTrace();
         }
-        return jsonObject;
+        return newsJsonObject;
+    }
+
+    @Override
+    public void setJSONObj(JSONObject jsonObject) {
+        this.newsJsonObject = jsonObject;
     }
 
     /**
@@ -58,14 +61,14 @@ public class NewsJSONLoader implements IJSONLoader {
      */
     public int getCount() {
         System.out.println("Getting count from JSON file");
-        return jsonObject.getInt("count");
+        return newsJsonObject.getInt("count");
     }
 
     @NotNull
     public synchronized String getJSONString() {
         String result = "";
         try {
-            result = jsonObject.toString();
+            result = newsJsonObject.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,18 +79,15 @@ public class NewsJSONLoader implements IJSONLoader {
      * Get news item data list from JSON file
      * @param limit: The number of news items to get
      * @param begin: The index of the first news item to get
-     * @param jsonObject: The JSON object to get news items from
      * @return List of news item data
      */
-    public synchronized List<NewsItemData> getNewsItemDataList(int limit, int begin, JSONObject jsonObject) {
-        if (jsonObject == null) {
-            jsonObject = this.jsonObject;
-        }
-        if (this.jsonObject == null && jsonObject == null) {
+    @Override
+    public synchronized List<NewsItemData> getDataList(int limit, int begin) {
+        if (this.newsJsonObject == null) {
             return newsItemDataList;
         }
         System.out.println("\u001B[34m"+"Getting news item data list from JSON file"+ "\u001B[0m");
-        JSONArray newsItems = jsonObject.getJSONArray("articles");
+        JSONArray newsItems = newsJsonObject.getJSONArray("articles");
         if (begin >= newsItems.length()) {
             return newsItemDataList;
         }
@@ -107,9 +107,5 @@ public class NewsJSONLoader implements IJSONLoader {
             System.out.println("Added news item: " + newsItemData);
         }
         return newsItemDataList;
-    }
-
-    public synchronized List<NewsItemData> getNewsItemDataList(int limit, int begin){
-        return getNewsItemDataList(limit, begin, null);
     }
 }

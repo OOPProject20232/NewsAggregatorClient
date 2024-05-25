@@ -28,6 +28,11 @@ public class RedditPostJSONLoader implements IJSONLoader{
         return jsonObject;
     }
 
+    @Override
+    public void setJSONObj(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
+
     public JSONObject getJsonObject() {
         return jsonObject;
     }
@@ -49,7 +54,8 @@ public class RedditPostJSONLoader implements IJSONLoader{
         this.limit = limit;
     }
 
-    public List<RedditPostData> getRedditPostsList(int limit, int begin, JSONObject jsonObject){
+    @Override
+    public List<RedditPostData> getDataList(int limit, int begin){
         for (int i = begin; i < begin + limit; i++) {
             JSONObject post = jsonObject.getJSONArray("posts").getJSONObject(i);
             RedditPostData redditPostData = new RedditPostData();

@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -23,7 +22,6 @@ import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDial
 import org.newsaggregator.newsaggregatorclient.util.NumberFormatter;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class MarketDataController {
@@ -164,7 +162,7 @@ public class MarketDataController {
          * @param symbols: danh sách các loại tiền cần tải dữ liệu
          *
          */
-        List<CoinPriceData> coinPriceDataList = coinPriceJSONLoader.getNewestCoinPrices();
+        List<CoinPriceData> coinPriceDataList = coinPriceJSONLoader.getDataList();
 //        double priceChangeByPeriod =  coinPriceJSONLoader.getChangeInPrice(coinPriceDataList.getFirst(), symbol, period);
         loadChartData(period, true, symbol);
 //        for (String symbol : symbols) {

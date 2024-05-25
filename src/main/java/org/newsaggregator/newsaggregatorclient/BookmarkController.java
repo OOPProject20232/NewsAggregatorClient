@@ -32,6 +32,9 @@ public class BookmarkController {
     @FXML
     TextField searchBar;
 
+//    @FXML
+//    ComboBox<String> sortByComboBox;
+
     HostServices hostServices;
     NewsAggregatorClientController mainController;
     int currentPage = 0;
@@ -75,6 +78,8 @@ public class BookmarkController {
             });
         });
         searchBar.setOnKeyPressed(e -> Platform.runLater(searchService::search));
+//        sortByComboBox.getItems().clear();
+//        sortByComboBox.getItems().addAll("Title", "Publisher", "Date");
     }
 
     private List<NewsItemData> getBookmarkedNews(){
