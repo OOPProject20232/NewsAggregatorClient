@@ -27,7 +27,7 @@ public class DataReaderFromIS {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setConnectTimeout(5000);
+            connection.setConnectTimeout(30000);
             connection.connect();
             int responseCode = connection.getResponseCode();
             if (responseCode != 200) {
@@ -78,16 +78,16 @@ public class DataReaderFromIS {
             }
             Files.write(cachePath, jsonObject.toString().getBytes());
             return jsonObject;
-        } catch (NoRouteToHostException e){
-            NoInternetDialog noInternetDialog = new NoInternetDialog();
-            noInternetDialog.show();
-        } catch (Exception e) {
+        } catch (NoRouteToHostException | SocketTimeoutException e){
+            throw new NoRouteToHostException("No Internet");
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static void fetchFileWithCache(String urlString, String cacheFile, String cacheFolder) throws NoRouteToHostException {
+    public static void fetchFileWithCache(String urlString, String cacheFile, String cacheFolder) throws NoRouteToHostException, SocketTimeoutException {
         //If folder not exists, create it
         Path folderPath = Path.of(cacheFolder);
         if (!Files.exists(folderPath)) {
@@ -120,6 +120,12 @@ public class DataReaderFromIS {
         }
         catch (NoRouteToHostException e){
             throw new NoRouteToHostException("No Internet");
+        }
+        catch (SocketTimeoutException e){
+            throw new SocketTimeoutException("Connection timed out");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -15,9 +15,12 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.NewsJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.InfiniteNews;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.NewsCategoryGroupTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.ArticleItemsLoader;
 
 import java.net.NoRouteToHostException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -44,7 +47,7 @@ public class ArticlesFrame extends GenericFrame {
     /**
      * Phần load chính các bài viết
      */
-    public void loadArticles() throws NoRouteToHostException {
+    public void loadArticles() throws NoRouteToHostException, UnknownHostException {
         System.out.println("Loading articles");
         NewsCategoryGroupTitledPane latestNews = new NewsCategoryGroupTitledPane("Latest news");
         NewsCategoryGroupTitledPane bitcoinNews = new NewsCategoryGroupTitledPane("Bitcoin news");
@@ -168,10 +171,7 @@ public class ArticlesFrame extends GenericFrame {
      * @param newsCategoryJSONLoader NewsCategoryJSONLoader: Loader chứa dữ liệu bài viết
      */
     private synchronized void getNewsCategory(NewsCategoryGroupTitledPane pane, NewsCategoryJSONLoader newsCategoryJSONLoader) {
-        if (newsCategoryJSONLoader.loadJSON().isNull("categories")) {
-            System.out.println("Data is empty");
-        }
-        else {
+        try{
             List<NewsItemData> data = newsCategoryJSONLoader.getDataList(5, 0);
             System.out.println("Data size: " + data.size());
                 ArticleItemsLoader<NewsCategoryGroupTitledPane> articleItemsLoader = new ArticleItemsLoader<>(5, 0, hostServices, pane, mainController);
@@ -180,6 +180,8 @@ public class ArticlesFrame extends GenericFrame {
             Platform.runLater(() -> {
                 articleItemsLoader.loadItems(data);
             });
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -204,7 +206,12 @@ public class ArticlesFrame extends GenericFrame {
     private NewsCategoryJSONLoader getNewsCategoryJSONLoader(String category) {
         NewsCategoryJSONLoader articleDataLoader = new NewsCategoryJSONLoader();
         articleDataLoader.setCategory(category);
-        articleDataLoader.loadJSON();
+        try {
+            articleDataLoader.loadJSON();
+        }
+        catch (NoRouteToHostException e){
+            NoInternetDialog noInternetDialog = new NoInternetDialog();
+        }
         return articleDataLoader;
     }
 

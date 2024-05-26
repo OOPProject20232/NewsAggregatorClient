@@ -23,6 +23,7 @@ import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.CoinNewestPriceItemsLoader;
 
 import java.net.NoRouteToHostException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 public class NewsAggregatorClientController {
@@ -160,6 +161,7 @@ public class NewsAggregatorClientController {
         marketDataTab.setOnSelectionChanged(event -> {
             if (marketDataTab.isSelected()) {
                 MarketDataController marketDataController = new MarketDataController();
+                marketDataController.setHostServices(hostServices);
                 FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("market_data.fxml"));
                 fxmlLoader.setController(marketDataController);
                 try {
@@ -200,7 +202,7 @@ public class NewsAggregatorClientController {
         Platform.runLater(() -> {
             try {
                 articleScrollPane.loadArticles();
-            } catch (NoRouteToHostException e) {
+            } catch (NoRouteToHostException | UnknownHostException e) {
 //                loadingDialog.close();
                 NoInternetDialog noInternetDialog = new NoInternetDialog();
                 noInternetDialog.show();
@@ -233,7 +235,12 @@ public class NewsAggregatorClientController {
     private static synchronized CoinPriceJSONLoader getCoinPriceJSONLoader() {
         CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
         coinPriceJSONLoader.setLimit(coinLimit);
-        coinPriceJSONLoader.loadJSON();
+        try {
+            coinPriceJSONLoader.loadJSON();
+        } catch (NoRouteToHostException e) {
+            NoInternetDialog noInternetDialog = new NoInternetDialog();
+            noInternetDialog.show();
+        }
         return coinPriceJSONLoader;
     }
 
@@ -257,7 +264,7 @@ public class NewsAggregatorClientController {
                     } catch (NoRouteToHostException e) {
                         NoInternetDialog noInternetDialog = new NoInternetDialog();
                         noInternetDialog.show();
-                        cancel();
+                        failed();
                         loadingDialog.close();
                     }
                     showAllNewsCategories();

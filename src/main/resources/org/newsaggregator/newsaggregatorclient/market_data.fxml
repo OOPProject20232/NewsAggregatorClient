@@ -71,7 +71,7 @@
                               </HBox>
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="12.0" VBox.vgrow="ALWAYS">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
                            <children>
                               <TableView fx:id="coinPriceTable" prefHeight="200.0" prefWidth="200.0" styleClass="chart-container" VBox.vgrow="ALWAYS">
                                 <columns>
@@ -115,6 +115,9 @@
                                        </StackPane.margin>
                                     </Button>
                                  </children>
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
                               </StackPane>
                            </children>
                            <padding>

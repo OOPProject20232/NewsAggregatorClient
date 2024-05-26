@@ -5,6 +5,8 @@ import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
 
+import java.net.NoRouteToHostException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +15,13 @@ public class NewsCategoryJSONLoader implements IJSONLoader<NewsItemData>{
     private String category;
 
     @Override
-    public synchronized JSONObject loadJSON() {
+    public synchronized JSONObject loadJSON() throws NoRouteToHostException {
         try {
             String cacheFileName = "news_" + category + ".json";
             String urlString = DOMAIN + "v1/articles/categories/" + category + "?page=1&limit=5";
             newsCategoryJsonObject = DataReaderFromIS.fetchJSONWithCache(urlString, cacheFileName);
+        } catch (NoRouteToHostException e) {
+            throw new NoRouteToHostException("No Internet");
         } catch (Exception e) {
             e.printStackTrace();
         }

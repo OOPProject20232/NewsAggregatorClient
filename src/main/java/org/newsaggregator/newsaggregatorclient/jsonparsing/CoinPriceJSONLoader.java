@@ -5,8 +5,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.downloaders.DataReaderFromIS;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
 
 import java.net.MalformedURLException;
+import java.net.NoRouteToHostException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,7 +20,7 @@ public class CoinPriceJSONLoader implements IJSONLoader<CoinPriceData>{
     private int limit;
     private JSONObject coinPrices;
     @Override
-    public synchronized JSONObject loadJSON() {
+    public synchronized JSONObject loadJSON() throws NoRouteToHostException {
 
         if (limit <= 0) {
             throw new IllegalArgumentException("Limit must be greater than 0");
@@ -29,6 +31,8 @@ public class CoinPriceJSONLoader implements IJSONLoader<CoinPriceData>{
             coinPrices = DataReaderFromIS.fetchJSONWithCache(url, cacheFileName);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
+        } catch (NoRouteToHostException e) {
+            throw new NoRouteToHostException("No Internet");
         } catch (Exception e) {
             e.printStackTrace();
         }

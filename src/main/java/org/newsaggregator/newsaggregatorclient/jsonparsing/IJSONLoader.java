@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.json.JSONObject;
 import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 
+import java.net.NoRouteToHostException;
 import java.util.List;
 
 public interface IJSONLoader<T extends GenericData>{
@@ -14,12 +15,16 @@ public interface IJSONLoader<T extends GenericData>{
     /**
      * Hàm loadJSON dùng để load dữ liệu từ file JSON
      */
-    JSONObject loadJSON();
+    JSONObject loadJSON() throws NoRouteToHostException;
 
     void setJSONObj(JSONObject jsonObject);
 
     default int getTotalPages(){
-        return loadJSON().getInt("totalPages");
+        try {
+            return loadJSON().getInt("totalPages");
+        } catch (NoRouteToHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     List<T> getDataList(int limit, int begin);

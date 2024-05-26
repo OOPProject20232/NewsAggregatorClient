@@ -20,9 +20,11 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.chart.CustomCursor;
 import org.newsaggregator.newsaggregatorclient.ui_components.chart.LineChartWithCrosshair;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
 import org.newsaggregator.newsaggregatorclient.util.NumberFormatter;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
+import java.net.NoRouteToHostException;
 import java.util.*;
 
 public class MarketDataController {
@@ -105,10 +107,11 @@ public class MarketDataController {
 //        loadMarketData(7, true, symbol);
         Platform.runLater(() -> {
             try{
-                coinPriceJSONLoader.getJSONString();
-            }
-            catch (Exception e){
                 coinPriceJSONLoader.loadJSON();
+            }
+            catch (NoRouteToHostException e){
+                NoInternetDialog noInternetDialog = new NoInternetDialog();
+                noInternetDialog.show();
             }
             loadMarketData(7);
             loadingDialog.close();
