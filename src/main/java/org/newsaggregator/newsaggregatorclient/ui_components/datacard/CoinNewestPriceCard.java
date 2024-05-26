@@ -34,11 +34,11 @@ public class CoinNewestPriceCard extends HorizontalDataCard<CoinPriceData>{
         this.coinPriceData = coinPriceData;
         setCardStyle();
     }
-
-    @Override
-    public void setCardStyle() {
-
-    }
+//
+//    @Override
+//    public void setCardStyle() {
+//
+//    }
 
     @Override
     public void setText() {

@@ -4,6 +4,7 @@ import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
+import javafx.scene.control.Dialog;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientController;
 import org.newsaggregator.newsaggregatorclient.database.SQLiteJDBC;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
@@ -93,10 +94,10 @@ public class ArticleItemsLoader<T>
                         newsItem.setPublisherLogo();
                     });
                     newsItem.getArticleHyperlinkTitle().setOnAction(
-                            event -> this.showArticlePopup(itemData)
+                            (e) -> this.showArticlePopup(newsItem)
                     );
                     newsItem.getReadMore().setOnAction(
-                            event -> this.showArticlePopup(itemData)
+                            (e) -> this.showArticlePopup(newsItem)
                     );
                     newsItem.getThumbnailHyperlink().setOnAction(
                             event -> this.showImage(itemData)
@@ -135,11 +136,20 @@ public class ArticleItemsLoader<T>
         this.containingCategories = containingCategories;
     }
 
-    private void showArticlePopup(NewsItemData itemData){
+    private void showArticlePopup(NewsItemCard itemCard){
         try {
-            ArticleReader popup = new ArticleReader(itemData, hostServices);
+            ArticleReader popup = new ArticleReader(itemCard.getNewsItemData(), hostServices);
             popup.initialize();
             popup.showAndWait();
+            popup.setOnHiding(e -> {
+                SQLiteJDBC db = new SQLiteJDBC();
+                if (db.isBookmarked(itemCard.getNewsItemData())){
+                    itemCard.getBookmarkButton().setSelected();
+                }
+                else {
+                    itemCard.getBookmarkButton().setUnselected();
+                }
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

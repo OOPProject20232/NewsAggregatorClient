@@ -62,10 +62,10 @@ public class NewsAggregatorClientController {
     private Tab bookmarkTab;
 
     @FXML
-    private ToggleButton articleTabButton;
+    private RadioButton articleTabButton;
 
     @FXML
-    private ToggleButton redditTabButton;
+    private RadioButton redditTabButton;
 
     @FXML
     private TabPane newsTypeTabPane;
@@ -107,8 +107,9 @@ public class NewsAggregatorClientController {
         AnchorPane.setRightAnchor(articleScrollPane, 0.0);
         AnchorPane.setBottomAnchor(redditFrame, 0.0);
         AnchorPane.setTopAnchor(redditFrame, 0.0);
-        AnchorPane.setLeftAnchor(redditFrame, 0.0);
-        AnchorPane.setRightAnchor(redditFrame, 0.0);
+        AnchorPane.setLeftAnchor(redditFrame, 48.0);
+        AnchorPane.setRightAnchor(redditFrame, 12.0);
+        articleTabButton.getStyleClass().remove("radio-button");
         articleTabButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             ImageView articleIcon = new ImageView();
             articleIcon.setFitHeight(24);
@@ -123,6 +124,13 @@ public class NewsAggregatorClientController {
         articleTabButton.setOnAction(event -> {
             newsTypeTabPane.getSelectionModel().select(0);
         });
+        articleTabButton.setOnMouseClicked(event -> {
+            newsTypeTabPane.getSelectionModel().select(0);
+            if (articleTabButton.isSelected()) {
+                articleTabButton.setSelected(true);
+            }
+        });
+        redditTabButton.getStyleClass().remove("radio-button");
         redditTabButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             ImageView redditIcon = new ImageView();
             redditIcon.setFitHeight(24);

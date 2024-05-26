@@ -7,6 +7,7 @@ import org.newsaggregator.newsaggregatorclient.datamodel.RedditPostData;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.RedditCard;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.CategoryTitledPane;
 import org.newsaggregator.newsaggregatorclient.ui_components.datagroupframes.RedditGroupTitledPane;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ImageViewDialog;
 
 import java.util.List;
 
@@ -35,7 +36,13 @@ public class RedditItemsLoader<T> extends Task<Void> implements ItemsLoader<Redd
             redditCard.getTitle().setOnAction(e -> hostServices.showDocument(redditPostData.getUrl()));
             redditCard.getAuthor().setOnAction(e -> hostServices.showDocument(redditPostData.getLinkToAuthor()));
             redditCard.getSubreddit().setOnAction(e -> hostServices.showDocument(redditPostData.getLinkToSub()));
-            redditCard.getImageViewLink().setOnAction(e -> hostServices.showDocument(redditPostData.getUrl()));
+            redditCard.getImageViewLink().setOnAction(e -> {
+                try {
+                    new ImageViewDialog(redditPostData.getMediaUrl()).show();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
             System.out.println(redditPostData.getTitle());
             Platform.runLater(() -> {
                 redditCard.setText();

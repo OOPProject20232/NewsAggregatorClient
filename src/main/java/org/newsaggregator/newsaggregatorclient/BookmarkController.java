@@ -60,6 +60,7 @@ public class BookmarkController {
         });
         reload.setOnAction(e -> {
             currentPage = 0;
+            searchBar.clear();
             handle(e);
         });
         bookmarkScrollPane.setOnScroll(e -> {

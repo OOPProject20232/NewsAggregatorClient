@@ -3,9 +3,11 @@ package org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -19,14 +21,24 @@ public class ImageViewDialog extends GenericDialog {
         stage.initStyle(StageStyle.UNIFIED);
         stage.setTitle(url);
         stage.setResizable(true);
-        stage.sizeToScene();
+        VBox vBox = new VBox();
         ImageView img = new ImageView();
-        ScrollPane scrollPane = new ScrollPane(img);
+        Label label = new Label("Press ESC to close the image");
+        vBox.getChildren().addAll(label, img);
+        ScrollPane scrollPane = new ScrollPane(vBox);
         getDialogPane().setContent(scrollPane);
         getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        stage.getIcons().add(new Image("https://logo.clearbit.com/%s".formatted(URI.create(url).getHost()), true));
         Platform.runLater(() -> {
-//            stage.getIcons().add(new Image("https://logo.clearbit.com/%s".formatted(URI.create(url).getHost()), true));
-            img.setImage(new Image(url, true));
+            Image tmp = new Image(url, true);
+            img.setImage(tmp);
+            stage.setWidth(500);
+            stage.setHeight(400);
         });
+         this.getDialogPane().addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, event -> {
+             if (event.getCode().toString().equals("ESCAPE")) {
+                 stage.close();
+             }
+         });
     }
 }

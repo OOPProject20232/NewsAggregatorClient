@@ -34,16 +34,13 @@ public class NewsSearchController{
     private TextField searchTextField;
 
     @FXML
-    private ToggleButton articlesToggleButton;
+    private RadioButton articlesToggleButton;
 
     @FXML
-    private ToggleButton redditToggleButton;
+    private RadioButton redditToggleButton;
 
     @FXML
     private ComboBox<String> searchFieldComboBox;
-
-    @FXML
-    private ComboBox<String> searchOrderComboBox;
 
     @FXML
     private VBox searchVBox;
@@ -91,37 +88,51 @@ public class NewsSearchController{
         searchButton.setOnAction(event -> search());
         searchTextField.requestFocus();
         searchFieldComboBox.getItems().clear();
-        searchOrderComboBox.getItems().clear();
         searchFieldComboBox.getItems().addAll("all", "categories");
-        searchOrderComboBox.getItems().addAll("Newest", "Oldest");
         searchFieldComboBox.onActionProperty().set(event -> {
             searchField = searchFieldComboBox.getValue();
         });
-        searchOrderComboBox.setValue("Newest");
-        searchOrderComboBox.onActionProperty().set(event -> {
-            searchOrder = searchOrderComboBox.getValue();
-        });
         searchFieldComboBox.setValue("all");
+        articlesToggleButton.getStyleClass().remove("radio-button");
         articlesToggleButton.setOnAction(event -> {
             if (articlesToggleButton.isSelected())
                 searchType = "articles";
             System.out.println(searchType);
         });
-        redditToggleButton.setOnAction(event -> {
-            if (redditToggleButton.isSelected())
+        redditToggleButton.getStyleClass().remove("radio-button");
+//        redditToggleButton.setOnAction(event -> {
+//            if (redditToggleButton.isSelected())
+//                searchType = "reddit";
+//            System.out.println(searchType);
+//        });
+        redditToggleButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue){
                 searchType = "reddit";
-            System.out.println(searchType);
+                exactSearchToggleButton.setDisable(true);
+                searchFieldComboBox.setValue("all");
+                searchFieldComboBox.setDisable(true);
+            }
         });
-        exactSearchToggleButton.setOnAction(event -> {
-            if (exactSearchToggleButton.isSelected()){
-                isExactOrRegex = "e";
+//        exactSearchToggleButton.setOnAction(event -> {
+//            if (exactSearchToggleButton.isSelected()){
+//                isExactOrRegex = "e";
+//                exactSearchToggleButton.setText("✓ Exact search");
+//            }
+//            else{
+//                isExactOrRegex = "r";
+//                exactSearchToggleButton.setText("Exact search");
+//            }
+//            System.out.println(isExactOrRegex);
+//        });
+        exactSearchToggleButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue){
                 exactSearchToggleButton.setText("✓ Exact search");
+                isExactOrRegex = "e";
             }
             else{
-                isExactOrRegex = "r";
                 exactSearchToggleButton.setText("Exact search");
+                isExactOrRegex = "r";
             }
-            System.out.println(isExactOrRegex);
         });
     }
 
@@ -347,7 +358,6 @@ public class NewsSearchController{
         this.searchOrder = searchOrder;
         this.searchField = searchField;
         this.searchFieldComboBox.setValue(searchField);
-        this.searchOrderComboBox.setValue(searchOrder);
         if (searchType.equals("articles")){
             articlesToggleButton.setSelected(true);
         }

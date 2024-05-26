@@ -3,14 +3,15 @@
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -59,14 +60,14 @@
                               <VBox fx:id="coinPriceFrame" prefHeight="200.0" prefWidth="100.0" styleClass="chart-container" VBox.vgrow="ALWAYS" />
                               <HBox alignment="CENTER" prefHeight="50.0" prefWidth="1037.0" spacing="24.0">
                                  <children>
-                                    <ToggleButton fx:id="oneWeekButton" mnemonicParsing="false" selected="true" text="1 week">
+                                    <RadioButton fx:id="oneWeekButton" mnemonicParsing="false" selected="true" styleClass="toggle-button" text="1 week">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="period" />
                                        </toggleGroup>
-                                    </ToggleButton>
-                                    <ToggleButton fx:id="oneMonthButton" mnemonicParsing="false" text="1 month" toggleGroup="$period" />
-                                    <ToggleButton fx:id="sixMonthsButton" mnemonicParsing="false" text="6 months" toggleGroup="$period" />
-                                    <ToggleButton fx:id="ytdButton" mnemonicParsing="false" text="YTD" toggleGroup="$period" />
+                                    </RadioButton>
+                                    <RadioButton fx:id="oneMonthButton" mnemonicParsing="false" styleClass="toggle-button" text="1 month" toggleGroup="$period" />
+                                    <RadioButton fx:id="sixMonthsButton" mnemonicParsing="false" styleClass="toggle-button" text="6 months" toggleGroup="$period" />
+                                    <RadioButton fx:id="ytdButton" mnemonicParsing="false" styleClass="toggle-button" text="YTD" toggleGroup="$period" />
                                  </children>
                               </HBox>
                            </children>
@@ -84,7 +85,7 @@
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                  </columnResizePolicy>
                               </TableView>
-                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
                                  <children>
                                     <Hyperlink fx:id="sourceLink" alignment="CENTER_RIGHT" contentDisplay="RIGHT" style="-fx-text-fill: -fx-primary-color;" text="Source: CoinRankingAPI on RapidAPI.com" textAlignment="RIGHT" />
                                  </children>
@@ -130,6 +131,24 @@
             </AnchorPane>
         </content>
       </ScrollPane>
+      <Button fx:id="reloadButton" defaultButton="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-background-radius: 24;" text="Reload" AnchorPane.leftAnchor="40.0">
+         <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@assets/images/refresh.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font size="18.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="OPEN_HAND" />
+         </cursor>
+         <padding>
+            <Insets left="-1.0" right="-1.0" />
+         </padding>
+      </Button>
    </children>
    <stylesheets>
       <URL value="@assets/css/chart.css" />

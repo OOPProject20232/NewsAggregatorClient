@@ -151,11 +151,11 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         externalLink.setTooltip(externalTooltip);
     }
 
-    @Override
-    public void setCardStyle() {
-        this.getStyleClass().add("datacard");
-        this.getStyleClass().add("horizontal");
-    }
+//    @Override
+//    public void setCardStyle() {
+//        this.getStyleClass().add("datacard");
+//        this.getStyleClass().add("horizontal");
+//    }
 
     @Override
     public void setText() {
@@ -301,5 +301,9 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
 
     public BookmarkToggleButton getBookmarkButton() {
         return bookmarkButton;
+    }
+
+    public NewsItemData getNewsItemData() {
+        return newsItemData;
     }
 }

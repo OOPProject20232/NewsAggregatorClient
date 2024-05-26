@@ -47,6 +47,7 @@ public class NewsCategoryJSONLoader implements IJSONLoader<NewsItemData>{
         return "";
     }
 
+    @Override
     public List<NewsItemData> getDataList(int limit, int begin) {
         List<NewsItemData> newsItemDataList = new ArrayList<>();
         try {

@@ -47,16 +47,16 @@ public class MarketDataController {
     private LineChartWithCrosshair<String, Number> coinPriceChart;
 
     @FXML
-    private ToggleButton oneWeekButton;
+    private RadioButton oneWeekButton;
 
     @FXML
-    private ToggleButton oneMonthButton;
+    private RadioButton oneMonthButton;
 
     @FXML
-    private ToggleButton sixMonthsButton;
+    private RadioButton sixMonthsButton;
 
     @FXML
-    private ToggleButton ytdButton;
+    private RadioButton ytdButton;
 
     @FXML
     private VBox coinPriceFrame;
@@ -85,6 +85,9 @@ public class MarketDataController {
     @FXML
     private Hyperlink sourceLink;
 
+    @FXML
+    private Button reloadButton;
+
     private NewsAggregatorClientController mainController;
 
     private HostServices hostServices;
@@ -103,6 +106,7 @@ public class MarketDataController {
         // Khởi tạo các giá trị mặc định
         LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show();
+        reloadButton.setOnAction(event -> reload());
         coinPriceJSONLoader.setLimit(100);
 //        loadMarketData(7, true, symbol);
         Platform.runLater(() -> {
@@ -116,12 +120,14 @@ public class MarketDataController {
             loadMarketData(7);
             loadingDialog.close();
         });
+        oneWeekButton.getStyleClass().remove("radio-button");
         oneWeekButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
             loadMarketData(7);
             loadingDialog1.close();
         });
+        oneMonthButton.getStyleClass().remove("radio-button");
         oneMonthButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
@@ -129,6 +135,7 @@ public class MarketDataController {
 //            Platform.runLater(()-> loadChartData(30, true, symbol));
             loadingDialog1.close();
         });
+        sixMonthsButton.getStyleClass().remove("radio-button");
         sixMonthsButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
@@ -136,6 +143,7 @@ public class MarketDataController {
             loadMarketData(180);
             loadingDialog1.close();
         });
+        ytdButton.getStyleClass().remove("radio-button");
         ytdButton.setOnAction(event -> {
 //            Platform.runLater(()-> loadChartData(365, true, symbol));
             LoadingDialog loadingDialog1 = new LoadingDialog();
@@ -294,6 +302,16 @@ public class MarketDataController {
 
     public void setHostServices(HostServices hostServices){
         this.hostServices = hostServices;
+    }
+
+    private void reload(){
+        LoadingDialog loadingDialog = new LoadingDialog();
+        loadingDialog.show();
+        Platform.runLater(() -> {
+            loadMarketData(7);
+            loadingDialog.close();
+        });
+        oneWeekButton.setSelected(true);
     }
 
     public static class CoinData{
