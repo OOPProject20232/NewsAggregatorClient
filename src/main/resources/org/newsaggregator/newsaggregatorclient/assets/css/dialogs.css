@@ -36,7 +36,7 @@
 
 .generic-transparent-container{
     -fx-background-color: -fx-generic-background-color;
-    -fx-background-radius: 24px;
+    /*-fx-background-radius: 24px;*/
     /*-fx-background-color: blue;*/
 }
 

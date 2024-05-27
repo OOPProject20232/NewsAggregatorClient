@@ -339,21 +339,5 @@ public class MarketDataController {
         public void setPrice(String price) {
             this.price = price;
         }
-
-        public String getPriceChange() {
-            return priceChange;
-        }
-
-        public void setPriceChange(String priceChange) {
-            this.priceChange = priceChange;
-        }
-
-        public String getMarketCap() {
-            return marketCap;
-        }
-
-        public void setMarketCap(String marketCap) {
-            this.marketCap = marketCap;
-        }
     }
 }

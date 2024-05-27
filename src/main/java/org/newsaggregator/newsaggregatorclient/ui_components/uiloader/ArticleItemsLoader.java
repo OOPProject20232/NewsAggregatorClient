@@ -31,13 +31,13 @@ public class ArticleItemsLoader<T>
      * sẽ tạo 2 luồng để tải tin lên, một luồng để tải text và một luồng để tải hình ảnh
      * </p>
      */
-    int begin;
-    int limit;
-    HostServices hostServices;
-    T newsCategoryGroupTitledPane;
-    NewsAggregatorClientController mainController;
-    boolean containingSummary = true;
-    boolean containingCategories = true;
+    protected int begin;
+    protected int limit;
+    protected HostServices hostServices;
+    protected T newsCategoryGroupTitledPane;
+    protected NewsAggregatorClientController mainController;
+    protected boolean containingSummary = true;
+    protected boolean containingCategories = true;
 
     public ArticleItemsLoader(int limit, int begin, HostServices hostServices, T newsCategoryGroupTitledPane, NewsAggregatorClientController mainController) {
         this.limit = limit;

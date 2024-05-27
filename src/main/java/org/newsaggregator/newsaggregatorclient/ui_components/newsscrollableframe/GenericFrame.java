@@ -1,5 +1,6 @@
 package org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe;
 
+import javafx.application.HostServices;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
@@ -7,10 +8,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 
+/**
+ * <p>Định nghĩa khung xem dữ liệu cho từng loại hình tin tức</p>
+ * <p>Bao gồm GridPane để thêm các CategoryTitledPane,
+ * cùng với số hiệu trang hiện tại (do CSDL có thực hiện phân trang theo giới hạn tải)
+ * và giới hạn tải tin mặc định cho mỗi category</p>
+ */
 public class GenericFrame extends ScrollPane {
     protected final GridPane itemsContainer = new GridPane();
     protected int currentPage = 1;
     protected int limit = 30;
+    protected HostServices hostServices;
     public GenericFrame(){
         AnchorPane container = new AnchorPane();
         this.setContent(container);
@@ -34,10 +42,10 @@ public class GenericFrame extends ScrollPane {
         this.getStyleClass().addAll("generic-container");
     }
 
-    public GridPane getItemsContainer() {
-        return itemsContainer;
-    }
-
+    /**
+     * Chuyển sang trang tiếp theo
+     * Sau khi chuyển tr
+     */
     public void resetPage() {
         currentPage = 1;
     }

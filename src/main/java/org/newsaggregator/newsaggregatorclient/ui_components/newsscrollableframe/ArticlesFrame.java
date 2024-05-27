@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ArticlesFrame extends GenericFrame {
-    private HostServices hostServices;
-    private NewsAggregatorClientController mainController;
+    private final NewsAggregatorClientController mainController;
     private final int limit = 15;
     private final int chunkSize = 5;
     private static int totalPages;
-    private AtomicReference<Integer> currentChunk = new AtomicReference<>(limit / chunkSize);
+    private final AtomicReference<Integer> currentChunk = new AtomicReference<>(limit / chunkSize);
+
 
 //    private final GridPane newsContainer = new GridPane();
     InfiniteNews allNews;

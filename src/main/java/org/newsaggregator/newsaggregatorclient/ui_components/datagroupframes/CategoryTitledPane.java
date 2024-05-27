@@ -8,7 +8,7 @@ import org.newsaggregator.newsaggregatorclient.datamodel.GenericData;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.NewsItemCard;
 
 public class CategoryTitledPane<T, D extends GenericData> extends TitledPane {
-    final VBox itemsGroupLayout = new VBox();
+    protected final VBox itemsGroupLayout = new VBox();
 
 
     public CategoryTitledPane() {
@@ -37,5 +37,9 @@ public class CategoryTitledPane<T, D extends GenericData> extends TitledPane {
 
     public VBox getContainer(){
         return itemsGroupLayout;
+    }
+
+    public void clear(){
+        itemsGroupLayout.getChildren().clear();
     }
 }
