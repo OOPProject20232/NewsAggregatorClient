@@ -65,7 +65,6 @@
                   <RadioButton fx:id="redditToggleButton" mnemonicParsing="false" styleClass="toggle-button" text="Reddit posts" toggleGroup="$searchType" />
                   <ToggleButton fx:id="exactSearchToggleButton" mnemonicParsing="false" text="Exact search" />
                   <ComboBox fx:id="searchFieldComboBox" prefWidth="150.0" promptText="Search for" />
-                  <ComboBox fx:id="searchOrderComboBox" prefHeight="39.0" prefWidth="142.0" promptText="Sort by" />
                </children>
             </HBox>
             <ScrollPane fx:id="searchScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="200.0" prefWidth="200.0" styleClass="generic-container" VBox.vgrow="ALWAYS">

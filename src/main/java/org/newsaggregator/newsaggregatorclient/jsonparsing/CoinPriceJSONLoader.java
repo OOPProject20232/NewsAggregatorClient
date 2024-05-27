@@ -19,6 +19,7 @@ import static java.util.Collections.max;
 public class CoinPriceJSONLoader implements IJSONLoader<CoinPriceData>{
     private int limit;
     private JSONObject coinPrices;
+
     @Override
     public synchronized JSONObject loadJSON() throws NoRouteToHostException {
 
@@ -83,6 +84,7 @@ public class CoinPriceJSONLoader implements IJSONLoader<CoinPriceData>{
         return coinPrices;
     }
 
+    @Override
     public synchronized List<CoinPriceData> getDataList(int limit, int begin){
         if (limit <= 0) {
             throw new IllegalArgumentException("Limit must be greater than 0");
@@ -133,6 +135,11 @@ public class CoinPriceJSONLoader implements IJSONLoader<CoinPriceData>{
         return coinPrices;
     }
 
+    /**
+     * Lấy giá mới nhất của coin
+     * @param coinSymbol String: mã coin đầu vào
+     * @return CoinPriceData: đối tượng chứa thông tin giá mới nhất của coin
+     */
     public CoinPriceData getNewestCoinPriceByCoin(String coinSymbol){
         List<CoinPriceData> coinList = getDataList();
         for (CoinPriceData coinPriceData : coinList){

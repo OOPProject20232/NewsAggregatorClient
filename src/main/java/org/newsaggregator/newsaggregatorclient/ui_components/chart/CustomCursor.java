@@ -23,7 +23,7 @@ public class CustomCursor {
         return vLine;
     }
 
-    public Line gethLine() {
+    public Line getHLine() {
         return hLine;
     }
 

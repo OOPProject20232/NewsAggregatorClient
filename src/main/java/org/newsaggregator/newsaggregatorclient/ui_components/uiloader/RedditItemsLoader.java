@@ -15,7 +15,6 @@ public class RedditItemsLoader extends Task<Void> implements ItemsLoader<RedditP
     private int limit;
     private int begin;
     private final CategoryTitledPane<RedditCard, RedditPostData> container;
-    private RedditCard redditCard;
     private HostServices hostServices;
 
     public RedditItemsLoader(int limit, int begin, HostServices hostServices, CategoryTitledPane<RedditCard, RedditPostData> container){
