@@ -4,11 +4,9 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.FlowPane;
@@ -17,10 +15,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import org.controlsfx.control.HyperlinkLabel;
-import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 import org.newsaggregator.newsaggregatorclient.ui_components.buttons.BookmarkToggleButton;
+import org.newsaggregator.newsaggregatorclient.ui_components.buttons.CategoryClickable;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
 import javax.imageio.ImageIO;
@@ -43,34 +40,32 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
      * - Nút xem chi tiết bài báo: trong app hoặc ở trình duyệt mặc định của máy client
      */
 
-    protected Hyperlink articleHyperlinkTitleObject = new Hyperlink();
-    protected ImageView thumbnailImageView = new ImageView();
-    protected Hyperlink thumbnailHyperlink = new Hyperlink();
-    protected Label description;
-    protected Hyperlink readMore;
-    protected Label publishedAt;
-    protected Label author;
-    protected Label publisher;
-    protected ImageView publisherImageView = new ImageView();
-    protected FlowPane categoryFrame = new FlowPane();
-    protected Button copyButton = new Button("");
-    protected BookmarkToggleButton bookmarkButton = new BookmarkToggleButton();
-    protected Button externalLink = new Button();
+    private final Hyperlink articleHyperlinkTitle = new Hyperlink();
+    private final ImageView thumbnailImageView = new ImageView();
+    private final Hyperlink thumbnailHyperlink = new Hyperlink();
+    private final Label description;
+    private final Hyperlink readMore;
+    private final Label publishedAt;
+    private Label author;
+    private Label publisher;
+    private final FlowPane categoryFrame = new FlowPane();
+    private final Button copyButton = new Button("");
+    private final BookmarkToggleButton bookmarkButton = new BookmarkToggleButton();
+    private final Button externalLink = new Button();
     private static final String noImageAvailablePath
             = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
     private NewsItemData newsItemData;
     private boolean containingSummary = true;
     private boolean containingCategories = true;
-    private double parentWidth;
-    private final int IMAGE_HEIGHT = 135;
-    private final int IMAGE_WIDTH = 240;
+    private final int IMAGE_HEIGHT = 108;
+    private final int IMAGE_WIDTH = 192;
 
     public NewsItemCard() {
-        this.setAlignment(Pos.CENTER_LEFT);
+        this.setAlignment(Pos.TOP_LEFT);
 //        this.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: -fx-outline-color-variant; -fx-padding: 0 0 12px 0");
-        articleHyperlinkTitleObject.getStyleClass().add("article-title");
-        thumbnailImageView.setFitHeight(IMAGE_HEIGHT);
+        articleHyperlinkTitle.getStyleClass().add("article-title");
         thumbnailImageView.setFitWidth(IMAGE_WIDTH);
+        thumbnailImageView.setFitHeight(IMAGE_HEIGHT);
         thumbnailHyperlink.setGraphic(thumbnailImageView);
         this.getChildren().add(thumbnailHyperlink);
         VBox newsInfo = new VBox();
@@ -89,13 +84,14 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         HBox publisherFrame = new HBox();
         publisherFrame.setSpacing(5);
         publisher = new Label();
+        ImageView publisherImageView = new ImageView();
         publisherImageView.setFitHeight(16);
         publisherImageView.setFitWidth(16);
         publisher.setGraphic(publisherImageView);
         Label separator = new Label("⋅");
         separator.setStyle("-fx-font-weight: bold;");
         publisherFrame.getChildren().addAll(publishedAt, separator, author);
-        newsInfo.getChildren().addAll(publisher, articleHyperlinkTitleObject, description, publisherFrame);
+        newsInfo.getChildren().addAll(publisher, articleHyperlinkTitle, description, publisherFrame);
         this.getChildren().add(newsInfo);
         categoryFrame.setHgap(8);
         categoryFrame.setVgap(8);
@@ -109,11 +105,6 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         copyButton.setGraphic(copyIcon);
         copyButton.getStyleClass().add("util-button");
         utilityFrame.getChildren().add(copyButton);
-//        bookmarkButton.getStyleClass().add("util-button");
-//        ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
-//        bookmarkIcon.setFitHeight(16);
-//        bookmarkIcon.setFitWidth(16);
-//        bookmarkButton.setGraphic(bookmarkIcon);
         utilityFrame.getChildren().add(bookmarkButton);
         externalLink.getStyleClass().add("util-button");
         ImageView externalIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/external-link.png");
@@ -155,52 +146,32 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         Tooltip bookmarkTooltip = new Tooltip("Save this to Bookmark");
         bookmarkTooltip.setShowDelay(Duration.millis(10));
         bookmarkButton.setTooltip(bookmarkTooltip);
-//        bookmarkButton.setOnMouseClicked(event -> {
-//            System.out.println("Bookmark button clicked");
-//            if (bookmarkButton.isSelected()) {
-//                System.out.println("Bookmark selected");
-//                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark-selected.png"));
-//                bookmarkIcon.setFitHeight(16);
-//                bookmarkIcon.setFitWidth(16);
-//                bookmarkButton.setGraphic(bookmarkIcon);
-////                bookmarkTooltip.setText("Saved to Bookmark");
-////                bookmarkTooltip.show(bookmarkButton, event.getScreenX(), event.getScreenY());
-//            } else {
-//                System.out.println("Bookmark unselected");
-//                ImageView bookmarkIcon = new ImageView(new Image("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png"));
-//                bookmarkIcon.setFitHeight(16);
-//                bookmarkIcon.setFitWidth(16);
-//                bookmarkTooltip.setText("Removed from Bookmark");
-//                bookmarkButton.setGraphic(bookmarkIcon);
-//            }
-//        });
-//        bookmarkButton.setOnMouseExited(event -> {
-//            bookmarkTooltip.hide();
-//            if (bookmarkButton.isSelected())
-//                bookmarkTooltip.setText("Saved to Bookmark");
-//            else bookmarkTooltip.setText("Save to Bookmark");
-//        });
         Tooltip externalTooltip = new Tooltip("Open in external browser");
         externalTooltip.setShowDelay(Duration.millis(10));
         externalLink.setTooltip(externalTooltip);
     }
 
-    @Override
-    public void setCardStyle() {
+//    @Override
+//    public void setCardStyle() {
 //        this.getStyleClass().add("datacard");
 //        this.getStyleClass().add("horizontal");
-    }
+//    }
 
     @Override
     public void setText() {
-        articleHyperlinkTitleObject.maxWidthProperty().bind(this.widthProperty().subtract(160));
-        articleHyperlinkTitleObject.setWrapText(true);
-        articleHyperlinkTitleObject.setText(newsItemData.getTitle());
+        articleHyperlinkTitle.maxWidthProperty().bind(this.widthProperty().subtract(160));
+        articleHyperlinkTitle.setWrapText(true);
+        articleHyperlinkTitle.setText(newsItemData.getTitle());
         if (containingSummary) {
             description.setText(newsItemData.getDescription());
         }
-        publishedAt.setText(TimeFormatter.processDateTime(newsItemData.getPublishedAt()));
-        author.setText(newsItemData.getAuthor().toString());
+        try {
+            publishedAt.setText(TimeFormatter.processDateTime(newsItemData.getPublishedAt()));
+        }
+        catch (Exception e) {
+            System.out.println("Error processing date time: " + e.getMessage());
+        }
+        author.setText(newsItemData.getAuthor());
         publisher.setText(newsItemData.getPublisher());
         if (containingCategories) {
             for (String category : newsItemData.getCategory()) {
@@ -212,28 +183,14 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
 
     @Override
     public synchronized void setImage() {
-//        System.out.println("Set image to: " + newsItemData.getTitle());
-//        final String noImageAvailablePath = "file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/no-image-available.png";
         try {
-//            System.out.println("\u001B[32m"+"Processing image: " + newsItemData.getUrlToImage()+"\u001B[0m");
             String fileName = URI.create(newsItemData.getUrlToImage()).toURL().getFile();
-            String tmpCache = fileName.replace("/", "_");
-            if (tmpCache.contains("?")) {
-                tmpCache = tmpCache.substring(0, tmpCache.lastIndexOf("?"));
-            }
-            final String cache = tmpCache;
 
-//            System.out.println("File name: " + tmpCache);
             Platform.runLater(()-> {
                 Image thumbnail;
                 if (fileName.endsWith(".webp")) {
-//                    ImageLoader.fileDownloader(newsItemData.getUrlToImage(), cache);
-//                    String tmpCachePath = "src/main/resources/tmp/img/" + cache;
-//                    File tmpOutputFile = new File(tmpCachePath);
                     System.out.println("\u001B[32m" + "Processing webp image: " + newsItemData.getUrlToImage() + "\u001B[0m");
                     try {
-//                        BufferedImage bufferedImage = ImageIO.read(tmpOutputFile);
-                        // get buffered image directly from input stream
                         HttpURLConnection connection = (HttpURLConnection) URI.create(newsItemData.getUrlToImage()).toURL().openConnection();
                         connection.setRequestMethod("GET");
                         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -265,8 +222,6 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
                 if (newsItemData.getUrlToImage().isBlank() || newsItemData.getUrlToImage().isEmpty()) {
                     thumbnail = new Image(noImageAvailablePath, true);
                 }
-//                int thumbnailHeight = 180;
-//                int thumbnailWidth = 320;
                 Rectangle clip = new Rectangle(IMAGE_WIDTH, IMAGE_HEIGHT);
                 clip.setArcHeight(24);
                 clip.setArcWidth(24);
@@ -302,44 +257,12 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
     }
 
 
-    public boolean isContainingSummary() {
-        return containingSummary;
-    }
-
     public void setContainingSummary(boolean containingSummary) {
         this.containingSummary = containingSummary;
     }
 
-    public Hyperlink getArticleHyperlinkTitleObject() {
-        return articleHyperlinkTitleObject;
-    }
-
-    public void setArticleHyperlinkTitleObject(Hyperlink articleHyperlinkTitleObject) {
-        this.articleHyperlinkTitleObject = articleHyperlinkTitleObject;
-    }
-
-    public ImageView getThumbnailImageView() {
-        return thumbnailImageView;
-    }
-
-    public void setImageView(ImageView imageView) {
-        this.thumbnailImageView = imageView;
-    }
-
-    public Label getDescription() {
-        return description;
-    }
-
-    public void setDescription(Label description) {
-        this.description = description;
-    }
-
-    public Label getPublishedAt() {
-        return publishedAt;
-    }
-
-    public void setPublishedAt(Label publishedAt) {
-        this.publishedAt = publishedAt;
+    public Hyperlink getArticleHyperlinkTitle() {
+        return articleHyperlinkTitle;
     }
 
     public Label getAuthor() {
@@ -362,10 +285,6 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
         this.containingCategories = containingCategories;
     }
 
-    public void setParentWidth(double parentWidth) {
-        this.parentWidth = parentWidth;
-    }
-
     public Hyperlink getReadMore() {
         return readMore;
     }
@@ -382,5 +301,9 @@ public class NewsItemCard extends HorizontalDataCard<NewsItemData> {
 
     public BookmarkToggleButton getBookmarkButton() {
         return bookmarkButton;
+    }
+
+    public NewsItemData getNewsItemData() {
+        return newsItemData;
     }
 }

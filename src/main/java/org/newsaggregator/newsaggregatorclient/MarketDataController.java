@@ -1,11 +1,11 @@
 package org.newsaggregator.newsaggregatorclient;
 
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,10 +20,11 @@ import org.newsaggregator.newsaggregatorclient.jsonparsing.CoinPriceJSONLoader;
 import org.newsaggregator.newsaggregatorclient.ui_components.chart.CustomCursor;
 import org.newsaggregator.newsaggregatorclient.ui_components.chart.LineChartWithCrosshair;
 import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.LoadingDialog;
+import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.NoInternetDialog;
 import org.newsaggregator.newsaggregatorclient.util.NumberFormatter;
 import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
-import java.text.DecimalFormat;
+import java.net.NoRouteToHostException;
 import java.util.*;
 
 public class MarketDataController {
@@ -38,58 +39,63 @@ public class MarketDataController {
     private final String[] symbolList = {"BTC"};
 
     @FXML
-    Label chartTitle;
+    private Label chartTitle;
 
     @FXML
-    Label coinPriceLabel;
+    private Label coinPriceLabel;
 
-    LineChartWithCrosshair<String, Number> coinPriceChart;
-
-    @FXML
-    ToggleButton oneWeekButton;
+    private LineChartWithCrosshair<String, Number> coinPriceChart;
 
     @FXML
-    ToggleButton oneMonthButton;
+    private RadioButton oneWeekButton;
 
     @FXML
-    ToggleButton sixMonthsButton;
+    private RadioButton oneMonthButton;
 
     @FXML
-    ToggleButton ytdButton;
+    private RadioButton sixMonthsButton;
 
     @FXML
-    VBox marketDataArea;
+    private RadioButton ytdButton;
 
     @FXML
-    VBox coinPriceFrame;
+    private VBox coinPriceFrame;
 
     @FXML
-    Label priceChangeLabel;
+    private Label priceChangeLabel;
 
     @FXML
-    TableView<CoinData> coinPriceTable;
+    private TableView<CoinData> coinPriceTable;
 
     @FXML
-    TableColumn<CoinData, Hyperlink> coinNameColumn;
+    private TableColumn<CoinData, Hyperlink> coinNameColumn;
 
     @FXML
-    TableColumn<CoinData, String> coinPriceColumn;
+    private TableColumn<CoinData, String> coinPriceColumn;
 
     @FXML
-    TableColumn<CoinData, String> priceChangeColumn;
+    private TableColumn<CoinData, String> priceChangeColumn;
 
     @FXML
-    TableColumn<CoinData, String> marketCapColumn;
+    private TableColumn<CoinData, String> marketCapColumn;
 
     @FXML
-    TextField searchTextField;
+    private TextField searchTextField;
 
-    NewsAggregatorClientController mainController;
+    @FXML
+    private Hyperlink sourceLink;
+
+    @FXML
+    private Button reloadButton;
+
+    private NewsAggregatorClientController mainController;
+
+    private HostServices hostServices;
 
     public MarketDataController() {
     }
 
-    public MarketDataController(CoinPriceJSONLoader coinPriceJSONLoader, NewsAggregatorClientController mainController) {
+    public MarketDataController(CoinPriceJSONLoader coinPriceJSONLoader, NewsAggregatorClientController mainController){
 //        this.coinPriceData = data;
         this.coinPriceJSONLoader = coinPriceJSONLoader;
         this.mainController = mainController;
@@ -100,24 +106,28 @@ public class MarketDataController {
         // Khởi tạo các giá trị mặc định
         LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show();
+        reloadButton.setOnAction(event -> reload());
         coinPriceJSONLoader.setLimit(100);
 //        loadMarketData(7, true, symbol);
         Platform.runLater(() -> {
             try{
-                coinPriceJSONLoader.getJSONString();
-            }
-            catch (Exception e){
                 coinPriceJSONLoader.loadJSON();
+            }
+            catch (NoRouteToHostException e){
+                NoInternetDialog noInternetDialog = new NoInternetDialog();
+                noInternetDialog.show();
             }
             loadMarketData(7);
             loadingDialog.close();
         });
+        oneWeekButton.getStyleClass().remove("radio-button");
         oneWeekButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
             loadMarketData(7);
             loadingDialog1.close();
         });
+        oneMonthButton.getStyleClass().remove("radio-button");
         oneMonthButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
@@ -125,6 +135,7 @@ public class MarketDataController {
 //            Platform.runLater(()-> loadChartData(30, true, symbol));
             loadingDialog1.close();
         });
+        sixMonthsButton.getStyleClass().remove("radio-button");
         sixMonthsButton.setOnAction(event -> {
             LoadingDialog loadingDialog1 = new LoadingDialog();
             loadingDialog1.show();
@@ -132,6 +143,7 @@ public class MarketDataController {
             loadMarketData(180);
             loadingDialog1.close();
         });
+        ytdButton.getStyleClass().remove("radio-button");
         ytdButton.setOnAction(event -> {
 //            Platform.runLater(()-> loadChartData(365, true, symbol));
             LoadingDialog loadingDialog1 = new LoadingDialog();
@@ -145,11 +157,13 @@ public class MarketDataController {
         yAxis.setLabel("Price");
         coinPriceChart = new LineChartWithCrosshair<>(xAxis, yAxis, new CustomCursor(new Line(), new Line(), true));
         coinPriceChart.setCreateSymbols(true);
-        coinPriceChart.setAnimated(true);
+        coinPriceChart.setAnimated(false);
         VBox.setVgrow(coinPriceChart, javafx.scene.layout.Priority.ALWAYS);
         coinPriceFrame.getChildren().clear();
         coinPriceFrame.getChildren().add(coinPriceChart);
         HBox.setHgrow(coinPriceChart, javafx.scene.layout.Priority.ALWAYS);
+        sourceLink.setOnAction(event ->
+                hostServices.showDocument("https://rapidapi.com/Coinranking/api/coinranking1"));
     }
 
     public void loadMarketData(int period) {
@@ -164,7 +178,7 @@ public class MarketDataController {
          * @param symbols: danh sách các loại tiền cần tải dữ liệu
          *
          */
-        List<CoinPriceData> coinPriceDataList = coinPriceJSONLoader.getNewestCoinPrices();
+        List<CoinPriceData> coinPriceDataList = coinPriceJSONLoader.getDataList();
 //        double priceChangeByPeriod =  coinPriceJSONLoader.getChangeInPrice(coinPriceDataList.getFirst(), symbol, period);
         loadChartData(period, true, symbol);
 //        for (String symbol : symbols) {
@@ -286,8 +300,18 @@ public class MarketDataController {
             }
     }
 
-    public void setMainController(NewsAggregatorClientController mainController) {
-        this.mainController = mainController;
+    public void setHostServices(HostServices hostServices){
+        this.hostServices = hostServices;
+    }
+
+    private void reload(){
+        LoadingDialog loadingDialog = new LoadingDialog();
+        loadingDialog.show();
+        Platform.runLater(() -> {
+            loadMarketData(7);
+            loadingDialog.close();
+        });
+        oneWeekButton.setSelected(true);
     }
 
     public static class CoinData{
@@ -308,32 +332,12 @@ public class MarketDataController {
             return coinName;
         }
 
-        public void setCoinName(String coinName) {
-            this.coinName = coinName;
-        }
-
         public String getPrice() {
             return price;
         }
 
         public void setPrice(String price) {
             this.price = price;
-        }
-
-        public String getPriceChange() {
-            return priceChange;
-        }
-
-        public void setPriceChange(String priceChange) {
-            this.priceChange = priceChange;
-        }
-
-        public String getMarketCap() {
-            return marketCap;
-        }
-
-        public void setMarketCap(String marketCap) {
-            this.marketCap = marketCap;
         }
     }
 }

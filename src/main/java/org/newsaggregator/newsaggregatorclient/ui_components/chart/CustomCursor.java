@@ -16,7 +16,7 @@ public class CustomCursor {
     public CustomCursor(Line vLine, Line hLine, boolean isUsed) {
         this.vLine = vLine;
         this.hLine = hLine;
-        this.isUsed.set(isUsed);
+//        this.isUsed.set(isUsed);
     }
 
     public Line getvLine() {
@@ -27,13 +27,13 @@ public class CustomCursor {
         return hLine;
     }
 
-    public boolean isEstUtilisé() {
-        return isUsed.get();
-    }
+//    public boolean isUsed() {
+//        return isUsed.get();
+//    }
 
-    public void setIsUsed(boolean estUtilisé) {
-        this.isUsed.set(estUtilisé);
-    }
+//    public void setIsUsed(boolean estUtilisé) {
+//        this.isUsed.set(estUtilisé);
+//    }
 
     public BooleanProperty isUsedProperty() {
         return isUsed;

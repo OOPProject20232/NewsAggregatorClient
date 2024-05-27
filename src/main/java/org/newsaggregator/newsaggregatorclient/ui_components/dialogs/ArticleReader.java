@@ -4,10 +4,7 @@ import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -19,14 +16,15 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
+import org.newsaggregator.newsaggregatorclient.database.SQLiteJDBC;
+import org.newsaggregator.newsaggregatorclient.datamodel.NewsItemData;
 
 import java.io.IOException;
 import java.net.*;
 
-public class ReadingArticle extends GenericDialog {
-    FXMLLoader loader;
-    String url;
-    HostServices hostServices;
+public class ArticleReader extends Dialog<Void> {
+    private final String url;
+    private final HostServices hostServices;
 
     @FXML
     WebView articleWebView;
@@ -43,7 +41,12 @@ public class ReadingArticle extends GenericDialog {
     @FXML
     Button externalButton;
 
-    public ReadingArticle(String url, HostServices hostServices) throws IOException {
+    @FXML
+    ToggleButton bookmarkButton;
+
+    private NewsItemData newsItemData;
+
+    public ArticleReader(String url, HostServices hostServices) throws IOException {
         super();
         this.url = url;
         this.hostServices = hostServices;
@@ -54,6 +57,11 @@ public class ReadingArticle extends GenericDialog {
         loader.load();
         getDialogPane().setContent(loader.getRoot());
         reloadButton.setOnAction(e -> reload());
+    }
+
+    public ArticleReader(NewsItemData newsItemData, HostServices hostServices) throws IOException {
+        this(newsItemData.getUrl(), hostServices);
+        this.newsItemData = newsItemData;
     }
 
     @FXML
@@ -87,12 +95,45 @@ public class ReadingArticle extends GenericDialog {
         externalButton.setOnAction(e -> {
             hostServices.showDocument(url);
         });
+        if (hostServices == null && externalButton != null){
+            externalButton.setDisable(true);
+        }
+        if (newsItemData == null && bookmarkButton != null){
+            bookmarkButton.setDisable(true);
+        }
+        else {
+            assert bookmarkButton != null;
+            bookmarkButton.setDisable(false);
+            bookmarkButton.setOnAction(e -> {
+                if (bookmarkButton.isSelected()) {
+                    bookmark();
+                } else {
+                    removeBookmark();
+                }
+            });
+        }
+        this.getDialogPane().addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().toString().equals("ESCAPE")) {
+                stage.close();
+            }
+        });
+        SQLiteJDBC db = new SQLiteJDBC();
+        if (newsItemData != null && db.isBookmarked(newsItemData)){
+            bookmarkButton.setSelected(true);
+            ImageView bookmarkedIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark-selected.png");
+            bookmarkedIcon.setFitHeight(16);
+            bookmarkedIcon.setFitWidth(16);
+            bookmarkButton.setGraphic(bookmarkedIcon);
+        }
     }
 
     private void loadArticle(){
         Document doc = null;
         try {
-            doc = Jsoup.connect(url).get();
+            doc = Jsoup.connect(url)
+                       .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0")
+                       .timeout(5000)
+                       .get();
             doc.select("a").attr("href", "#");
             String title = doc.select("title").getFirst().text();
             Stage stage = (Stage) getDialogPane().getScene().getWindow();
@@ -103,7 +144,6 @@ public class ReadingArticle extends GenericDialog {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // Block all redirections
         articleWebView.getEngine().loadContent(doc.toString());
         System.out.println(articleWebView.getEngine().getUserAgent());
     }
@@ -114,5 +154,27 @@ public class ReadingArticle extends GenericDialog {
         dialog.show();
         loadArticle();
         dialog.close();
+    }
+
+    private void bookmark(){
+        SQLiteJDBC db = new SQLiteJDBC();
+        db.insert(newsItemData);
+        ImageView bookmarkedIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark-selected.png");
+        bookmarkedIcon.setFitHeight(16);
+        bookmarkedIcon.setFitWidth(16);
+        bookmarkButton.setGraphic(bookmarkedIcon);
+    }
+
+    private void removeBookmark(){
+        SQLiteJDBC db = new SQLiteJDBC();
+        db.delete(newsItemData.getGuid());
+        ImageView bookmarkIcon = new ImageView("file:src/main/resources/org/newsaggregator/newsaggregatorclient/assets/images/bookmark.png");
+        bookmarkIcon.setFitHeight(16);
+        bookmarkIcon.setFitWidth(16);
+        bookmarkButton.setGraphic(bookmarkIcon);
+    }
+
+    public ToggleButton getBookmarkButton() {
+        return bookmarkButton;
     }
 }

@@ -28,7 +28,7 @@ public class NewsAggregatorClientApplication extends Application {
             protected Void call() throws Exception {
                 System.out.println("Called");
                 System.out.println("Set");
-                int serverCheckResponseCode = 0;
+                int serverCheckResponseCode;
                 Scene scene;
                 System.out.println("Hi");
                 try {
@@ -36,7 +36,7 @@ public class NewsAggregatorClientApplication extends Application {
                     serverCheckResponseCode = ConnectionChecker.checkInternetConnection();
                     System.out.println(serverCheckResponseCode);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new Exception(e);
                 }
                 if (serverCheckResponseCode == 0) {
                     loadingDialog.close();
@@ -53,11 +53,17 @@ public class NewsAggregatorClientApplication extends Application {
                     stage.setTitle("Crypto News Aggregator Client");
                     stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/icon.png"))));
                     stage.setScene(scene);
+                    controller.start();
                     controller.showAllNewsCategories();
                     stage.show();
-                    controller.start();
                 } else{
                     System.out.println("???");
+                    loadingDialog.close();
+                    NoInternetDialog dialog = new NoInternetDialog();
+                    stage.initStyle(StageStyle.UNDECORATED);
+                    stage.getIcons().add(new Image(String.valueOf(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResource
+                            ("assets/images/no-internet.png")))));
+                    dialog.showAndWait();
                 }
                 return null;
             }

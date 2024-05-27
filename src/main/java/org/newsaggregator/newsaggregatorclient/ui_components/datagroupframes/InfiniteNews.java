@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import static javafx.geometry.Pos.CENTER;
 
 public class InfiniteNews extends NewsCategoryGroupTitledPane {
-    private Button loadMoreButton;
+    private final Button loadMoreButton;
     public InfiniteNews(String category) {
         super(category);
         VBox outerBox = new VBox();

@@ -9,7 +9,6 @@ public class NewsItemData extends GenericData{
      * @author: Trần Quang Hưng
      *
      */
-    private String guid;
     private List<String> category;
     private String title;
     private String author;
@@ -27,7 +26,6 @@ public class NewsItemData extends GenericData{
     }
 
     public void printNewsData(){
-        System.out.println("GUID: " + guid);
         System.out.println("Category: " + category);
         System.out.println("Title: " + title);
         System.out.println("Author: " + author);
@@ -50,16 +48,7 @@ public class NewsItemData extends GenericData{
                 ",\npublishedAt='" + publishedAt + '\'' +
                 ",\ncontent='" + content + '\'' +
                 ",\npublisher='" + publisher + '\'' +
-                ",\npublisherLogoURL='" + publisherLogoURL + '\'' +
-                ",\nguid='" + guid + '\'';
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
+                ",\npublisherLogoURL='" + publisherLogoURL + '\'';
     }
 
     public String getUrlToImage() {

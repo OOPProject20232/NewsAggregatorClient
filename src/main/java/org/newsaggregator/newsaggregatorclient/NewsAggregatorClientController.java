@@ -23,6 +23,7 @@ import org.newsaggregator.newsaggregatorclient.ui_components.newsscrollableframe
 import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.CoinNewestPriceItemsLoader;
 
 import java.net.NoRouteToHostException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 public class NewsAggregatorClientController {
@@ -61,10 +62,10 @@ public class NewsAggregatorClientController {
     private Tab bookmarkTab;
 
     @FXML
-    private ToggleButton articleTabButton;
+    private RadioButton articleTabButton;
 
     @FXML
-    private ToggleButton redditTabButton;
+    private RadioButton redditTabButton;
 
     @FXML
     private TabPane newsTypeTabPane;
@@ -98,16 +99,17 @@ public class NewsAggregatorClientController {
     }
 
     @FXML
-    public synchronized void start(){
+    public void start(){
         reloadNews.setOnAction(event -> reloadNews());
         AnchorPane.setBottomAnchor(articleScrollPane, 0.0);
         AnchorPane.setTopAnchor(articleScrollPane, 0.0);
-        AnchorPane.setLeftAnchor(articleScrollPane, 0.0);
+        AnchorPane.setLeftAnchor(articleScrollPane, 48.0);
         AnchorPane.setRightAnchor(articleScrollPane, 0.0);
         AnchorPane.setBottomAnchor(redditFrame, 0.0);
         AnchorPane.setTopAnchor(redditFrame, 0.0);
-        AnchorPane.setLeftAnchor(redditFrame, 0.0);
-        AnchorPane.setRightAnchor(redditFrame, 0.0);
+        AnchorPane.setLeftAnchor(redditFrame, 48.0);
+        AnchorPane.setRightAnchor(redditFrame, 12.0);
+        articleTabButton.getStyleClass().remove("radio-button");
         articleTabButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             ImageView articleIcon = new ImageView();
             articleIcon.setFitHeight(24);
@@ -122,6 +124,13 @@ public class NewsAggregatorClientController {
         articleTabButton.setOnAction(event -> {
             newsTypeTabPane.getSelectionModel().select(0);
         });
+        articleTabButton.setOnMouseClicked(event -> {
+            newsTypeTabPane.getSelectionModel().select(0);
+            if (articleTabButton.isSelected()) {
+                articleTabButton.setSelected(true);
+            }
+        });
+        redditTabButton.getStyleClass().remove("radio-button");
         redditTabButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             ImageView redditIcon = new ImageView();
             redditIcon.setFitHeight(24);
@@ -160,6 +169,7 @@ public class NewsAggregatorClientController {
         marketDataTab.setOnSelectionChanged(event -> {
             if (marketDataTab.isSelected()) {
                 MarketDataController marketDataController = new MarketDataController();
+                marketDataController.setHostServices(hostServices);
                 FXMLLoader fxmlLoader = new FXMLLoader(NewsAggregatorClientApplication.class.getResource("market_data.fxml"));
                 fxmlLoader.setController(marketDataController);
                 try {
@@ -200,7 +210,7 @@ public class NewsAggregatorClientController {
         Platform.runLater(() -> {
             try {
                 articleScrollPane.loadArticles();
-            } catch (NoRouteToHostException e) {
+            } catch (NoRouteToHostException | UnknownHostException e) {
 //                loadingDialog.close();
                 NoInternetDialog noInternetDialog = new NoInternetDialog();
                 noInternetDialog.show();
@@ -220,7 +230,7 @@ public class NewsAggregatorClientController {
                 additionalInfoContainer.getChildren().clear();
 //            coinNewestPriceGroupFrame.addAllCoins(coinPriceJSONLoader);
                 additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
-                List<CoinPriceData> coinData = coinPriceJSONLoader.getNewestCoinPrices();
+                List<CoinPriceData> coinData = coinPriceJSONLoader.getDataList();
                 System.out.println("\u001B[35m" + "Loading coin items" + "\u001B[0m");
                 CoinNewestPriceItemsLoader coinNewestPriceItemsLoader = new CoinNewestPriceItemsLoader(coinNewestPriceGroupFrame, hostServices);
                 coinNewestPriceItemsLoader.loadItems(coinData);
@@ -233,7 +243,12 @@ public class NewsAggregatorClientController {
     private static synchronized CoinPriceJSONLoader getCoinPriceJSONLoader() {
         CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
         coinPriceJSONLoader.setLimit(coinLimit);
-        coinPriceJSONLoader.loadJSON();
+        try {
+            coinPriceJSONLoader.loadJSON();
+        } catch (NoRouteToHostException e) {
+            NoInternetDialog noInternetDialog = new NoInternetDialog();
+            noInternetDialog.show();
+        }
         return coinPriceJSONLoader;
     }
 
@@ -257,7 +272,7 @@ public class NewsAggregatorClientController {
                     } catch (NoRouteToHostException e) {
                         NoInternetDialog noInternetDialog = new NoInternetDialog();
                         noInternetDialog.show();
-                        cancel();
+                        failed();
                         loadingDialog.close();
                     }
                     showAllNewsCategories();

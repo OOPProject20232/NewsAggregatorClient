@@ -5,9 +5,6 @@ import javafx.scene.control.Label;
 import org.controlsfx.control.HyperlinkLabel;
 import org.newsaggregator.newsaggregatorclient.datamodel.CoinPriceData;
 import org.newsaggregator.newsaggregatorclient.ui_components.datacard.CoinNewestPriceCard;
-import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ReadingArticle;
-
-import java.io.IOException;
 
 public class CoinNewestPriceTitledPane extends CategoryTitledPane<CoinNewestPriceCard, CoinPriceData> {
     /**

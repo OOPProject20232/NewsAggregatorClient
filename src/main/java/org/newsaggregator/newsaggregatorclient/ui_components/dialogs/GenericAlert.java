@@ -1,6 +1,8 @@
 package org.newsaggregator.newsaggregatorclient.ui_components.dialogs;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import org.newsaggregator.newsaggregatorclient.NewsAggregatorClientApplication;
 
 public class GenericAlert extends Alert {
@@ -12,6 +14,8 @@ public class GenericAlert extends Alert {
         getDialogPane().getStylesheets().add(
                 NewsAggregatorClientApplication.class.getResource("assets/css/main.css").toExternalForm()
         );
-        getDialogPane().getStyleClass().addAll("dialog", "generic-container");
+        getDialogPane().getStylesheets().add(
+                NewsAggregatorClientApplication.class.getResource("assets/css/dialogs.css").toExternalForm());
+        getDialogPane().getStyleClass().addAll("dialog", "generic-transparent-container");
     }
 }

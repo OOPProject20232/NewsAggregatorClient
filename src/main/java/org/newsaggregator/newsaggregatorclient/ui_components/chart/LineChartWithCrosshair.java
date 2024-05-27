@@ -7,11 +7,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.Axis;
-import javafx.scene.chart.LineChart;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Shape;
-
-import java.awt.geom.Area;
 
 public class LineChartWithCrosshair<X, Y> extends AreaChart<X, Y> {
     /**
@@ -19,19 +15,19 @@ public class LineChartWithCrosshair<X, Y> extends AreaChart<X, Y> {
      * Based on this StackOverflow answer: https://stackoverflow.com/a/56230124
      */
 
-    private Line vLine;
+    private final Line vLine;
 //    private Line hLine;
     private Group plotArea;
-    private BooleanProperty showFlag = new SimpleBooleanProperty();
-    private BooleanProperty showCrossHair = new SimpleBooleanProperty();
-    private double tickSize = 5;
+    private final BooleanProperty showFlag = new SimpleBooleanProperty();
+    private final BooleanProperty showCrossHair = new SimpleBooleanProperty();
+    private final double tickSize = 5;
 
     public LineChartWithCrosshair(Axis<X> xAxis, Axis<Y> yAxis, CustomCursor customCursor) {
         super(xAxis, yAxis);
         this.setVerticalGridLinesVisible(false);
         vLine = customCursor.getvLine();
 //        hLine = customCursor.gethLine();
-        showCrossHair.set(customCursor.isEstUtilisé());
+        showCrossHair.set(true);
         customCursor.isUsedProperty().addListener((obs, old, show) -> showCrossHair.set(show));
 
 //        hLine.endYProperty().bind(hLine.startYProperty());

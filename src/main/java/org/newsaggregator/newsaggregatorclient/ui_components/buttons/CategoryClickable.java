@@ -1,4 +1,4 @@
-package org.newsaggregator.newsaggregatorclient.ui_components.datacard;
+package org.newsaggregator.newsaggregatorclient.ui_components.buttons;
 
 import javafx.scene.control.Button;
 
@@ -10,5 +10,6 @@ public class CategoryClickable extends Button {
     public CategoryClickable(String categoryString){
         this();
         this.setText("#"+categoryString);
+        this.setUnderline(true);
     }
 }

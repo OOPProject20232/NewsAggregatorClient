@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import org.newsaggregator.newsaggregatorclient.datamodel.RedditPostData;
+import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 
 
 import static java.lang.Long.MAX_VALUE;
@@ -36,11 +37,15 @@ public class RedditCard extends HorizontalDataCard<RedditPostData> {
     public RedditCard(RedditPostData redditPostData){
         this.redditPostData = redditPostData;
         imageViewLink.setGraphic(thumbnail);
+        Label time = new Label(TimeFormatter.processDateTime(redditPostData.getPostedTime()));
+        HBox subredditBox = new HBox();
+        subredditBox.getChildren().addAll(subreddit, time);
+        subredditBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         this.setCardStyle();
         HBox voteBox = new HBox();
         voteBox.getChildren().addAll(upvoteCount, downvoteCount);
         VBox contentBox = new VBox();
-        contentBox.getChildren().addAll(subreddit, title, imageViewLink, content, author, voteBox);
+        contentBox.getChildren().addAll(subredditBox, title, imageViewLink, content, author, voteBox);
         VBox.setVgrow(contentBox, Priority.ALWAYS);
         getChildren().add(contentBox);
     }

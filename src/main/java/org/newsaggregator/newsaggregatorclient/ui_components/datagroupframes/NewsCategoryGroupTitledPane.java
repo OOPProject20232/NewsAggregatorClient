@@ -22,16 +22,12 @@ public class NewsCategoryGroupTitledPane extends CategoryTitledPane<NewsItemCard
         this.setCollapsible(false);
         this.setText(category);
     }
-
-    public void addItem(NewsItemCard data) {
-        this.getContainer().getChildren().add(data);
-    }
-
-    public ArrayList<NewsItemCard> getItems() {
-        ArrayList<NewsItemCard> newsItems = new ArrayList<>();
-        for (int i = 0; i < this.getContainer().getChildren().size(); i++) {
-            newsItems.add((NewsItemCard) this.getContainer().getChildren().get(i));
-        }
-        return newsItems;
-    }
+//
+//    public ArrayList<NewsItemCard> getItems() {
+//        ArrayList<NewsItemCard> newsItems = new ArrayList<>();
+//        for (int i = 0; i < this.getContainer().getChildren().size(); i++) {
+//            newsItems.add((NewsItemCard) this.getContainer().getChildren().get(i));
+//        }
+//        return newsItems;
+//    }
 }
