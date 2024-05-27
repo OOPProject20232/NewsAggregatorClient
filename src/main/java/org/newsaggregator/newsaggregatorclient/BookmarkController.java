@@ -55,7 +55,7 @@ public class BookmarkController {
         newsCategoryGroupTitledPane.setPrefWidth(1000);
         Platform.runLater(() -> {
             List<NewsItemData> data = getBookmarkedNews();
-            ArticleItemsLoader<CategoryTitledPane> articleItemsLoader = new ArticleItemsLoader<>(10, currentPage * limit, hostServices, newsCategoryGroupTitledPane, mainController);
+            ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(10, currentPage * limit, hostServices, newsCategoryGroupTitledPane, mainController);
             articleItemsLoader.loadItems(data);
         });
         reload.setOnAction(e -> {
@@ -74,7 +74,7 @@ public class BookmarkController {
             }
             Platform.runLater(() -> {
                 List<NewsItemData> data = getBookmarkedNews();
-                ArticleItemsLoader<CategoryTitledPane> articleItemsLoader = new ArticleItemsLoader<>(10, currentPage * limit, hostServices, newsCategoryGroupTitledPane, mainController);
+                ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(10, currentPage * limit, hostServices, newsCategoryGroupTitledPane, mainController);
                 articleItemsLoader.loadItems(data);
             });
         });
@@ -115,12 +115,13 @@ public class BookmarkController {
                 InfiniteNews pane = new InfiniteNews("Search: ");
                 bookmarkedGridPane.getChildren().add(pane);
                 currentPage = 0;
-                ArticleItemsLoader<InfiniteNews> itemsLoader = new ArticleItemsLoader<>(
+                ArticleItemsLoader itemsLoader = new ArticleItemsLoader(
                         limit, currentPage * limit, hostServices, pane, mainController
                 );
                 itemsLoader.loadItems(resultList);
+                System.out.println(resultList.toArray().length);
                 bookmarkScrollPane.setOnScroll(e -> {
-                    ArticleItemsLoader<CategoryTitledPane> articleItemsLoader = new ArticleItemsLoader<>(10, currentPage * limit, hostServices, pane, mainController);
+                    ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(10, currentPage * limit, hostServices, pane, mainController);
                     articleItemsLoader.loadItems(resultList);
                 });
             }

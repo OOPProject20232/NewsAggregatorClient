@@ -11,10 +11,10 @@
 
 .chart-container{
     -fx-background-color: -fx-surface-container-low;
-    -fx-border-radius: 24px;
+    -fx-border-radius: 48px;
     -fx-border-style: none;
     -fx-width: 100%;
-    -fx-background-radius: 24px;
+    -fx-background-radius: 48px;
     -fx-padding: 12px;
     -fx-spacing: 12px;
     -fx-box-border: transparent;

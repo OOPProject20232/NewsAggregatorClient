@@ -11,14 +11,13 @@ import org.newsaggregator.newsaggregatorclient.ui_components.dialogs.ImageViewDi
 
 import java.util.List;
 
-public class RedditItemsLoader<T> extends Task<Void> implements ItemsLoader<RedditPostData>{
+public class RedditItemsLoader extends Task<Void> implements ItemsLoader<RedditPostData>{
     private int limit;
     private int begin;
-    private CategoryTitledPane<RedditCard, RedditPostData> container;
-    private RedditCard redditCard;
+    private final CategoryTitledPane<RedditCard, RedditPostData> container;
     private HostServices hostServices;
 
-    public RedditItemsLoader(int limit, int begin, HostServices hostServices, T container){
+    public RedditItemsLoader(int limit, int begin, HostServices hostServices, CategoryTitledPane<RedditCard, RedditPostData> container){
         this.limit = limit;
         this.begin = begin;
         this.container = (CategoryTitledPane<RedditCard, RedditPostData>) container;

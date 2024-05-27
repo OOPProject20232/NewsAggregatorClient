@@ -9,29 +9,37 @@ import org.newsaggregator.newsaggregatorclient.util.TimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p>
+ *     Class này chứa các hàm để load các giá mới nhất của các đồng coin lên trên GUI
+ * </p>
+ *
+ * <p>
+ * Các đối tượng gọi tới lớp này sẽ truyền một tham số là một danh sách các giá mới nhất, sau đó
+ * sẽ tạo các card chứa thông tin giá và tên của coin
+ * </p>
+ */
 public class CoinNewestPriceItemsLoader implements ItemsLoader<CoinPriceData> {
-    /**
-     *
-     */
-    List<CoinNewestPriceCard> coinNewestPriceCards = new ArrayList<>();
-    HostServices hostServices;
-    CoinNewestPriceTitledPane container;
+    private List<CoinNewestPriceCard> coinNewestPriceCards = new ArrayList<>();
+    private final HostServices hostServices;
+    private CoinNewestPriceTitledPane pane;
 
-    public CoinNewestPriceItemsLoader(CoinNewestPriceTitledPane container, HostServices hostServices) {
+    public CoinNewestPriceItemsLoader(CoinNewestPriceTitledPane pane, HostServices hostServices) {
         this.hostServices = hostServices;
-        this.container = container;
+        this.pane = pane;
     }
 
+    @Override
     public void loadItems(List<CoinPriceData> data) {
 //        CoinNewestPriceTitledPane coinNewestPriceGroupFrame = new CoinNewestPriceTitledPane();
         for (CoinPriceData coinPriceData : data) {
             CoinNewestPriceCard coinNewestPriceCard = new CoinNewestPriceCard(coinPriceData);
             coinNewestPriceCard.setText();
             coinNewestPriceCard.setImage();
-            container.addItem(coinNewestPriceCard);
+            pane.addItem(coinNewestPriceCard);
             coinNewestPriceCards.add(coinNewestPriceCard);
         }
-        container.addUpdatedTime(TimeFormatter.convertISOToNormal(data.getFirst().getDate()));
+        pane.addUpdatedTime(TimeFormatter.convertISOToNormal(data.getFirst().getDate()));
     }
 
     public List<CoinNewestPriceCard> getItems() {

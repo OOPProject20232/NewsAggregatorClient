@@ -25,6 +25,7 @@ import org.newsaggregator.newsaggregatorclient.ui_components.uiloader.CoinNewest
 import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NewsAggregatorClientController {
     /**
@@ -80,14 +81,8 @@ public class NewsAggregatorClientController {
 
     private final HostServices hostServices;
 
-    private int currentArticlePage = 1;
-    private int currentRedditPage = 1;
-    private final static int coinLimit = 10;
-
-    private final String JSON_FOLDER_PATH = "src/main/resources/json/";
-    private CoinPriceJSONLoader coinPriceJSONLoader;
     private final ArticlesFrame articleScrollPane;
-    private NewsSearchController newsSearchController = new NewsSearchController();
+    private final NewsSearchController newsSearchController = new NewsSearchController();
     private final RedditFrame redditFrame;
 
     public NewsAggregatorClientController(HostServices hostServices) {
@@ -220,17 +215,17 @@ public class NewsAggregatorClientController {
         });
         CoinNewestPriceTitledPane coinNewestPriceGroupFrame = new CoinNewestPriceTitledPane(hostServices);
         coinNewestPriceGroupFrame.getStylesheets().add(NewsAggregatorClientController.class.getResource("assets/css/main.css").toExternalForm());
-
+        AtomicReference<CoinPriceJSONLoader> coinPriceJSONLoader = new AtomicReference<>();
         Platform.runLater(() -> {
-            coinPriceJSONLoader = getCoinPriceJSONLoader();
-            if (coinPriceJSONLoader.getJSONString().isEmpty()) {
+            coinPriceJSONLoader.set(getCoinPriceJSONLoader());
+            if (coinPriceJSONLoader.get().getJSONString().isEmpty()) {
                 System.out.println("Data is empty");
             }
             else {
                 additionalInfoContainer.getChildren().clear();
 //            coinNewestPriceGroupFrame.addAllCoins(coinPriceJSONLoader);
                 additionalInfoContainer.getChildren().add(coinNewestPriceGroupFrame);
-                List<CoinPriceData> coinData = coinPriceJSONLoader.getDataList();
+                List<CoinPriceData> coinData = coinPriceJSONLoader.get().getDataList();
                 System.out.println("\u001B[35m" + "Loading coin items" + "\u001B[0m");
                 CoinNewestPriceItemsLoader coinNewestPriceItemsLoader = new CoinNewestPriceItemsLoader(coinNewestPriceGroupFrame, hostServices);
                 coinNewestPriceItemsLoader.loadItems(coinData);
@@ -240,8 +235,9 @@ public class NewsAggregatorClientController {
 
     }
 
-    private static synchronized CoinPriceJSONLoader getCoinPriceJSONLoader() {
+    private synchronized CoinPriceJSONLoader getCoinPriceJSONLoader() {
         CoinPriceJSONLoader coinPriceJSONLoader = new CoinPriceJSONLoader();
+        int coinLimit = 10;
         coinPriceJSONLoader.setLimit(coinLimit);
         try {
             coinPriceJSONLoader.loadJSON();

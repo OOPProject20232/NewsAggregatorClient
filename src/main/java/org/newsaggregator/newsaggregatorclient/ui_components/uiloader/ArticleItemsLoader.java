@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
-public class ArticleItemsLoader<T>
+public class ArticleItemsLoader
         extends Task<Void> implements ItemsLoader<NewsItemData>{
     /**
      * <p>
@@ -34,12 +34,12 @@ public class ArticleItemsLoader<T>
     protected int begin;
     protected int limit;
     protected HostServices hostServices;
-    protected T newsCategoryGroupTitledPane;
+    protected CategoryTitledPane<NewsItemCard, NewsItemData> newsCategoryGroupTitledPane;
     protected NewsAggregatorClientController mainController;
     protected boolean containingSummary = true;
     protected boolean containingCategories = true;
 
-    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, T newsCategoryGroupTitledPane, NewsAggregatorClientController mainController) {
+    public ArticleItemsLoader(int limit, int begin, HostServices hostServices, CategoryTitledPane<NewsItemCard, NewsItemData> newsCategoryGroupTitledPane, NewsAggregatorClientController mainController) {
         this.limit = limit;
         this.hostServices = hostServices;
         this.newsCategoryGroupTitledPane = newsCategoryGroupTitledPane;
