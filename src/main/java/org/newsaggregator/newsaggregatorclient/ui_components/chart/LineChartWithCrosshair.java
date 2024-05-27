@@ -25,7 +25,7 @@ public class LineChartWithCrosshair<X, Y> extends AreaChart<X, Y> {
     public LineChartWithCrosshair(Axis<X> xAxis, Axis<Y> yAxis, CustomCursor customCursor) {
         super(xAxis, yAxis);
         this.setVerticalGridLinesVisible(false);
-        vLine = customCursor.getvLine();
+        vLine = customCursor.getVLine();
 //        hLine = customCursor.gethLine();
         showCrossHair.set(true);
         customCursor.isUsedProperty().addListener((obs, old, show) -> showCrossHair.set(show));

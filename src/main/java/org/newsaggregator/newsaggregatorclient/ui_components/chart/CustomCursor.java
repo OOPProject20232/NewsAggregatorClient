@@ -19,7 +19,7 @@ public class CustomCursor {
 //        this.isUsed.set(isUsed);
     }
 
-    public Line getvLine() {
+    public Line getVLine() {
         return vLine;
     }
 
