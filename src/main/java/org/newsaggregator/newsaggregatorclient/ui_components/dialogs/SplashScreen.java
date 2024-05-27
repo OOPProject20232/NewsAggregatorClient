@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -24,7 +25,8 @@ public class SplashScreen extends Alert {
             stage.setIconified(false);
             stage.initStyle(StageStyle.UNDECORATED);
             getDialogPane().getScene().setFill(Color.TRANSPARENT);
-            getDialogPane().setStyle("-fx-background-radius: 30px; -fx-border-width: 0; -fx-background-color: white");
+            getDialogPane().setEffect(new DropShadow());
+            getDialogPane().setStyle("-fx-border-width: 0; -fx-background-color: white");
             stage.setAlwaysOnTop(true);
         } catch (Exception e) {
             e.printStackTrace();

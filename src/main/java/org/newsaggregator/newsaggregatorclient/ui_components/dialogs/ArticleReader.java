@@ -173,4 +173,8 @@ public class ArticleReader extends Dialog<Void> {
         bookmarkIcon.setFitWidth(16);
         bookmarkButton.setGraphic(bookmarkIcon);
     }
+
+    public ToggleButton getBookmarkButton() {
+        return bookmarkButton;
+    }
 }

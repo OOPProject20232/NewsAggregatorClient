@@ -9,7 +9,6 @@ import javafx.scene.layout.Region;
 
 public class GenericFrame extends ScrollPane {
     protected final GridPane itemsContainer = new GridPane();
-    protected final String JSON_FOLDER_PATH = "src/main/resources/json/";
     protected int currentPage = 1;
     protected int limit = 30;
     public GenericFrame(){

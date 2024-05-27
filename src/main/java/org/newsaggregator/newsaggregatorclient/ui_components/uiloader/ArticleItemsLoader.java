@@ -140,16 +140,15 @@ public class ArticleItemsLoader<T>
         try {
             ArticleReader popup = new ArticleReader(itemCard.getNewsItemData(), hostServices);
             popup.initialize();
-            popup.showAndWait();
-            popup.setOnHiding(e -> {
-                SQLiteJDBC db = new SQLiteJDBC();
-                if (db.isBookmarked(itemCard.getNewsItemData())){
+            popup.getBookmarkButton().selectedProperty().addListener((observable, oldValue, newValue) -> {
+                if (popup.getBookmarkButton().isSelected()){
                     itemCard.getBookmarkButton().setSelected();
                 }
-                else {
+                else{
                     itemCard.getBookmarkButton().setUnselected();
                 }
             });
+            popup.showAndWait();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
