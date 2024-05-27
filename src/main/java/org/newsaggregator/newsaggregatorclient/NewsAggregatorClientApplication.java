@@ -44,7 +44,8 @@ public class NewsAggregatorClientApplication extends Application {
                     stage.initStyle(StageStyle.UNDECORATED);
                     stage.getIcons().add(new Image(Objects.requireNonNull(NewsAggregatorClientApplication.class.getResourceAsStream("assets/images/no-internet.png"))));
                     dialog.showAndWait();
-                } else if (serverCheckResponseCode == 500 || serverCheckResponseCode / 100 == 4) {
+                } else if (serverCheckResponseCode / 100 == 5 || serverCheckResponseCode / 100 == 4) {
+                    // Xử lý ngoại lệ cho lỗi họ 500/400 (I don't know if it works :( )
                     Error500Dialog error500Dialog = new Error500Dialog();
                     error500Dialog.show();
                 } else if (serverCheckResponseCode == 200){

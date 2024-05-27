@@ -52,7 +52,7 @@ public class RedditFrame extends GenericFrame {
             else {
                 List<RedditPostData> data = redditDataLoader.get().getDataList(20, 0);
                 new Thread(() -> Platform.runLater(() -> {
-                    RedditItemsLoader<RedditGroupTitledPane> redditItemsLoader = new RedditItemsLoader<>(20, 0, hostServices, allReddit);
+                    RedditItemsLoader redditItemsLoader = new RedditItemsLoader(20, 0, hostServices, allReddit);
                     redditItemsLoader.loadItems(data);
                 })).start();
             }

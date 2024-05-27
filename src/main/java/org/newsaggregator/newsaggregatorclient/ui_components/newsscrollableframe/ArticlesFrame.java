@@ -85,7 +85,7 @@ public class ArticlesFrame extends GenericFrame {
                     datalist.set(articleDataLoader.get().getDataList(limit, 0));
                 }).start();
                 Platform.runLater(() -> {
-                            new ArticleItemsLoader<>(
+                            new ArticleItemsLoader(
                                     limit,
                                     0,
                                     hostServices,
@@ -140,7 +140,7 @@ public class ArticlesFrame extends GenericFrame {
                     updateProgress(7, 8);
                 });
                 Platform.runLater(() -> {
-                            new ArticleItemsLoader<>(
+                            new ArticleItemsLoader(
                                     limit,
                                     0,
                                     hostServices,
@@ -175,7 +175,7 @@ public class ArticlesFrame extends GenericFrame {
         try{
             List<NewsItemData> data = newsCategoryJSONLoader.getDataList(5, 0);
             System.out.println("Data size: " + data.size());
-                ArticleItemsLoader<NewsCategoryGroupTitledPane> articleItemsLoader = new ArticleItemsLoader<>(5, 0, hostServices, pane, mainController);
+                ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(5, 0, hostServices, pane, mainController);
                 articleItemsLoader.setContainingSummary(false);
                 articleItemsLoader.setContainingCategories(false);
             Platform.runLater(() -> {
@@ -248,7 +248,7 @@ public class ArticlesFrame extends GenericFrame {
             NewsJSONLoader articleDataLoader = getNewsJSONLoader();
             Platform.runLater(() -> {
                 List<NewsItemData> data = articleDataLoader.getDataList(limit, 0);
-                ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(chunkSize, currentChunk.get() * chunkSize, hostServices, allNews, mainController);
+                ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(chunkSize, currentChunk.get() * chunkSize, hostServices, allNews, mainController);
                 articleItemsLoader.loadItems(data);
             });
             currentChunk.set(currentChunk.get() + 1);

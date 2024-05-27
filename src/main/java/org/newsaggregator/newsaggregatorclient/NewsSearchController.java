@@ -270,7 +270,7 @@ public class NewsSearchController{
             NewsJSONLoader newsJSONLoader = new NewsJSONLoader();
             newsJSONLoader.setJSONObj(obj);
             List<NewsItemData> list = newsJSONLoader.getDataList(limit, begin);
-            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(limit, begin, hostServices, infiniteNews, mainController);
+            ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(limit, begin, hostServices, infiniteNews, mainController);
             articleItemsLoader.loadItems(list);
             currentChunk.set(currentChunk.get() + 1);
         }
@@ -279,7 +279,7 @@ public class NewsSearchController{
             newsJSONLoader.setJSONObj(obj);
             List<NewsItemData> list = newsJSONLoader.getDataList(limit, begin);
             System.out.println(list);
-            ArticleItemsLoader<InfiniteNews> articleItemsLoader = new ArticleItemsLoader<>(limit, begin, hostServices, infiniteNews, mainController);
+            ArticleItemsLoader articleItemsLoader = new ArticleItemsLoader(limit, begin, hostServices, infiniteNews, mainController);
             articleItemsLoader.loadItems(list);
             currentChunk.set(currentChunk.get() + 1);
         }
@@ -320,7 +320,7 @@ public class NewsSearchController{
     private void loadRedditToFrame(RedditGroupTitledPane redditGroupTitledPane, JSONObject obj){
         RedditPostJSONLoader redditPostJSONLoader = new RedditPostJSONLoader();
         List<RedditPostData> list = redditPostJSONLoader.getDataList(10, 0);
-        RedditItemsLoader<RedditGroupTitledPane> redditItemsLoader = new RedditItemsLoader<>(10, 0, hostServices, redditGroupTitledPane);
+        RedditItemsLoader redditItemsLoader = new RedditItemsLoader(10, 0, hostServices, redditGroupTitledPane);
         redditItemsLoader.loadItems(list);
     }
 
