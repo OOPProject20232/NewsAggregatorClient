@@ -98,6 +98,8 @@ public class NewsSearchController{
             if (articlesToggleButton.isSelected())
                 searchType = "articles";
             System.out.println(searchType);
+            exactSearchToggleButton.setDisable(false);
+            searchFieldComboBox.setDisable(false);
         });
         redditToggleButton.getStyleClass().remove("radio-button");
 //        redditToggleButton.setOnAction(event -> {
@@ -113,17 +115,6 @@ public class NewsSearchController{
                 searchFieldComboBox.setDisable(true);
             }
         });
-//        exactSearchToggleButton.setOnAction(event -> {
-//            if (exactSearchToggleButton.isSelected()){
-//                isExactOrRegex = "e";
-//                exactSearchToggleButton.setText("✓ Exact search");
-//            }
-//            else{
-//                isExactOrRegex = "r";
-//                exactSearchToggleButton.setText("Exact search");
-//            }
-//            System.out.println(isExactOrRegex);
-//        });
         exactSearchToggleButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue){
                 exactSearchToggleButton.setText("✓ Exact search");
@@ -134,6 +125,21 @@ public class NewsSearchController{
                 isExactOrRegex = "r";
             }
         });
+        if (searchType.equals("articles")){
+            articlesToggleButton.setSelected(true);
+        }
+        else if (searchType.equals("reddit")){
+            redditToggleButton.setSelected(true);
+        }
+        if (isExactOrRegex.equals("e")) {
+            exactSearchToggleButton.setSelected(true);
+        }
+        if (searchField.equals("all")){
+            searchFieldComboBox.setValue("all");
+        }
+        else if (searchField.equals("categories")){
+            searchFieldComboBox.setValue("categories");
+        }
     }
 
     private String getSearchQuery(){
@@ -310,7 +316,7 @@ public class NewsSearchController{
 
     private void loadMoreReddit(RedditGroupTitledPane redditGroupTitledPane){
         Platform.runLater(() -> {
-            SearchJSONLoader<RedditPostData> searchJSONLoader = new SearchJSONLoader<>(getSearchQuery(), "posts", searchField, searchOrder, isExactOrRegex);
+            SearchJSONLoader<RedditPostData> searchJSONLoader = new SearchJSONLoader<>(getSearchQuery(), searchType, searchField, searchOrder, isExactOrRegex);
             searchJSONLoader.setPage(page);
             JSONObject obj = searchJSONLoader.loadJSON();
             loadRedditToFrame(redditGroupTitledPane, obj);
@@ -319,6 +325,7 @@ public class NewsSearchController{
 
     private void loadRedditToFrame(RedditGroupTitledPane redditGroupTitledPane, JSONObject obj){
         RedditPostJSONLoader redditPostJSONLoader = new RedditPostJSONLoader();
+        redditPostJSONLoader.setJSONObj(obj);
         List<RedditPostData> list = redditPostJSONLoader.getDataList(10, 0);
         RedditItemsLoader redditItemsLoader = new RedditItemsLoader(10, 0, hostServices, redditGroupTitledPane);
         redditItemsLoader.loadItems(list);

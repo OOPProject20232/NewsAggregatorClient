@@ -23,7 +23,7 @@ public class TimeFormatter {
         System.out.println("Post time: " + tmpPostTime);
         OffsetDateTime postTime = tmpPostTime.atOffset(ZoneOffset.of("+00:00"));
         Duration duration = Duration.between(postTime, now);
-        long diff = duration.getSeconds();
+        long diff = Math.abs(duration.getSeconds());
         System.out.println("Diff: " + diff);
         if (diff < 60){
             return "Just now";
